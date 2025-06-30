@@ -1,0 +1,44 @@
+/* devtools/devtools.css - 小工具统一样式 */
+.devtool-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 2rem 1.5rem;
+}
+.devtool-container h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.devtool-container textarea, .devtool-container input {
+    width: 100%;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    padding: 0.7em;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    resize: vertical;
+}
+.devtool-container button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6em 1.5em;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+.devtool-container button:hover {
+    background: #1d4ed8;
+}
+.devtool-container pre {
+    background: #f1f5f9;
+    border-radius: 6px;
+    padding: 1em;
+    font-size: 1rem;
+    min-height: 2em;
+    margin-top: 0.5em;
+    overflow-x: auto;
+} 

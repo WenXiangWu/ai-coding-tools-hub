@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON解析工具</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="devtools.css">
+</head>
+<body>
+    <main class="devtool-container">
+        <h1>JSON解析工具</h1>
+        <div id="jsonTool"></div>
+    </main>
+    <script type="module">
+        import { init } from './json.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('jsonTool');
+            init(container);
+        });
+    </script>
+</body>
+</html> 
