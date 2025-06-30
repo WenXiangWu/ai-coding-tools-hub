@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI编程工具中心 - 探索未来编程新纪元</title>
+    <meta name="description" content="发现最前沿的AI编程工具，包括Cursor、Windsurf、Claude、GitHub Copilot等，提供详细教程、实时更新和每日资讯。">
+    <meta name="keywords" content="AI编程工具,Cursor,Windsurf,Claude,GitHub Copilot,人工智能,编程助手,代码生成">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="AI编程工具中心 - 探索未来编程新纪元">
+    <meta property="og:description" content="发现最前沿的AI编程工具，包括Cursor、Windsurf、Claude、GitHub Copilot等">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="loading">
+    <!-- 粒子背景 -->
+    <div class="particles-background" id="particles-background">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-robot"></i>
+                AI编程工具中心
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link">首页</a></li>
+                <li><a href="#tools" class="nav-link">工具</a></li>
+                <li><a href="#tutorials" class="nav-link">教程</a></li>
+                <li><a href="#updates" class="nav-link">更新</a></li>
+                <li><a href="#news" class="nav-link">资讯</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主页横幅 -->
+    <section class="hero" id="home">
+        <div class="hero-visual">
+            <div class="floating-cards">
+                <div class="card-float card-1">
+                    <i class="fas fa-code"></i>
+                    <div>
+                        <strong>智能编码</strong>
+                        <p>AI驱动代码生成</p>
+                    </div>
+                </div>
+                <div class="card-float card-2">
+                    <i class="fas fa-magic"></i>
+                    <div>
+                        <strong>自动补全</strong>
+                        <p>实时代码建议</p>
+                    </div>
+                </div>
+                <div class="card-float card-3">
+                    <i class="fas fa-rocket"></i>
+                    <div>
+                        <strong>效率提升</strong>
+                        <p>10x开发速度</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>
+                    探索AI编程工具的<br>
+                    <span class="highlight">无限可能</span>
+                </h1>
+                <p>发现最前沿的AI编程工具，从Cursor到Claude，从GitHub Copilot到Windsurf，我们为您精选最强大的编程助手，让AI成为您编程路上的最佳伙伴。</p>
+                <div class="hero-buttons">
+                    <a href="#tools" class="btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        开始探索
+                    </a>
+                    <a href="#tutorials" class="btn-secondary">
+                        <i class="fas fa-play"></i>
+                        观看教程
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">AI工具</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">教程视频</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-label">开发者</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具区域 -->
+    <section class="tools-section" id="tools">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-tools"></i>
+                主流AI编程工具
+            </h2>
+            <div class="tools-grid">
+                <!-- Cursor -->
+                <div class="tool-card" data-tool="cursor">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3>Cursor</h3>
+                            <div class="tool-category">AI代码编辑器</div>
+                        </div>
+                        <div class="tool-status">
+                            <i class="fas fa-fire"></i>
+                            热门
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        革命性的AI代码编辑器，基于GPT-4构建，提供智能代码补全、自然语言编程和实时代码解释。完美融合传统编程体验与AI创新。
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">智能补全</span>
+                        <span class="feature-tag">代码生成</span>
+                        <span class="feature-tag">实时调试</span>
+                        <span class="feature-tag">多语言支持</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="https://cursor.sh" class="btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            访问官网
+                        </a>
+                        <a href="#tutorials" class="btn-outline">
+                            <i class="fas fa-book"></i>
+                            查看教程
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Windsurf -->
+                <div class="tool-card" data-tool="windsurf">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3>Windsurf</h3>
+                            <div class="tool-category">AI开发环境</div>
+                        </div>
+                        <div class="tool-status">
+                            <i class="fas fa-star"></i>
+                            推荐
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        下一代AI开发环境，提供完整的项目管理、智能代码分析和协作功能。让团队开发更加高效和智能。
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">项目管理</span>
+                        <span class="feature-tag">团队协作</span>
+                        <span class="feature-tag">智能分析</span>
+                        <span class="feature-tag">云端同步</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="https://codeium.com/windsurf" class="btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            访问官网
+                        </a>
+                        <a href="#tutorials" class="btn-outline">
+                            <i class="fas fa-book"></i>
+                            查看教程
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Claude -->
+                <div class="tool-card" data-tool="claude">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3>Claude</h3>
+                            <div class="tool-category">AI编程助手</div>
+                        </div>
+                        <div class="tool-status">
+                            <i class="fas fa-crown"></i>
+                            专业
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        Anthropic开发的高级AI助手，擅长复杂代码理解、架构设计和技术文档编写。是专业开发者的理想伙伴。
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">代码理解</span>
+                        <span class="feature-tag">架构设计</span>
+                        <span class="feature-tag">文档生成</span>
+                        <span class="feature-tag">问题解决</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="https://claude.ai" class="btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            访问官网
+                        </a>
+                        <a href="#tutorials" class="btn-outline">
+                            <i class="fas fa-book"></i>
+                            查看教程
+                        </a>
+                    </div>
+                </div>
+
+                <!-- GitHub Copilot -->
+                <div class="tool-card" data-tool="copilot">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3>GitHub Copilot</h3>
+                            <div class="tool-category">AI编程助手</div>
+                        </div>
+                        <div class="tool-status">
+                            <i class="fas fa-shield-alt"></i>
+                            稳定
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        GitHub与OpenAI合作打造的AI编程助手，基于数十亿行代码训练，提供精准的代码建议和自动补全功能。
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">自动补全</span>
+                        <span class="feature-tag">代码建议</span>
+                        <span class="feature-tag">多IDE支持</span>
+                        <span class="feature-tag">企业级</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="https://github.com/features/copilot" class="btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            访问官网
+                        </a>
+                        <a href="#tutorials" class="btn-outline">
+                            <i class="fas fa-book"></i>
+                            查看教程
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Gemini -->
+                <div class="tool-card" data-tool="gemini">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3>Gemini</h3>
+                            <div class="tool-category">Google AI模型</div>
+                        </div>
+                        <div class="tool-status">
+                            <i class="fas fa-bolt"></i>
+                            强大
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        Google最新的多模态AI模型，支持文本、图像和代码理解，为开发者提供全方位的智能编程支持。
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">多模态</span>
+                        <span class="feature-tag">大规模模型</span>
+                        <span class="feature-tag">高性能</span>
+                        <span class="feature-tag">API接口</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="https://ai.google.dev" class="btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            访问官网
+                        </a>
+                        <a href="#tutorials" class="btn-outline">
+                            <i class="fas fa-book"></i>
+                            查看教程
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Codeium -->
+                <div class="tool-card" data-tool="codeium">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3>Codeium</h3>
+                            <div class="tool-category">免费AI助手</div>
+                        </div>
+                        <div class="tool-status">
+                            <i class="fas fa-gift"></i>
+                            免费
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        免费的AI编程助手，支持70+编程语言，提供智能代码补全、搜索和聊天功能，是学习和小型项目的完美选择。
+                    </p>
+                    <div class="tool-features">
+                        <span class="feature-tag">完全免费</span>
+                        <span class="feature-tag">70+语言</span>
+                        <span class="feature-tag">智能搜索</span>
+                        <span class="feature-tag">轻量级</span>
+                    </div>
+                    <div class="tool-actions">
+                        <a href="https://codeium.com" class="btn-primary" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            访问官网
+                        </a>
+                        <a href="#tutorials" class="btn-outline">
+                            <i class="fas fa-book"></i>
+                            查看教程
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教程中心 -->
+    <section class="tutorials-section" id="tutorials">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-graduation-cap"></i>
+                教程与学习
+            </h2>
+            <div class="tutorials-grid">
+                <!-- 入门教程 -->
+                <div class="tutorial-card featured">
+                    <div class="tutorial-image">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-category">入门指南</div>
+                        <h3>AI编程工具入门完整指南</h3>
+                        <p>从零开始学习如何使用AI编程工具，包括环境搭建、基础操作和最佳实践。适合所有编程初学者。</p>
+                        <div class="tutorial-meta">
+                            <span><i class="fas fa-clock"></i> 2小时</span>
+                            <span><i class="fas fa-user"></i> 5000+学员</span>
+                            <span><i class="fas fa-star"></i> 4.9分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 进阶教程 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-image">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-category">进阶技巧</div>
+                        <h3>Cursor高级功能深度解析</h3>
+                        <p>深入探索Cursor的高级功能，包括自定义Rules、AI对话技巧和团队协作最佳实践。</p>
+                        <div class="tutorial-meta">
+                            <span><i class="fas fa-clock"></i> 3小时</span>
+                            <span><i class="fas fa-user"></i> 2500+学员</span>
+                            <span><i class="fas fa-star"></i> 4.8分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 实战项目 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-image">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-category">实战项目</div>
+                        <h3>用AI工具构建全栈Web应用</h3>
+                        <p>通过实际项目学习如何使用AI工具快速构建现代Web应用，包含前端、后端和部署。</p>
+                        <div class="tutorial-meta">
+                            <span><i class="fas fa-clock"></i> 5小时</span>
+                            <span><i class="fas fa-user"></i> 1800+学员</span>
+                            <span><i class="fas fa-star"></i> 4.7分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 工具对比 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-image">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-category">工具对比</div>
+                        <h3>主流AI编程工具全面对比</h3>
+                        <p>详细对比各种AI编程工具的优缺点、适用场景和性价比，帮您选择最合适的工具。</p>
+                        <div class="tutorial-meta">
+                            <span><i class="fas fa-clock"></i> 1.5小时</span>
+                            <span><i class="fas fa-user"></i> 3200+学员</span>
+                            <span><i class="fas fa-star"></i> 4.6分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最佳实践 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-image">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-category">最佳实践</div>
+                        <h3>AI编程工作流优化指南</h3>
+                        <p>学习专业开发者的AI编程工作流，提高编码效率，避免常见陷阱和问题。</p>
+                        <div class="tutorial-meta">
+                            <span><i class="fas fa-clock"></i> 2.5小时</span>
+                            <span><i class="fas fa-user"></i> 1500+学员</span>
+                            <span><i class="fas fa-star"></i> 4.8分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 问题解决 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-image">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="tutorial-content">
+                        <div class="tutorial-category">问题解决</div>
+                        <h3>AI编程常见问题与解决方案</h3>
+                        <p>收集整理AI编程过程中的常见问题，提供详细的解决方案和预防措施。</p>
+                        <div class="tutorial-meta">
+                            <span><i class="fas fa-clock"></i> 1小时</span>
+                            <span><i class="fas fa-user"></i> 2800+学员</span>
+                            <span><i class="fas fa-star"></i> 4.5分</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 更新动态 -->
+    <section class="updates-section" id="updates">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                最新更新动态
+            </h2>
+            <div class="updates-timeline">
+                <div class="update-item">
+                    <div class="update-date">
+                        <span class="date">2024年12月</span>
+                        <span class="tool">Cursor</span>
+                    </div>
+                    <div class="update-content">
+                        <h3>Cursor 0.42版本发布</h3>
+                        <p>新增多文件编辑功能，支持同时处理多个文件的AI对话，大幅提升复杂项目的开发效率。同时优化了代码补全算法，准确率提升15%。</p>
+                        <a href="#" class="update-link">
+                            查看详情 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-date">
+                        <span class="date">2024年11月</span>
+                        <span class="tool">Claude</span>
+                    </div>
+                    <div class="update-content">
+                        <h3>Claude 3.5 Sonnet增强版</h3>
+                        <p>Claude 3.5 Sonnet发布增强版，在代码生成和调试方面表现更加优秀，支持更多编程语言和框架，错误修复能力显著提升。</p>
+                        <a href="#" class="update-link">
+                            查看详情 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-date">
+                        <span class="date">2024年10月</span>
+                        <span class="tool">GitHub Copilot</span>
+                    </div>
+                    <div class="update-content">
+                        <h3>Copilot Chat功能全面升级</h3>
+                        <p>GitHub Copilot Chat推出重大更新，支持更自然的对话交互，新增代码审查建议和性能优化提示功能。</p>
+                        <a href="#" class="update-link">
+                            查看详情 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-date">
+                        <span class="date">2024年9月</span>
+                        <span class="tool">Windsurf</span>
+                    </div>
+                    <div class="update-content">
+                        <h3>Windsurf Beta版本发布</h3>
+                        <p>Codeium推出全新的AI开发环境Windsurf，集成了强大的项目管理和团队协作功能，为开发团队带来全新的开发体验。</p>
+                        <a href="#" class="update-link">
+                            查看详情 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="update-item">
+                    <div class="update-date">
+                        <span class="date">2024年8月</span>
+                        <span class="tool">Gemini</span>
+                    </div>
+                    <div class="update-content">
+                        <h3>Gemini Pro 1.5发布</h3>
+                        <p>Google发布Gemini Pro 1.5版本，支持更长的上下文窗口和更精准的代码理解能力，API调用速度提升40%。</p>
+                        <a href="#" class="update-link">
+                            查看详情 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 每日资讯 -->
+    <section class="news-section" id="news">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-newspaper"></i>
+                每日AI编程资讯
+            </h2>
+            <div class="news-grid">
+                <!-- 头条新闻 -->
+                <div class="news-card headline">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop" alt="AI编程未来趋势" loading="lazy">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-category">重要新闻</div>
+                        <h3>2025年AI编程工具发展趋势预测</h3>
+                        <p>随着大语言模型技术的快速发展，AI编程工具正在经历前所未有的变革。专家预测，2025年将是AI编程工具全面普及的关键年份，多模态AI、自然语言编程和智能代码审查将成为主流。</p>
+                        <div class="news-meta">
+                            <span><i class="fas fa-calendar"></i> 2024-12-25</span>
+                            <span><i class="fas fa-eye"></i> 15.2K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 工具更新 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&h=250&fit=crop" alt="Cursor更新" loading="lazy">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-category">工具更新</div>
+                        <h3>Cursor推出革命性的Composer功能</h3>
+                        <p>Cursor最新版本引入了Composer功能，允许开发者通过自然语言描述来创建和修改整个代码库，开发效率提升显著。</p>
+                        <div class="news-meta">
+                            <span><i class="fas fa-calendar"></i> 2024-12-24</span>
+                            <span><i class="fas fa-eye"></i> 8.7K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 行业动态 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=250&fit=crop" alt="团队协作" loading="lazy">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-category">行业动态</div>
+                        <h3>微软GitHub Copilot用户突破百万</h3>
+                        <p>微软宣布GitHub Copilot用户数量已突破100万，成为最受欢迎的AI编程助手之一，企业用户增长尤为显著。</p>
+                        <div class="news-meta">
+                            <span><i class="fas fa-calendar"></i> 2024-12-23</span>
+                            <span><i class="fas fa-eye"></i> 6.3K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 技术分享 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=250&fit=crop" alt="代码质量" loading="lazy">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-category">技术分享</div>
+                        <h3>如何用AI工具提高代码质量</h3>
+                        <p>分享使用AI编程工具提高代码质量的实用技巧，包括代码审查、重构建议和bug检测等最佳实践。</p>
+                        <div class="news-meta">
+                            <span><i class="fas fa-calendar"></i> 2024-12-22</span>
+                            <span><i class="fas fa-eye"></i> 4.1K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 社区讨论 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop" alt="开发者社区" loading="lazy">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-category">社区讨论</div>
+                        <h3>开发者对AI编程工具的真实评价</h3>
+                        <p>汇总来自全球开发者社区对各种AI编程工具的真实使用体验和评价，为选择工具提供参考。</p>
+                        <div class="news-meta">
+                            <span><i class="fas fa-calendar"></i> 2024-12-21</span>
+                            <span><i class="fas fa-eye"></i> 7.8K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学习资源 -->
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=400&h=250&fit=crop" alt="学习资源" loading="lazy">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-category">学习资源</div>
+                        <h3>免费AI编程课程资源汇总</h3>
+                        <p>整理了最新的免费AI编程学习资源，包括在线课程、教程文档和实践项目，帮助开发者快速上手。</p>
+                        <div class="news-meta">
+                            <span><i class="fas fa-calendar"></i> 2024-12-20</span>
+                            <span><i class="fas fa-eye"></i> 5.9K</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>
+                        <i class="fas fa-robot"></i>
+                        AI编程工具中心
+                    </h3>
+                    <p>致力于为开发者提供最全面、最前沿的AI编程工具资讯和教程。探索AI编程的无限可能，提升开发效率，创造更美好的数字世界。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>AI工具</h4>
+                    <ul>
+                        <li><a href="#tools">Cursor</a></li>
+                        <li><a href="#tools">Windsurf</a></li>
+                        <li><a href="#tools">Claude</a></li>
+                        <li><a href="#tools">GitHub Copilot</a></li>
+                        <li><a href="#tools">Gemini</a></li>
+                        <li><a href="#tools">Codeium</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>学习资源</h4>
+                    <ul>
+                        <li><a href="#tutorials">入门教程</a></li>
+                        <li><a href="#tutorials">进阶指南</a></li>
+                        <li><a href="#tutorials">实战项目</a></li>
+                        <li><a href="#tutorials">最佳实践</a></li>
+                        <li><a href="#news">每日资讯</a></li>
+                        <li><a href="#updates">更新动态</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>联系我们</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> contact@ai-coding-tools.com</p>
+                        <p><i class="fas fa-globe"></i> www.ai-coding-tools.com</p>
+                        <p><i class="fab fa-github"></i> GitHub: /ai-coding-tools</p>
+                        <p><i class="fab fa-discord"></i> Discord社区</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 AI编程工具中心. 保留所有权利. | 
+                   <a href="#">隐私政策</a> | 
+                   <a href="#">使用条款</a> | 
+                   <a href="#">网站地图</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+        <i class="fas fa-rocket"></i>
+    </button>
+
+    <!-- 加载动画 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="loading-text">加载中...</div>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
