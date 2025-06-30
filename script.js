@@ -1,1140 +1,721 @@
-// AI编程工具大全 - 交互功能脚本
+// AI编程工具大全 - 主应用文件
+// 使用模块化架构管理AI工具数据
 
 // 全局变量
 let isLoading = true;
-let particlesArray = [];
-let animationId;
+let selectedTools = new Set();
+let currentFilter = 'all';
+let currentSort = 'priority';
 
-// DOM元素
-const navbar = document.getElementById('navbar');
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('nav-menu');
-const backToTopButton = document.getElementById('backToTop');
-const loadingScreen = document.getElementById('loadingScreen');
-const particlesBackground = document.getElementById('particles-background');
-
-document.addEventListener('DOMContentLoaded', function() {
-    // 初始化所有功能
-    initializeParticles();
-    initializeScrollEffects();
-    initializeNavigation();
-    initializeAnimations();
-    initializeLoadingScreen();
-    initializeToolCards();
-    initializeKeyboardShortcuts();
-    
-    // 添加页面交互增强
-    enhancePageInteractions();
-
-    // 平滑滚动导航
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                const offsetTop = targetSection.offsetTop - 70;
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // 主页按钮平滑滚动
-    const heroButtons = document.querySelectorAll('.hero-buttons a');
-    heroButtons.forEach(button => {
-        if (button.getAttribute('href').startsWith('#')) {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetSection = document.querySelector(targetId);
-                
-                if (targetSection) {
-                    const offsetTop = targetSection.offsetTop - 70;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        }
-    });
-
-    // 移动端菜单切换
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
+// 应用初始化
+class App {
+    constructor() {
+        this.initialized = false;
+        this.tools = [];
+        this.toolsManager = null;
+        this.currentTypeFilter = 'all';
+        this.currentPriceFilter = 'all';
     }
 
-    // 点击菜单项时关闭移动端菜单
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        });
-    });
+    async initialize() {
+        if (this.initialized) return;
 
-    // 滚动效果
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+        try {
+            // 显示加载界面
+            this.showLoadingScreen();
+
+            // 动态导入模块
+            const { toolsManager } = await import('./js/managers/tools-manager.js');
+            const { getStatusIcon, getStatusText, getPriceText } = await import('./js/utils/tool-schema.js');
+            
+            this.toolsManager = toolsManager;
+            this.getStatusIcon = getStatusIcon;
+            this.getStatusText = getStatusText;
+            this.getPriceText = getPriceText;
+
+            // 初始化工具管理器
+            await this.toolsManager.initialize();
+
+            // 获取工具数据
+            this.tools = this.toolsManager.getAllTools();
+
+            // 初始化页面组件
+            this.initializeComponents();
+
+            // 隐藏加载界面
+            this.hideLoadingScreen();
+
+            this.initialized = true;
+            console.log('✅ 应用初始化完成，加载了', this.tools.length, '个工具');
+        } catch (error) {
+            console.error('❌ 应用初始化失败:', error);
+            this.showErrorScreen(error.message);
         }
-    });
+    }
 
-    // 卡片动画
-    const cards = document.querySelectorAll('.tool-card, .tutorial-card, .news-card');
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    showLoadingScreen() {
+        console.log('显示加载界面');
+        isLoading = true;
+    }
 
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
+    hideLoadingScreen() {
+        setTimeout(() => {
+            isLoading = false;
+            console.log('隐藏加载界面');
+        }, 1000);
+    }
 
-    cards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-        observer.observe(card);
-    });
-
-    // 活跃导航链接高亮
-    const sections = document.querySelectorAll('section[id]');
-    
-    window.addEventListener('scroll', function() {
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.offsetHeight;
-            if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-    });
-
-    // 搜索功能（模拟）
-    function initSearch() {
-        const searchInput = document.createElement('div');
-        searchInput.innerHTML = `
-            <div class="search-container" style="position: fixed; top: 80px; right: 20px; z-index: 999; display: none;">
-                <input type="text" id="searchInput" placeholder="搜索工具或教程..." 
-                       style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 250px;">
-                <div id="searchResults" style="background: white; border: 1px solid #ddd; border-top: none; 
-                     border-radius: 0 0 6px 6px; max-height: 300px; overflow-y: auto; display: none;"></div>
+    showErrorScreen(message) {
+        const errorHTML = `
+            <div class="error-screen" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #f8f9fa;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            ">
+                <div class="error-content" style="
+                    text-align: center;
+                    padding: 40px;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                ">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #dc3545; margin-bottom: 20px;"></i>
+                    <h2 style="color: #333; margin-bottom: 15px;">加载失败</h2>
+                    <p style="color: #666; margin-bottom: 30px;">${message}</p>
+                    <button onclick="location.reload()" style="
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    ">
+                        <i class="fas fa-refresh"></i> 重新加载
+                    </button>
+                </div>
             </div>
         `;
-        document.body.appendChild(searchInput);
+        document.body.insertAdjacentHTML('beforeend', errorHTML);
     }
 
-    // 动态更新时间
-    function updateTimeStamps() {
-        const timeElements = document.querySelectorAll('.news-time');
-        timeElements.forEach(element => {
-            const originalTime = element.textContent;
-            // 这里可以添加实际的时间更新逻辑
-        });
+    initializeComponents() {
+        this.renderTools();
+        this.setupEventListeners();
+        this.initializeKeyboardShortcuts();
+        this.updateStatistics();
     }
 
-    // 工具状态更新
-    function updateToolStatus() {
-        const statusElements = document.querySelectorAll('.tool-status');
-        statusElements.forEach(status => {
-            // 模拟随机状态更新
-            if (Math.random() > 0.9) {
-                status.textContent = '刚刚更新';
-                status.style.backgroundColor = '#fef3c7';
-                status.style.color = '#92400e';
-            }
-        });
-    }
-
-    // 添加回到顶部按钮
-    const backToTop = document.createElement('div');
-    backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
-    backToTop.className = 'back-to-top';
-    backToTop.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background: #2563eb;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transition: all 0.3s ease;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    `;
-    
-    document.body.appendChild(backToTop);
-
-    backToTop.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-
-    window.addEventListener('scroll', function() {
-        if (window.pageYOffset > 300) {
-            backToTop.style.opacity = '1';
-            backToTop.style.transform = 'translateY(0)';
-        } else {
-            backToTop.style.opacity = '0';
-            backToTop.style.transform = 'translateY(10px)';
+    renderTools() {
+        const toolsGrid = document.getElementById('toolsGrid');
+        if (!toolsGrid) {
+            console.warn('未找到 toolsGrid 元素');
+            return;
         }
-    });
 
-    // 添加加载动画
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.className = 'loading-overlay';
-    loadingOverlay.innerHTML = `
-        <div class="loading-spinner">
-            <i class="fas fa-robot fa-spin" style="font-size: 2rem; color: #2563eb;"></i>
-            <p style="margin-top: 1rem; color: #666;">加载中...</p>
-        </div>
-    `;
-    loadingOverlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        opacity: 1;
-        transition: opacity 0.5s ease;
-    `;
-
-    document.body.appendChild(loadingOverlay);
-
-    // 页面加载完成后隐藏加载动画
-    window.addEventListener('load', function() {
-        setTimeout(() => {
-            loadingOverlay.style.opacity = '0';
-            setTimeout(() => {
-                loadingOverlay.remove();
-            }, 500);
-        }, 1000);
-    });
-
-    // 工具卡片点击效果
-    cards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            if (!e.target.closest('.tool-actions')) {
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            }
+        const filteredAndSortedTools = this.getFilteredAndSortedTools();
+        
+        toolsGrid.innerHTML = '';
+        
+        if (filteredAndSortedTools.length === 0) {
+            toolsGrid.innerHTML = `
+                <div class="no-tools" style="
+                    grid-column: 1 / -1;
+                    text-align: center;
+                    padding: 60px 20px;
+                    color: #666;
+                ">
+                    <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                    <h3>暂无工具数据</h3>
+                    <p>请检查网络连接或刷新页面重试</p>
+                </div>
+            `;
+            return;
+        }
+        
+        filteredAndSortedTools.forEach(tool => {
+            const toolCard = this.createToolCard(tool);
+            toolsGrid.appendChild(toolCard);
         });
-    });
 
-    // 每日资讯自动刷新提示
-    function showNewsUpdateNotification() {
-        const notification = document.createElement('div');
-        notification.innerHTML = `
-            <div style="background: #dcfce7; color: #166534; padding: 12px 20px; border-radius: 8px; 
-                        position: fixed; top: 80px; left: 50%; transform: translateX(-50%); 
-                        z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                <i class="fas fa-bell"></i> 发现新的AI编程资讯更新！
-                <button onclick="this.parentElement.remove()" 
-                        style="background: none; border: none; color: #166534; margin-left: 10px; cursor: pointer;">
-                    ✕
+        console.log(`✅ 渲染了 ${filteredAndSortedTools.length} 个工具`);
+    }
+
+    getFilteredAndSortedTools() {
+        let tools = [...this.tools];
+
+        // 应用类型筛选
+        if (this.currentTypeFilter !== 'all') {
+            tools = tools.filter(tool => tool.type === this.currentTypeFilter);
+        }
+
+        // 应用价格筛选
+        if (this.currentPriceFilter !== 'all') {
+            tools = tools.filter(tool => tool.price === this.currentPriceFilter);
+        }
+
+        // 应用排序
+        switch (currentSort) {
+            case 'name':
+                tools.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'rating':
+                tools.sort((a, b) => b.rating - a.rating);
+                break;
+            case 'users':
+                tools.sort((a, b) => {
+                    const usersA = parseInt(a.users.replace(/[^\d]/g, '')) || 0;
+                    const usersB = parseInt(b.users.replace(/[^\d]/g, '')) || 0;
+                    return usersB - usersA;
+                });
+                break;
+            case 'updated':
+                tools.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+                break;
+            default: // popularity
+                tools.sort((a, b) => (a._config?.priority || 999) - (b._config?.priority || 999));
+        }
+
+        return tools;
+    }
+
+    createToolCard(tool) {
+        const card = document.createElement('div');
+        card.className = 'tool-card';
+        card.dataset.toolId = tool.id;
+
+        // 生成功能标签
+        const featuresHTML = tool.features.slice(0, 4).map(feature => 
+            `<span class="feature-tag">${feature}</span>`
+        ).join('');
+
+        // 生成平台标签
+        const platformsHTML = tool.platforms.slice(0, 3).map(platform => 
+            `<span class="platform-tag">${platform}</span>`
+        ).join('');
+
+        card.innerHTML = `
+            <div class="tool-header">
+                <div class="tool-icon">
+                    <i class="${tool.logo}"></i>
+                </div>
+                <div class="tool-status">
+                    <span class="status-badge status-${tool.status}">
+                        <i class="fas fa-${this.getStatusIcon(tool.status)}"></i>
+                        ${this.getStatusText(tool.status)}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="tool-content">
+                <h3 class="tool-name">${tool.name}</h3>
+                <p class="tool-category">${tool.category}</p>
+                <p class="tool-description">${tool.description}</p>
+                
+                <div class="tool-features">
+                    ${featuresHTML}
+                </div>
+                
+                <div class="tool-meta">
+                    <div class="rating">
+                        <span class="stars">${this.generateStars(tool.rating)}</span>
+                        <span class="rating-value">${tool.rating}</span>
+                    </div>
+                    <div class="users">
+                        <i class="fas fa-users"></i>
+                        <span>${tool.users}</span>
+                    </div>
+                    <div class="price">
+                        <i class="fas fa-tag"></i>
+                        <span>${this.getPriceText(tool.price)}</span>
+                    </div>
+                </div>
+                
+                <div class="tool-platforms">
+                    ${platformsHTML}
+                </div>
+            </div>
+            
+            <div class="tool-actions">
+                <button class="btn btn-primary" onclick="app.openToolWebsite('${tool.website}')">
+                    <i class="fas fa-external-link-alt"></i>
+                    访问官网
+                </button>
+                <button class="btn btn-secondary" onclick="app.showToolDetails('${tool.id}')">
+                    <i class="fas fa-info-circle"></i>
+                    详细信息
+                </button>
+                <button class="btn btn-outline compare-btn" onclick="app.toggleToolSelection('${tool.id}')">
+                    <i class="fas fa-plus"></i>
+                    对比
                 </button>
             </div>
         `;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 5000);
+
+        return card;
     }
 
-    // 模拟定期更新通知
-    setTimeout(showNewsUpdateNotification, 10000);
+    generateStars(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        let stars = '';
+
+        for (let i = 0; i < fullStars; i++) {
+            stars += '<i class="fas fa-star"></i>';
+        }
+
+        if (hasHalfStar) {
+            stars += '<i class="fas fa-star-half-alt"></i>';
+        }
+
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        for (let i = 0; i < emptyStars; i++) {
+            stars += '<i class="far fa-star"></i>';
+        }
+
+        return stars;
+    }
+
+    updateStatistics() {
+        if (!this.toolsManager) return;
+        
+        try {
+            const stats = this.toolsManager.getStatistics();
+            
+            // 更新统计显示
+            const totalToolsElement = document.getElementById('total-tools');
+            const avgRatingElement = document.getElementById('avg-rating');
+            const totalUsersElement = document.getElementById('total-users');
+
+            if (totalToolsElement) totalToolsElement.textContent = stats.total;
+            if (avgRatingElement) avgRatingElement.textContent = stats.averageRating.toFixed(1);
+            if (totalUsersElement) totalUsersElement.textContent = `${Math.round(stats.totalUsers / 1000)}K+`;
+        } catch (error) {
+            console.warn('更新统计信息失败:', error);
+        }
+    }
+
+    // 工具相关方法
+    openToolWebsite(url) {
+        window.open(url, '_blank');
+    }
+
+    showToolDetails(toolId) {
+        const tool = this.toolsManager.getTool(toolId);
+        if (!tool) return;
+
+        // 创建详情模态框
+        const modal = this.createToolDetailsModal(tool);
+        document.body.appendChild(modal);
+        
+        // 显示模态框
+        setTimeout(() => modal.classList.add('show'), 10);
+    }
+
+    createToolDetailsModal(tool) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.id = 'tool-details-modal';
+
+        const prosHTML = tool.pros.map(pro => `<li><i class="fas fa-check text-success"></i> ${pro}</li>`).join('');
+        const consHTML = tool.cons.map(con => `<li><i class="fas fa-times text-danger"></i> ${con}</li>`).join('');
+        const languagesHTML = tool.supported_languages.map(lang => `<span class="tech-tag">${lang}</span>`).join('');
+        const tutorialsHTML = tool.extensions?.tutorials?.map(tutorial => `
+            <div class="tutorial-item">
+                <h4>${tutorial.title}</h4>
+                <span class="level-badge level-${tutorial.level}">${tutorial.level}</span>
+            </div>
+        `).join('') || '<p>暂无教程</p>';
+
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="tool-info">
+                        <i class="${tool.logo} tool-icon-large"></i>
+                        <div>
+                            <h2>${tool.name}</h2>
+                            <p class="tool-category">${tool.category}</p>
+                        </div>
+                    </div>
+                    <button class="close-btn" onclick="app.hideToolDetails()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="detail-section">
+                        <h3>工具描述</h3>
+                        <p>${tool.description}</p>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>主要功能</h3>
+                        <div class="features-grid">
+                            ${tool.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>支持的编程语言</h3>
+                        <div class="tech-grid">
+                            ${languagesHTML}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3>优点</h3>
+                            <ul class="pros-list">
+                                ${prosHTML}
+                            </ul>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h3>缺点</h3>
+                            <ul class="cons-list">
+                                ${consHTML}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>相关教程</h3>
+                        <div class="tutorials-list">
+                            ${tutorialsHTML}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="app.openToolWebsite('${tool.website}')">
+                        <i class="fas fa-external-link-alt"></i>
+                        访问官网
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.openToolWebsite('${tool.documentation}')">
+                        <i class="fas fa-book"></i>
+                        查看文档
+                    </button>
+                    ${tool.github ? `
+                        <button class="btn btn-outline" onclick="app.openToolWebsite('${tool.github}')">
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        return modal;
+    }
+
+    hideToolDetails() {
+        const modal = document.getElementById('tool-details-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => modal.remove(), 300);
+        }
+    }
+
+    toggleToolSelection(toolId) {
+        if (selectedTools.has(toolId)) {
+            selectedTools.delete(toolId);
+        } else {
+            if (selectedTools.size >= 4) {
+                alert('最多只能选择4个工具进行对比');
+                return;
+            }
+            selectedTools.add(toolId);
+        }
+
+        this.updateToolCardSelection(toolId);
+        this.updateCompareButton();
+    }
+
+    updateToolCardSelection(toolId) {
+        const card = document.querySelector(`[data-tool-id="${toolId}"]`);
+        const compareBtn = card?.querySelector('.compare-btn');
+        
+        if (card && compareBtn) {
+            if (selectedTools.has(toolId)) {
+                card.classList.add('selected');
+                compareBtn.innerHTML = '<i class="fas fa-check"></i> 已选择';
+                compareBtn.classList.remove('btn-outline');
+                compareBtn.classList.add('btn-success');
+            } else {
+                card.classList.remove('selected');
+                compareBtn.innerHTML = '<i class="fas fa-plus"></i> 对比';
+                compareBtn.classList.remove('btn-success');
+                compareBtn.classList.add('btn-outline');
+            }
+        }
+    }
+
+    updateCompareButton() {
+        const compareButton = document.getElementById('compareBtn');
+        if (compareButton) {
+            if (selectedTools.size >= 2) {
+                compareButton.disabled = false;
+                compareButton.innerHTML = `<i class="fas fa-balance-scale"></i> 对比选中的工具 (${selectedTools.size})`;
+                const countSpan = document.getElementById('compareCount');
+                if (countSpan) countSpan.textContent = selectedTools.size;
+            } else {
+                compareButton.disabled = true;
+                compareButton.innerHTML = '<i class="fas fa-balance-scale"></i> 对比选中的工具 (0)';
+                const countSpan = document.getElementById('compareCount');
+                if (countSpan) countSpan.textContent = '0';
+            }
+        }
+    }
+
+    showComparison() {
+        if (selectedTools.size < 2) {
+            alert('请至少选择2个工具进行对比');
+            return;
+        }
+
+        // 显示对比区域
+        const compareSection = document.getElementById('compare');
+        const toolsSection = document.getElementById('tools');
+        
+        if (compareSection && toolsSection) {
+            toolsSection.style.display = 'none';
+            compareSection.style.display = 'block';
+            
+            // 生成对比表格
+            this.generateComparisonTable();
+            
+            // 滚动到对比区域
+            compareSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    generateComparisonTable() {
+        const compareTable = document.getElementById('compareTable');
+        if (!compareTable || !this.toolsManager) return;
+
+        const selectedToolsData = Array.from(selectedTools).map(id => 
+            this.toolsManager.getTool(id)
+        ).filter(Boolean);
+
+        if (selectedToolsData.length === 0) return;
+
+        // 对比维度
+        const comparisons = [
+            { key: 'name', label: '工具名称' },
+            { key: 'category', label: '分类' },
+            { key: 'description', label: '描述' },
+            { key: 'rating', label: '评分' },
+            { key: 'users', label: '用户数' },
+            { key: 'price', label: '价格模式' },
+            { key: 'platforms', label: '支持平台' },
+            { key: 'features', label: '主要功能' },
+            { key: 'supported_languages', label: '支持语言' },
+            { key: 'pros', label: '优势' },
+            { key: 'cons', label: '劣势' }
+        ];
+
+        let tableHTML = '<thead><tr><th>对比项目</th>';
+        selectedToolsData.forEach(tool => {
+            tableHTML += `<th><div class="tool-header"><i class="${tool.logo}"></i> ${tool.name}</div></th>`;
+        });
+        tableHTML += '</tr></thead><tbody>';
+
+        comparisons.forEach(comp => {
+            tableHTML += `<tr><td class="compare-label">${comp.label}</td>`;
+            selectedToolsData.forEach(tool => {
+                let value = tool[comp.key];
+                
+                if (Array.isArray(value)) {
+                    value = value.slice(0, 5).join(', ');
+                    if (tool[comp.key].length > 5) value += '...';
+                } else if (comp.key === 'rating') {
+                    value = `${value} ⭐`;
+                } else if (comp.key === 'price') {
+                    value = this.getPriceText(value);
+                }
+                
+                tableHTML += `<td>${value}</td>`;
+            });
+            tableHTML += '</tr>';
+        });
+
+        tableHTML += '</tbody>';
+        compareTable.innerHTML = tableHTML;
+    }
+
+    hideComparison() {
+        const compareSection = document.getElementById('compare');
+        const toolsSection = document.getElementById('tools');
+        
+        if (compareSection && toolsSection) {
+            compareSection.style.display = 'none';
+            toolsSection.style.display = 'block';
+            
+            // 滚动到工具区域
+            toolsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // 筛选和排序
+    setFilter(filterType, filterValue) {
+        if (filterType === 'type') {
+            this.currentTypeFilter = filterValue;
+        } else if (filterType === 'price') {
+            this.currentPriceFilter = filterValue;
+        }
+        this.renderTools();
+    }
+
+    setSort(sort) {
+        currentSort = sort;
+        this.renderTools();
+    }
+
+    searchTools(query) {
+        if (!this.toolsManager) return;
+        
+        const results = this.toolsManager.searchTools(query);
+        this.displaySearchResults(results);
+    }
+
+    displaySearchResults(results) {
+        const toolsGrid = document.getElementById('toolsGrid');
+        if (!toolsGrid) return;
+
+        toolsGrid.innerHTML = '';
+        
+        if (results.length === 0) {
+            toolsGrid.innerHTML = `
+                <div class="no-results" style="
+                    grid-column: 1 / -1;
+                    text-align: center;
+                    padding: 60px 20px;
+                    color: #666;
+                ">
+                    <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                    <h3>未找到相关工具</h3>
+                    <p>请尝试使用其他关键词搜索</p>
+                </div>
+            `;
+            return;
+        }
+
+        results.forEach(tool => {
+            const toolCard = this.createToolCard(tool);
+            toolsGrid.appendChild(toolCard);
+        });
+    }
+
+    // 事件监听器设置
+    setupEventListeners() {
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                if (query.length === 0) {
+                    this.renderTools();
+                } else {
+                    this.searchTools(query);
+                }
+            });
+        }
+
+        // 筛选功能
+        const typeFilter = document.getElementById('typeFilter');
+        const priceFilter = document.getElementById('priceFilter');
+        const sortSelect = document.getElementById('sortSelect');
+
+        if (typeFilter) {
+            typeFilter.addEventListener('change', (e) => {
+                this.setFilter('type', e.target.value);
+            });
+        }
+
+        if (priceFilter) {
+            priceFilter.addEventListener('change', (e) => {
+                this.setFilter('price', e.target.value);
+            });
+        }
+
+        if (sortSelect) {
+            sortSelect.addEventListener('change', (e) => {
+                this.setSort(e.target.value);
+            });
+        }
+
+        // 对比按钮
+        const compareButton = document.getElementById('compareBtn');
+        if (compareButton) {
+            compareButton.addEventListener('click', () => {
+                this.showComparison();
+            });
+        }
+
+        // 关闭对比按钮
+        const closeCompareButton = document.getElementById('closeCompare');
+        if (closeCompareButton) {
+            closeCompareButton.addEventListener('click', () => {
+                this.hideComparison();
+            });
+        }
+
+        // 模态框关闭
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                this.hideToolDetails();
+            }
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.hideToolDetails();
+            }
+        });
+    }
 
     // 键盘快捷键
-    document.addEventListener('keydown', function(e) {
-        // 按 'S' 键聚焦搜索（如果存在）
-        if (e.key === 's' || e.key === 'S') {
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput && !e.ctrlKey && !e.metaKey) {
+    initializeKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K 聚焦搜索框
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
-                searchInput.focus();
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.focus();
+                }
             }
-        }
-        
-        // 按 ESC 键关闭移动端菜单
-        if (e.key === 'Escape') {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }
-    });
 
-    // 初始化完成
-    console.log('网站功能加载完成');
+            // 数字键快速筛选
+            if (e.key >= '1' && e.key <= '9') {
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                const index = parseInt(e.key) - 1;
+                if (filterButtons[index]) {
+                    filterButtons[index].click();
+                }
+            }
+        });
+    }
+}
+
+// 创建全局应用实例
+const app = new App();
+
+// 页面加载完成后初始化应用
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('页面加载完成，开始初始化应用...');
+    app.initialize().catch(error => {
+        console.error('应用初始化出错:', error);
+    });
 });
 
-// 添加移动端菜单样式
-const mobileMenuStyles = document.createElement('style');
-mobileMenuStyles.textContent = `
-    @media (max-width: 768px) {
-        .nav-menu {
-            position: fixed;
-            left: -100%;
-            top: 70px;
-            flex-direction: column;
-            background-color: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            width: 100%;
-            text-align: center;
-            transition: 0.3s;
-            box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-            padding: 2rem 0;
-            gap: 0;
-        }
-
-        .nav-menu.active {
-            left: 0;
-        }
-
-        .nav-menu li {
-            margin: 1rem 0;
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-    }
-
-    .navbar.scrolled {
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-link.active {
-        color: #2563eb !important;
-        font-weight: 600;
-    }
-`;
-document.head.appendChild(mobileMenuStyles);
-
-// 粒子系统
-function initializeParticles() {
-    class Particle {
-        constructor() {
-            this.reset();
-            this.y = Math.random() * window.innerHeight;
-            this.fadeDelay = Math.random() * 600;
-            this.fadeStart = Date.now() + this.fadeDelay;
-            this.fadingIn = true;
-        }
-
-        reset() {
-            this.x = Math.random() * window.innerWidth;
-            this.y = window.innerHeight + 100;
-            this.z = Math.random() * 20;
-            this.speed = 2 + Math.random() * 5;
-            this.opacity = 0;
-            this.scale = 0.5 + Math.random() * 0.5;
-            this.color = Math.random() > 0.5 ? '#00f2fe' : '#f093fb';
-            this.rotationSpeed = (Math.random() - 0.5) * 0.02;
-            this.rotation = 0;
-            this.fadeDelay = 0;
-            this.fadeStart = Date.now();
-            this.fadingIn = true;
-        }
-
-        update() {
-            this.y -= this.speed;
-            this.rotation += this.rotationSpeed;
-            
-            // 处理透明度动画
-            if (this.fadingIn) {
-                if (Date.now() > this.fadeStart) {
-                    this.opacity += 0.005;
-                    if (this.opacity >= 1) {
-                        this.opacity = 1;
-                        this.fadingIn = false;
-                    }
-                }
-            } else {
-                if (this.y < -100) {
-                    this.reset();
-                }
-            }
-        }
-
-        draw(ctx) {
-            ctx.save();
-            ctx.globalAlpha = this.opacity * 0.6;
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rotation);
-            ctx.scale(this.scale, this.scale);
-            
-            // 创建发光效果
-            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 4);
-            gradient.addColorStop(0, this.color);
-            gradient.addColorStop(1, 'transparent');
-            
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(0, 0, 4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-        }
-    }
-
-    // 创建canvas
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '-1';
-    particlesBackground.appendChild(canvas);
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    function createParticles() {
-        particlesArray = [];
-        const numberOfParticles = Math.min(50, Math.floor(window.innerWidth / 20));
-        for (let i = 0; i < numberOfParticles; i++) {
-            particlesArray.push(new Particle());
-        }
-    }
-
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        particlesArray.forEach(particle => {
-            particle.update();
-            particle.draw(ctx);
-        });
-        
-        animationId = requestAnimationFrame(animateParticles);
-    }
-
-    // 初始化粒子系统
-    resizeCanvas();
-    createParticles();
-    animateParticles();
-
-    // 窗口大小改变时重新计算
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-        createParticles();
-    });
-}
-
-// 加载屏幕
-function initializeLoadingScreen() {
-    const progressBar = document.querySelector('.progress-bar');
-    const loadingText = document.querySelector('.loading-text');
-    const loadingTexts = [
-        '正在加载AI工具数据...',
-        '初始化智能助手...',
-        '准备炫酷界面...',
-        '即将完成...'
-    ];
-    
-    let progress = 0;
-    let textIndex = 0;
-    
-    const loadingInterval = setInterval(() => {
-        progress += Math.random() * 15 + 5;
-        
-        if (progress >= 100) {
-            progress = 100;
-            clearInterval(loadingInterval);
-            
-            setTimeout(() => {
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    document.body.classList.remove('loading');
-                    isLoading = false;
-                    
-                    // 启动页面动画
-                    startPageAnimations();
-                }, 500);
-            }, 200);
-        }
-        
-        progressBar.style.width = `${progress}%`;
-        
-        // 更新加载文本
-        if (progress > (textIndex + 1) * 25 && textIndex < loadingTexts.length - 1) {
-            textIndex++;
-            loadingText.textContent = loadingTexts[textIndex];
-        }
-    }, 100);
-}
-
-// 启动页面动画
-function startPageAnimations() {
-    // 动画序列
-    const animations = [
-        () => animateHeroContent(),
-        () => animateToolCards(),
-        () => animateNavbar()
-    ];
-    
-    animations.forEach((animation, index) => {
-        setTimeout(animation, index * 200);
-    });
-}
-
-function animateHeroContent() {
-    const heroContent = document.querySelector('.hero-content');
-    const heroStats = document.querySelector('.hero-stats');
-    const floatingCards = document.querySelectorAll('.card-float');
-    
-    if (heroContent) {
-        heroContent.style.opacity = '0';
-        heroContent.style.transform = 'translateY(50px)';
-        heroContent.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        setTimeout(() => {
-            heroContent.style.opacity = '1';
-            heroContent.style.transform = 'translateY(0)';
-        }, 100);
-    }
-    
-    // 统计数字动画
-    if (heroStats) {
-        const statNumbers = heroStats.querySelectorAll('.stat-number');
-        statNumbers.forEach((stat, index) => {
-            const finalNumber = parseInt(stat.textContent.replace('+', ''));
-            let currentNumber = 0;
-            const increment = finalNumber / 30;
-            
-            setTimeout(() => {
-                const counter = setInterval(() => {
-                    currentNumber += increment;
-                    if (currentNumber >= finalNumber) {
-                        currentNumber = finalNumber;
-                        clearInterval(counter);
-                    }
-                    stat.textContent = Math.floor(currentNumber) + '+';
-                }, 50);
-            }, index * 200);
-        });
-    }
-    
-    // 浮动卡片动画
-    floatingCards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(100px) scale(0.8)';
-        card.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) scale(1)';
-        }, 300 + index * 200);
-    });
-}
-
-function animateToolCards() {
-    const toolCards = document.querySelectorAll('.tool-card');
-    
-    toolCards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(60px) rotateX(10deg)';
-        card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) rotateX(0deg)';
-        }, index * 100);
-    });
-}
-
-function animateNavbar() {
-    if (navbar) {
-        navbar.style.transform = 'translateY(-100%)';
-        navbar.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        setTimeout(() => {
-            navbar.style.transform = 'translateY(0)';
-        }, 100);
-    }
-}
-
-// 滚动效果
-function initializeScrollEffects() {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    function updateScrollEffects() {
-        const scrollY = window.scrollY;
-        const scrollDirection = scrollY > lastScrollY ? 'down' : 'up';
-        
-        // 导航栏效果
-        if (navbar) {
-            if (scrollY > 100) {
-                navbar.classList.add('scrolled');
-                if (scrollDirection === 'down' && scrollY > 300) {
-                    navbar.style.transform = 'translateY(-100%)';
-                } else if (scrollDirection === 'up') {
-                    navbar.style.transform = 'translateY(0)';
-                }
-            } else {
-                navbar.classList.remove('scrolled');
-                navbar.style.transform = 'translateY(0)';
-            }
-        }
-        
-        // 回到顶部按钮
-        if (backToTopButton) {
-            if (scrollY > 500) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        }
-        
-        // 视差效果
-        const heroVisual = document.querySelector('.hero-visual');
-        if (heroVisual && scrollY < window.innerHeight) {
-            const parallaxSpeed = scrollY * 0.5;
-            heroVisual.style.transform = `translateY(${parallaxSpeed}px)`;
-        }
-        
-        lastScrollY = scrollY;
-        ticking = false;
-    }
-
-    function requestTick() {
-        if (!ticking) {
-            requestAnimationFrame(updateScrollEffects);
-            ticking = true;
-        }
-    }
-
-    window.addEventListener('scroll', requestTick, { passive: true });
-    
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-                
-                // 特殊动画处理
-                if (entry.target.classList.contains('tutorial-card')) {
-                    animateTutorialCard(entry.target);
-                } else if (entry.target.classList.contains('news-card')) {
-                    animateNewsCard(entry.target);
-                } else if (entry.target.classList.contains('update-item')) {
-                    animateUpdateItem(entry.target);
-                }
-            }
-        });
-    }, observerOptions);
-
-    // 观察需要动画的元素
-    const animateElements = document.querySelectorAll(
-        '.tool-card, .tutorial-card, .news-card, .update-item, .section-title'
-    );
-    
-    animateElements.forEach(el => {
-        observer.observe(el);
-    });
-}
-
-// 特殊卡片动画
-function animateTutorialCard(card) {
-    const image = card.querySelector('.tutorial-image');
-    const content = card.querySelector('.tutorial-content');
-    
-    if (image) {
-        image.style.transform = 'scale(1.1) rotateY(-5deg)';
-        setTimeout(() => {
-            image.style.transform = 'scale(1) rotateY(0deg)';
-        }, 600);
-    }
-    
-    if (content) {
-        const elements = content.querySelectorAll('*');
-        elements.forEach((el, index) => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateX(20px)';
-            setTimeout(() => {
-                el.style.opacity = '1';
-                el.style.transform = 'translateX(0)';
-            }, index * 100);
-        });
-    }
-}
-
-function animateNewsCard(card) {
-    const image = card.querySelector('.news-image');
-    const content = card.querySelector('.news-content');
-    
-    if (image) {
-        image.style.clipPath = 'polygon(0 0, 0 0, 0 100%, 0% 100%)';
-        setTimeout(() => {
-            image.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)';
-        }, 200);
-    }
-    
-    if (content) {
-        content.style.transform = 'translateY(30px)';
-        setTimeout(() => {
-            content.style.transform = 'translateY(0)';
-        }, 300);
-    }
-}
-
-function animateUpdateItem(item) {
-    const date = item.querySelector('.update-date');
-    const content = item.querySelector('.update-content');
-    
-    if (date) {
-        date.style.transform = 'translateX(-50px)';
-        date.style.opacity = '0';
-        setTimeout(() => {
-            date.style.transform = 'translateX(0)';
-            date.style.opacity = '1';
-        }, 100);
-    }
-    
-    if (content) {
-        content.style.transform = 'translateX(50px)';
-        content.style.opacity = '0';
-        setTimeout(() => {
-            content.style.transform = 'translateX(0)';
-            content.style.opacity = '1';
-        }, 200);
-    }
-}
-
-// 导航功能
-function initializeNavigation() {
-    // 汉堡菜单
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-        });
-    }
-
-    // 平滑滚动
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            
-            if (target) {
-                const headerOffset = 80;
-                const elementPosition = target.offsetTop;
-                const offsetPosition = elementPosition - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-                
-                // 关闭移动端菜单
-                if (navMenu.classList.contains('active')) {
-                    hamburger.classList.remove('active');
-                    navMenu.classList.remove('active');
-                    document.body.classList.remove('menu-open');
-                }
-            }
-        });
-    });
-
-    // 回到顶部
-    if (backToTopButton) {
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }
-}
-
-// 工具卡片3D效果
-function initializeToolCards() {
-    const toolCards = document.querySelectorAll('.tool-card');
-    
-    toolCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transition = 'all 0.3s ease';
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-        
-        // 3D倾斜效果
-        card.addEventListener('mousemove', function(e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-            
-            this.style.transform = `
-                translateY(-10px) 
-                scale(1.02) 
-                rotateX(${rotateX}deg) 
-                rotateY(${rotateY}deg)
-                perspective(1000px)
-            `;
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1) rotateX(0) rotateY(0)';
-        });
-    });
-}
-
-// 动画增强
-function initializeAnimations() {
-    // 页面切换动画
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            // 页面隐藏时暂停动画
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-        } else {
-            // 页面显示时恢复动画
-            if (particlesArray.length > 0) {
-                animateParticles();
-            }
-        }
-    });
-    
-    // 鼠标跟随效果
-    let mouseX = 0;
-    let mouseY = 0;
-    let isMouseMoving = false;
-    
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        isMouseMoving = true;
-        
-        // 更新CSS变量用于某些动画
-        document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
-        document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
-        
-        // 鼠标停止移动后重置
-        clearTimeout(isMouseMoving);
-        isMouseMoving = setTimeout(() => {
-            isMouseMoving = false;
-        }, 100);
-    });
-    
-    // 浮动卡片鼠标交互
-    const floatingCards = document.querySelectorAll('.card-float');
-    floatingCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform += ' scale(1.1)';
-            this.style.zIndex = '10';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = this.style.transform.replace(' scale(1.1)', '');
-            this.style.zIndex = '1';
-        });
-    });
-}
-
-// 键盘快捷键
-function initializeKeyboardShortcuts() {
-    document.addEventListener('keydown', function(e) {
-        // ESC 关闭菜单
-        if (e.key === 'Escape') {
-            if (navMenu && navMenu.classList.contains('active')) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.body.classList.remove('menu-open');
-            }
-        }
-        
-        // Ctrl/Cmd + K 搜索功能（将来可以添加）
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            // 这里可以添加搜索功能
-            console.log('搜索功能（待实现）');
-        }
-        
-        // 数字键快速导航
-        if (e.key >= '1' && e.key <= '5') {
-            const sections = ['#home', '#tools', '#tutorials', '#updates', '#news'];
-            const target = document.querySelector(sections[parseInt(e.key) - 1]);
-            
-            if (target) {
-                const headerOffset = 80;
-                const elementPosition = target.offsetTop;
-                const offsetPosition = elementPosition - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        }
-    });
-}
-
-// 页面交互增强
-function enhancePageInteractions() {
-    // 添加按钮点击波纹效果
-    const buttons = document.querySelectorAll('.btn-primary, .btn-secondary, .btn-outline');
-    
-    buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.height, rect.width);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                left: ${x}px;
-                top: ${y}px;
-                width: ${size}px;
-                height: ${size}px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.6);
-                transform: scale(0);
-                animation: ripple 0.6s ease-out;
-                pointer-events: none;
-                z-index: 1;
-            `;
-            
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-    });
-    
-    // 添加涟漪动画CSS
-    if (!document.querySelector('#ripple-styles')) {
-        const style = document.createElement('style');
-        style.id = 'ripple-styles';
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(2);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // 添加卡片悬浮音效（可选）
-    const cards = document.querySelectorAll('.tool-card, .tutorial-card, .news-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            // 这里可以添加音效
-            // playHoverSound();
-        });
-    });
-    
-    // 添加更多动态效果
-    addDynamicEffects();
-}
-
-// 动态效果
-function addDynamicEffects() {
-    // 标题打字机效果
-    const heroTitle = document.querySelector('.hero h1');
-    if (heroTitle && !isLoading) {
-        animateTypewriter(heroTitle);
-    }
-    
-    // 进度条动画
-    const progressBars = document.querySelectorAll('.progress-bar');
-    progressBars.forEach(bar => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const width = bar.style.width || '0%';
-                    bar.style.width = '0%';
-                    setTimeout(() => {
-                        bar.style.width = width;
-                    }, 200);
-                }
-            });
-        });
-        observer.observe(bar);
-    });
-    
-    // 添加随机浮动动画到某些元素
-    const floatElements = document.querySelectorAll('.tool-icon, .tutorial-image i');
-    floatElements.forEach((element, index) => {
-        element.style.animation = `float 3s ease-in-out infinite`;
-        element.style.animationDelay = `${index * 0.2}s`;
-    });
-}
-
-// 打字机效果
-function animateTypewriter(element) {
-    const text = element.textContent;
-    element.textContent = '';
-    element.style.borderRight = '2px solid #00f2fe';
-    
-    let i = 0;
-    const speed = 100;
-    
-    function typeWriter() {
-        if (i < text.length) {
-            element.textContent += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, speed);
-        } else {
-            // 移除光标
-            setTimeout(() => {
-                element.style.borderRight = 'none';
-            }, 1000);
-        }
-    }
-    
-    setTimeout(typeWriter, 1000);
-}
-
-// 添加浮动动画CSS
-const floatAnimationCSS = `
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-`;
-
-if (!document.querySelector('#float-animation')) {
-    const style = document.createElement('style');
-    style.id = 'float-animation';
-    style.textContent = floatAnimationCSS;
-    document.head.appendChild(style);
-}
-
-// 性能优化
-function optimizePerformance() {
-    // 图片懒加载
-    const images = document.querySelectorAll('img[loading="lazy"]');
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src || img.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
-                }
-            });
-        });
-        
-        images.forEach(img => imageObserver.observe(img));
-    }
-    
-    // 减少重绘重排
-    let rafId;
-    function optimizedResize() {
-        if (rafId) {
-            cancelAnimationFrame(rafId);
-        }
-        rafId = requestAnimationFrame(() => {
-            // 处理窗口大小变化
-            handleResize();
-        });
-    }
-    
-    window.addEventListener('resize', optimizedResize);
-}
-
-function handleResize() {
-    // 重新计算粒子数量
-    const numberOfParticles = Math.min(50, Math.floor(window.innerWidth / 20));
-    if (particlesArray.length !== numberOfParticles) {
-        // 重新创建粒子（如果需要的话）
-        // createParticles();
-    }
-}
-
-// 错误处理
-window.addEventListener('error', function(e) {
-    console.error('JavaScript错误:', e.error);
-    // 可以在这里添加错误报告功能
-});
-
-// 初始化性能优化
-document.addEventListener('DOMContentLoaded', optimizePerformance);
-
-// 导出函数供其他脚本使用
-window.AIToolsHub = {
-    initializeParticles,
-    animateTypewriter,
-    addDynamicEffects
-}; 
+// 导出全局应用实例
+window.app = app; 

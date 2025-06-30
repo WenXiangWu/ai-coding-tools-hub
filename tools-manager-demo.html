@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具管理器演示 - AI编程工具大全</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .tool-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tool-name {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .tool-category {
+            color: #666;
+            font-size: 14px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AI编程工具大全 - 工具管理器演示</h1>
+        <p>这个演示页面展示了模块化工具管理器的API功能和使用方法。</p>
+        
+        <div class="demo-section">
+            <h2>📊 系统状态</h2>
+            <div class="stats" id="stats-grid">
+                <!-- 统计信息将在这里显示 -->
+            </div>
+            <button onclick="loadStatistics()">刷新统计</button>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔧 工具管理器 API</h2>
+            <button onclick="initializeManager()">初始化管理器</button>
+            <button onclick="loadAllTools()">加载所有工具</button>
+            <button onclick="searchTools()">搜索工具</button>
+            <button onclick="filterTools()">筛选工具</button>
+            <button onclick="getToolDetails()">获取工具详情</button>
+            
+            <h3>控制台日志：</h3>
+            <div class="log" id="console-log"></div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔍 工具列表</h2>
+            <div id="tools-list">
+                <!-- 工具列表将在这里显示 -->
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>⚙️ 配置管理</h2>
+            <button onclick="showConfig()">显示配置</button>
+            <button onclick="toggleTool()">切换工具状态</button>
+            <button onclick="addNewTool()">模拟添加新工具</button>
+            
+            <h3>配置信息：</h3>
+            <div class="log" id="config-log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        let toolsManager = null;
+        let utils = null;
+        let config = null;
+
+        // 日志函数
+        function log(message, elementId = 'console-log') {
+            const logElement = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+
+        // 初始化管理器
+        window.initializeManager = async function() {
+            try {
+                log('开始初始化工具管理器...');
+                
+                // 导入模块
+                const managerModule = await import('./js/managers/tools-manager.js');
+                const utilsModule = await import('./js/utils/tool-schema.js');
+                const configModule = await import('./js/config/tools-config.js');
+                
+                toolsManager = managerModule.toolsManager;
+                utils = utilsModule;
+                config = configModule;
+                
+                log('模块导入成功');
+                
+                // 初始化管理器
+                await toolsManager.initialize();
+                log('✅ 工具管理器初始化完成');
+                
+                // 显示加载状态
+                const status = toolsManager.getLoadingStatus();
+                log(`已加载 ${status.toolsLoaded}/${status.totalTools} 个工具`);
+                
+            } catch (error) {
+                log(`❌ 初始化失败: ${error.message}`);
+            }
+        };
+
+        // 加载所有工具
+        window.loadAllTools = function() {
+            if (!toolsManager) {
+                log('请先初始化管理器');
+                return;
+            }
+            
+            try {
+                const tools = toolsManager.getAllTools();
+                log(`获取到 ${tools.length} 个工具:`);
+                
+                const toolsList = document.getElementById('tools-list');
+                toolsList.innerHTML = '';
+                
+                tools.forEach(tool => {
+                    const toolCard = document.createElement('div');
+                    toolCard.className = 'tool-card';
+                    toolCard.innerHTML = `
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-category">${tool.category} | ${tool.price} | 评分: ${tool.rating}</div>
+                        <div>${tool.description.substring(0, 100)}...</div>
+                    `;
+                    toolsList.appendChild(toolCard);
+                });
+                
+                log(`✅ 工具列表渲染完成`);
+            } catch (error) {
+                log(`❌ 加载工具失败: ${error.message}`);
+            }
+        };
+
+        // 搜索工具
+        window.searchTools = function() {
+            if (!toolsManager) {
+                log('请先初始化管理器');
+                return;
+            }
+            
+            try {
+                const query = 'cursor';
+                const results = toolsManager.searchTools(query);
+                log(`搜索 "${query}" 找到 ${results.length} 个结果:`);
+                
+                results.forEach(tool => {
+                    log(`- ${tool.name}: ${tool.description.substring(0, 50)}...`);
+                });
+            } catch (error) {
+                log(`❌ 搜索失败: ${error.message}`);
+            }
+        };
+
+        // 筛选工具
+        window.filterTools = function() {
+            if (!toolsManager) {
+                log('请先初始化管理器');
+                return;
+            }
+            
+            try {
+                const filters = { category: 'AI代码编辑器' };
+                const results = toolsManager.filterTools(filters);
+                log(`按分类筛选找到 ${results.length} 个结果:`);
+                
+                results.forEach(tool => {
+                    log(`- ${tool.name} (${tool.category})`);
+                });
+            } catch (error) {
+                log(`❌ 筛选失败: ${error.message}`);
+            }
+        };
+
+        // 获取工具详情
+        window.getToolDetails = function() {
+            if (!toolsManager) {
+                log('请先初始化管理器');
+                return;
+            }
+            
+            try {
+                const tool = toolsManager.getTool('cursor');
+                if (tool) {
+                    log(`获取 Cursor 详情:`);
+                    log(`- 名称: ${tool.name}`);
+                    log(`- 类型: ${tool.type}`);
+                    log(`- 功能: ${tool.features.join(', ')}`);
+                    log(`- 平台: ${tool.platforms.join(', ')}`);
+                    log(`- 评分: ${tool.rating}/5.0`);
+                    log(`- 用户数: ${tool.users}`);
+                } else {
+                    log('未找到指定工具');
+                }
+            } catch (error) {
+                log(`❌ 获取详情失败: ${error.message}`);
+            }
+        };
+
+        // 加载统计信息
+        window.loadStatistics = function() {
+            if (!toolsManager) {
+                log('请先初始化管理器');
+                return;
+            }
+            
+            try {
+                const stats = toolsManager.getStatistics();
+                
+                // 显示统计卡片
+                const statsGrid = document.getElementById('stats-grid');
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.total}</div>
+                        <div class="stat-label">总工具数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.averageRating.toFixed(1)}</div>
+                        <div class="stat-label">平均评分</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${Object.keys(stats.byCategory).length}</div>
+                        <div class="stat-label">分类数量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${Math.round(stats.totalUsers / 1000)}K+</div>
+                        <div class="stat-label">总用户数</div>
+                    </div>
+                `;
+                
+                log('✅ 统计信息已更新');
+                log(`按分类统计: ${JSON.stringify(stats.byCategory, null, 2)}`);
+            } catch (error) {
+                log(`❌ 获取统计失败: ${error.message}`);
+            }
+        };
+
+        // 显示配置
+        window.showConfig = function() {
+            if (!config) {
+                log('配置模块未加载', 'config-log');
+                return;
+            }
+            
+            try {
+                const toolsConfig = config.TOOLS_CONFIG;
+                const globalConfig = config.GLOBAL_CONFIG;
+                
+                log(`工具配置 (${toolsConfig.length} 项):`, 'config-log');
+                toolsConfig.forEach(tool => {
+                    log(`- ${tool.id}: enabled=${tool.enabled}, priority=${tool.priority}`, 'config-log');
+                });
+                
+                log(`\n全局配置:`, 'config-log');
+                log(JSON.stringify(globalConfig, null, 2), 'config-log');
+            } catch (error) {
+                log(`❌ 显示配置失败: ${error.message}`, 'config-log');
+            }
+        };
+
+        // 切换工具状态
+        window.toggleTool = function() {
+            if (!config) {
+                log('配置模块未加载', 'config-log');
+                return;
+            }
+            
+            try {
+                const toolConfig = config.getToolConfig('gemini');
+                if (toolConfig) {
+                    toolConfig.enabled = !toolConfig.enabled;
+                    log(`已${toolConfig.enabled ? '启用' : '禁用'} ${toolConfig.id}`, 'config-log');
+                }
+            } catch (error) {
+                log(`❌ 切换状态失败: ${error.message}`, 'config-log');
+            }
+        };
+
+        // 模拟添加新工具
+        window.addNewTool = function() {
+            log('模拟添加新工具的步骤:', 'config-log');
+            log('1. 创建 js/tools/newtool.js 文件', 'config-log');
+            log('2. 在配置中添加工具项', 'config-log');
+            log('3. 刷新页面查看效果', 'config-log');
+            log('详细步骤请参考 README.md 文档', 'config-log');
+        };
+
+        // 页面加载时自动初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            log('页面加载完成，点击"初始化管理器"开始演示');
+        });
+    </script>
+</body>
+</html> 
