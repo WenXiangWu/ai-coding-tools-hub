@@ -13,7 +13,7 @@ export const geminiTool = {
     price: PRICE_MODELS.FREEMIUM,
     status: TOOL_STATUS.POWERFUL,
     
-    logo: 'fab fa-google',
+    logo: 'tool-icon tool-icon-gemini',
     description: 'Google开发的先进多模态AI助手，支持文本、图像和代码的理解与生成，为开发者提供全方位的编程支持。',
     features: [
         '多模态理解',

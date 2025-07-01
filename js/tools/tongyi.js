@@ -13,7 +13,7 @@ export const tongyiTool = {
     price: PRICE_MODELS.FREEMIUM,
     status: TOOL_STATUS.LOCAL,
     
-    logo: 'fas fa-microchip',
+    logo: 'tool-icon tool-icon-tongyi',
     description: '阿里云推出的智能编程助手，专为中国开发者打造，支持中文交互，深度理解中文编程需求和习惯。',
     features: [
         '中文交互',

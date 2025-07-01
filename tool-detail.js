@@ -16,6 +16,32 @@ function getPriceText(price) {
     }
 }
 
+// 渲染星级评分
+function renderStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let starsHTML = '';
+    
+    // 实心星
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<i class="fas fa-star"></i>';
+    }
+    
+    // 半星
+    if (hasHalfStar) {
+        starsHTML += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    // 空心星
+    for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<i class="far fa-star"></i>';
+    }
+    
+    return starsHTML;
+}
+
 // 滚动到指定元素
 function scrollToElement(elementId) {
     const element = document.getElementById(elementId);
@@ -255,34 +281,65 @@ function showToast(message) {
 async function renderToolDetail() {
     const toolId = getQueryParam('id');
     if (!toolId) {
+        console.warn('缺少工具ID参数，返回主页');
         window.location.href = 'index.html';
         return;
     }
 
     try {
+        console.log('正在加载工具详情，ID:', toolId);
+        
+        // 初始化工具管理器
         await toolsManager.initialize();
-        const tool = toolsManager.getTool(toolId);
+        
+        // 获取所有工具
+        const allTools = toolsManager.getAllTools();
+        console.log('已获取工具列表，总数:', allTools.length);
+        
+        // 查找指定工具
+        const tool = allTools.find(t => t.id === toolId);
         
         if (!tool) {
-            window.location.href = 'index.html';
+            console.error('未找到指定工具:', toolId);
+            showErrorPage(`未找到工具 "${toolId}"`);
             return;
         }
 
+        console.log('成功找到工具:', tool.name);
+        
         // 更新页面标题和面包屑
         document.title = `${tool.name} - AI编程工具详情`;
         document.getElementById('toolBreadcrumbName').textContent = tool.name;
         
         // 更新侧边栏信息
-        document.getElementById('sidebarToolIcon').innerHTML = `<i class="${tool.logo}"></i>`;
+        document.getElementById('sidebarToolIcon').innerHTML = `<div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>`;
         document.getElementById('sidebarToolName').textContent = tool.name;
-        document.getElementById('sidebarToolCategory').textContent = tool.category;
+        document.getElementById('sidebarToolCategory').textContent = tool.category || tool.type;
         
         // 更新外部链接
-        document.getElementById('officialWebsite').href = tool.website;
-        document.getElementById('documentationLink').href = tool.documentation;
-        if (tool.github) {
-            document.getElementById('githubLink').href = tool.github;
-            document.getElementById('githubLink').style.display = 'block';
+        const officialWebsite = document.getElementById('officialWebsite');
+        const documentationLink = document.getElementById('documentationLink');
+        const githubLink = document.getElementById('githubLink');
+        
+        if (officialWebsite && tool.website) {
+            officialWebsite.href = tool.website;
+            officialWebsite.style.display = 'block';
+        } else if (officialWebsite) {
+            officialWebsite.style.display = 'none';
+        }
+        
+        if (documentationLink && tool.documentation) {
+            documentationLink.href = tool.documentation;
+            documentationLink.style.display = 'block';
+        } else if (documentationLink) {
+            documentationLink.style.display = 'none';
+        }
+        
+        if (githubLink && tool.github) {
+            githubLink.href = tool.github;
+            githubLink.style.display = 'block';
+        } else if (githubLink) {
+            githubLink.style.display = 'none';
         }
 
         // 渲染主内容
@@ -297,9 +354,42 @@ async function renderToolDetail() {
         setupScrollSpy();
         setupMobileNavigation();
         
+        console.log('工具详情页面渲染完成');
+        
     } catch (error) {
         console.error('渲染工具详情失败:', error);
-        window.location.href = 'index.html';
+        showErrorPage('加载工具详情时发生错误');
+    }
+}
+
+// 显示错误页面
+function showErrorPage(message) {
+    const headerContainer = document.getElementById('toolContentHeader');
+    const bodyContainer = document.getElementById('toolContentBody');
+    
+    if (headerContainer) {
+        headerContainer.innerHTML = `
+            <div class="error-page">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h1>出错了</h1>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+    
+    if (bodyContainer) {
+        bodyContainer.innerHTML = `
+            <div class="error-actions">
+                <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home"></i> 返回主页
+                </button>
+                <button class="btn btn-outline" onclick="window.location.reload()">
+                    <i class="fas fa-refresh"></i> 重新加载
+                </button>
+            </div>
+        `;
     }
 }
 
@@ -316,29 +406,52 @@ function renderToolContent(tool) {
             <div class="tool-hero-content">
                 <div style="display: flex; align-items: flex-start; gap: var(--spacing-xl);">
                     <div class="tool-hero-icon">
-                        <i class="${tool.logo}"></i>
+                        <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
                     </div>
                     <div class="tool-hero-info" style="flex: 1;">
                         <h1>${tool.name}</h1>
                         <div class="tool-hero-meta">
                             <div class="hero-meta-item">
                                 <i class="fas fa-tag"></i>
-                                <span>${tool.category}</span>
+                                <span>${tool.category || tool.type}</span>
                             </div>
                             <div class="hero-meta-item">
                                 <i class="fas fa-star"></i>
-                                <span>${tool.rating} / 5.0</span>
+                                <span>${tool.rating || 'N/A'} / 5.0</span>
                             </div>
                             <div class="hero-meta-item">
                                 <i class="fas fa-users"></i>
-                                <span>${tool.users} 用户</span>
+                                <span>${tool.users || '未知'}</span>
                             </div>
                             <div class="hero-meta-item">
                                 <i class="fas fa-dollar-sign"></i>
                                 <span>${getPriceText(tool.price)}</span>
                             </div>
                         </div>
-                        <p class="tool-hero-description">${tool.description}</p>
+                        <p class="tool-hero-description">${tool.description || '暂无描述'}</p>
+                        
+                        ${tool.features && tool.features.length > 0 ? `
+                        <div class="tool-features-preview">
+                            <h4>主要功能：</h4>
+                            <div class="feature-tags">
+                                ${tool.features.slice(0, 6).map(feature => 
+                                    `<span class="feature-tag">${feature}</span>`
+                                ).join('')}
+                                ${tool.features.length > 6 ? `<span class="feature-tag more">+${tool.features.length - 6}个功能</span>` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${tool.platforms && tool.platforms.length > 0 ? `
+                        <div class="platform-info">
+                            <h4>支持平台：</h4>
+                            <div class="platform-tags">
+                                ${tool.platforms.map(platform => 
+                                    `<span class="platform-tag">${platform}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -356,7 +469,131 @@ function renderToolContent(tool) {
     // 添加文章元信息
     contentHTML += createArticleMeta(wordCount, readingTime, tool.updated);
     
-    // 渲染文档章节
+    // 工具概述部分
+    contentHTML += `
+        <div class="content-section" id="overview">
+            <h2>工具概述</h2>
+            <div class="section-content">
+                <p>${tool.description || '暂无详细描述'}</p>
+                
+                ${tool.pros && tool.pros.length > 0 ? `
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>优势</h4>
+                        <ul>
+                            ${tool.pros.map(pro => `<li>${pro}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ${tool.cons && tool.cons.length > 0 ? `
+                    <div class="cons">
+                        <h4>注意事项</h4>
+                        <ul>
+                            ${tool.cons.map(con => `<li>${con}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // 功能特性部分
+    if (tool.features && tool.features.length > 0) {
+        contentHTML += `
+            <div class="content-section" id="features">
+                <h2>功能特性</h2>
+                <div class="section-content">
+                    <div class="feature-list">
+                        ${tool.features.map(feature => `
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span>${feature}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 价格方案部分
+    contentHTML += `
+        <div class="content-section" id="pricing">
+            <h2>价格方案</h2>
+            <div class="section-content">
+                <div class="pricing-info">
+                    <div class="price-tag ${tool.price}">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>${getPriceText(tool.price)}</span>
+                    </div>
+                    <p>
+                        ${tool.price === 'free' ? '该工具完全免费使用。' : ''}
+                        ${tool.price === 'freemium' ? '该工具提供免费版本，付费版本有更多功能。' : ''}
+                        ${tool.price === 'paid' ? '该工具为付费工具。' : ''}
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 支持的编程语言
+    if (tool.supported_languages && tool.supported_languages.length > 0) {
+        contentHTML += `
+            <div class="content-section" id="languages">
+                <h2>支持的编程语言</h2>
+                <div class="section-content">
+                    <div class="platform-tags">
+                        ${tool.supported_languages.map(lang => 
+                            `<span class="platform-tag">${lang}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 用户评价部分
+    contentHTML += `
+        <div class="content-section" id="reviews">
+            <h2>用户评价</h2>
+            <div class="section-content">
+                <div class="review-summary">
+                    <div class="rating-display">
+                        <div class="rating-score">${tool.rating || 'N/A'}</div>
+                        <div class="rating-stars">
+                            ${renderStars(tool.rating || 0)}
+                        </div>
+                        <div class="rating-count">基于用户反馈</div>
+                    </div>
+                </div>
+                <p>用户数量：${tool.users || '数据暂不可用'}</p>
+                <p>最后更新：${tool.updated || '未知'}</p>
+            </div>
+        </div>
+    `;
+    
+    // 教程和扩展（如果有的话）
+    if (tool.extensions && tool.extensions.tutorials && tool.extensions.tutorials.length > 0) {
+        contentHTML += `
+            <div class="content-section" id="tutorials">
+                <h2>学习教程</h2>
+                <div class="section-content">
+                    <div class="tutorial-grid">
+                        ${tool.extensions.tutorials.map(tutorial => `
+                            <div class="tutorial-card">
+                                <h4>${tutorial.title}</h4>
+                                <span class="tutorial-level">${tutorial.level}</span>
+                                <a href="${tutorial.url}" class="btn btn-outline btn-sm">查看教程</a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 如果有原始的文档章节，也渲染它们
     if (tool.documentation_sections) {
         Object.entries(tool.documentation_sections).forEach(([sectionKey, section]) => {
             contentHTML += `

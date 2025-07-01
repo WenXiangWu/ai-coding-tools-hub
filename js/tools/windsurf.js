@@ -13,7 +13,7 @@ export const windsurfTool = {
     price: PRICE_MODELS.FREEMIUM,
     status: TOOL_STATUS.NEW,
     
-    logo: 'fas fa-sailboat',
+    logo: 'tool-icon tool-icon-windsurf',
     description: '下一代AI开发环境，提供完整的项目管理、智能代码分析和协作功能。让团队开发更加高效和智能。',
     features: [
         '项目管理',

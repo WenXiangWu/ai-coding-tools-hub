@@ -13,7 +13,7 @@ export const cursorTool = {
     price: PRICE_MODELS.FREEMIUM,
     status: TOOL_STATUS.HOT,
     
-    logo: 'fas fa-mouse-pointer',
+    logo: 'tool-icon tool-icon-cursor',
     description: '革命性的AI代码编辑器，基于GPT-4构建，提供智能代码补全、自然语言编程和实时代码解释。完美融合传统编程体验与AI创新。',
     features: [
         '智能补全',

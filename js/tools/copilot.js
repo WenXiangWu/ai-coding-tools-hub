@@ -13,7 +13,7 @@ export const copilotTool = {
     price: PRICE_MODELS.PAID,
     status: TOOL_STATUS.STABLE,
     
-    logo: 'fab fa-github',
+    logo: 'tool-icon tool-icon-copilot',
     description: 'GitHub与OpenAI合作打造的AI编程助手，基于数十亿行代码训练，提供精准的代码建议和自动补全功能。',
     features: [
         '自动补全',

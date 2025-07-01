@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详情页面跳转测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 8px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="test-section">
+        <h1>🧪 详情页面跳转测试</h1>
+        <p>测试从主页到工具详情页面的跳转功能是否正常工作。</p>
+        
+        <div class="status success">
+            ✅ 已完成：恢复独立详情页面架构
+        </div>
+        
+        <h3>📋 测试步骤</h3>
+        <ol>
+            <li>点击下面的链接进入主页</li>
+            <li>在主页中点击任意工具的"查看详情"按钮</li>
+            <li>验证是否跳转到独立的工具详情页面</li>
+            <li>检查详情页面是否正确显示工具信息</li>
+        </ol>
+        
+        <h3>🔗 测试链接</h3>
+        <a href="index.html" class="test-button">🏠 返回主页</a>
+        
+        <h3>🎯 直接访问详情页面</h3>
+        <a href="tool.html?id=windsurf" class="test-button">Windsurf 详情</a>
+        <a href="tool.html?id=cursor" class="test-button">Cursor 详情</a>
+        <a href="tool.html?id=claude" class="test-button">Claude 详情</a>
+        <a href="tool.html?id=copilot" class="test-button">GitHub Copilot 详情</a>
+        
+        <h3>📝 预期结果</h3>
+        <ul>
+            <li>✅ 主页中点击"查看详情"跳转到 <code>tool.html?id=工具ID</code></li>
+            <li>✅ 详情页面正确显示工具信息（名称、描述、功能等）</li>
+            <li>✅ 详情页面显示面包屑导航</li>
+            <li>✅ 侧边栏显示工具基本信息和链接</li>
+            <li>✅ 主内容区显示详细的工具介绍</li>
+        </ul>
+        
+        <div class="status warning">
+            ⚠️ 如果遇到问题，请检查浏览器控制台的错误信息
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🔧 调试工具</h3>
+        <p>在浏览器控制台中使用以下命令进行调试：</p>
+        <ul>
+            <li><code>window.debug.checkTools()</code> - 检查工具数据状态</li>
+            <li><code>window.debug.diagnose()</code> - 运行完整诊断</li>
+            <li><code>window.toolsManager?.getAllTools()</code> - 查看所有工具数据</li>
+        </ul>
+    </div>
+</body>
+</html> 

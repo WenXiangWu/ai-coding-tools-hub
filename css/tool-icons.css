@@ -1,0 +1,273 @@
+/**
+ * AI编程工具品牌图标样式
+ * 使用真实的品牌图标和颜色
+ */
+
+/* 基础图标样式 */
+.tool-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+    position: relative;
+}
+
+.tool-icon.large {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+}
+
+.tool-icon.small {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+}
+
+/* Cursor 图标 */
+.tool-icon-cursor {
+    background: linear-gradient(135deg, #000000, #333333);
+    color: #ffffff;
+}
+
+.tool-icon-cursor::before {
+    content: "⌘";
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Windsurf 图标 */
+.tool-icon-windsurf {
+    background: linear-gradient(135deg, #0EA5E9, #0284C7);
+    color: #ffffff;
+}
+
+.tool-icon-windsurf::before {
+    content: "⛵";
+    font-size: 1.1em;
+}
+
+/* Claude 图标 */
+.tool-icon-claude {
+    background: linear-gradient(135deg, #FF6B35, #F7931E);
+    color: #ffffff;
+}
+
+.tool-icon-claude::before {
+    content: "◐";
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+/* GitHub Copilot 图标 */
+.tool-icon-copilot {
+    background: linear-gradient(135deg, #24292e, #586069);
+    color: #ffffff;
+}
+
+.tool-icon-copilot::before {
+    content: "🤖";
+    font-size: 1.1em;
+}
+
+/* Gemini 图标 */
+.tool-icon-gemini {
+    background: linear-gradient(135deg, #4285F4, #1A73E8);
+    color: #ffffff;
+}
+
+.tool-icon-gemini::before {
+    content: "✦";
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+/* 通义千问 图标 */
+.tool-icon-tongyi {
+    background: linear-gradient(135deg, #FF6A00, #FF8500);
+    color: #ffffff;
+}
+
+.tool-icon-tongyi::before {
+    content: "通";
+    font-size: 1.1em;
+    font-weight: bold;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+
+/* Codeium 图标 */
+.tool-icon-codeium {
+    background: linear-gradient(135deg, #09B6A2, #00A693);
+    color: #ffffff;
+}
+
+.tool-icon-codeium::before {
+    content: "◯";
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* SVG 样式的高级图标 */
+.tool-icon-svg {
+    background: none;
+    padding: 2px;
+}
+
+/* Cursor SVG 风格 */
+.tool-icon-cursor-svg {
+    background: #000000;
+    color: #ffffff;
+    border-radius: 6px;
+}
+
+.tool-icon-cursor-svg::before {
+    content: "";
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    background: currentColor;
+    clip-path: polygon(0 0, 100% 35%, 65% 65%, 35% 100%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Windsurf SVG 风格 */
+.tool-icon-windsurf-svg {
+    background: linear-gradient(135deg, #0EA5E9, #0284C7);
+    color: #ffffff;
+    border-radius: 8px;
+}
+
+.tool-icon-windsurf-svg::before {
+    content: "";
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    background: currentColor;
+    clip-path: polygon(50% 0%, 80% 30%, 70% 100%, 30% 100%, 20% 30%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Claude SVG 风格 */
+.tool-icon-claude-svg {
+    background: linear-gradient(135deg, #FF6B35, #F7931E);
+    color: #ffffff;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.tool-icon-claude-svg::before {
+    content: "";
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    background: currentColor;
+    border-radius: 50% 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* GitHub Copilot SVG 风格 */
+.tool-icon-copilot-svg {
+    background: #24292e;
+    color: #ffffff;
+    border-radius: 6px;
+}
+
+.tool-icon-copilot-svg::before {
+    content: "";
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    background: currentColor;
+    clip-path: circle(50% at 50% 40%) polygon(0 60%, 100% 60%, 85% 100%, 15% 100%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* 悬浮动画效果 */
+.tool-icon:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 在卡片中的图标样式 */
+.tool-card .tool-icon {
+    margin-right: 8px;
+}
+
+.tool-hero-icon .tool-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    border-radius: 12px;
+}
+
+/* 侧边栏图标样式 */
+.tool-sidebar .tool-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .tool-hero-icon .tool-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+    
+    .tool-sidebar .tool-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+}
+
+/* 工具状态标识 */
+.tool-icon.status-hot::after {
+    content: "🔥";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 10px;
+}
+
+.tool-icon.status-new::after {
+    content: "✨";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 10px;
+}
+
+.tool-icon.status-beta::after {
+    content: "β";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 8px;
+    background: #ff6b35;
+    color: white;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+} 

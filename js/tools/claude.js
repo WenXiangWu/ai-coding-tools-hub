@@ -13,7 +13,7 @@ export const claudeTool = {
     price: PRICE_MODELS.FREEMIUM,
     status: TOOL_STATUS.PROFESSIONAL,
     
-    logo: 'fas fa-brain',
+    logo: 'tool-icon tool-icon-claude',
     description: 'Anthropic开发的高级AI助手，擅长复杂代码理解、架构设计和技术文档编写。是专业开发者的理想伙伴。',
     features: [
         '代码理解',

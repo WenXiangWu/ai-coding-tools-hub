@@ -13,7 +13,7 @@ export const codeiumTool = {
     price: PRICE_MODELS.FREEMIUM,
     status: TOOL_STATUS.EDUCATIONAL,
     
-    logo: 'fas fa-magic',
+    logo: 'tool-icon tool-icon-codeium',
     description: '强大的免费AI编程助手，支持70+编程语言，40+IDE集成，为开发者提供智能代码补全和生成服务。',
     features: [
         '免费使用',
