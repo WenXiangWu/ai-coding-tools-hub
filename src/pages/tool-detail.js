@@ -1,4 +1,4 @@
-import { toolsManager } from './js/managers/tools-manager.js';
+import { toolsManager } from '../js/managers/tools-manager.js';
 
 // 获取URL参数
 function getQueryParam(name) {

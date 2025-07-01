@@ -309,7 +309,7 @@ class App {
 
     showToolDetails(toolId) {
         // 跳转到专业的工具详情页面
-        window.open(`tool.html?id=${toolId}`, '_blank');
+        window.open(`src/pages/tool.html?id=${toolId}`, '_blank');
     }
 
     // 已移除模态框相关方法，现在直接跳转到专业详情页面
