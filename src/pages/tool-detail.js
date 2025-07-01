@@ -248,7 +248,7 @@ async function renderToolDetail() {
     const toolId = getQueryParam('id');
     if (!toolId) {
         console.warn('缺少工具ID参数，返回主页');
-        window.location.href = 'index.html';
+        window.location.href = '../../index.html';
         return;
     }
 
@@ -363,7 +363,7 @@ function showErrorPage(message) {
     if (bodyContainer) {
         bodyContainer.innerHTML = `
             <div class="error-actions">
-                <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                <button class="btn btn-primary" onclick="window.location.href='../../index.html'">
                     <i class="fas fa-home"></i> 返回主页
                 </button>
                 <button class="btn btn-outline" onclick="window.location.reload()">
