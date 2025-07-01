@@ -33,6 +33,7 @@ export const tongyiTool = {
     website: 'https://tongyi.aliyun.com/lingma',
     documentation: 'https://help.aliyun.com/product/2357968.html',
     github: null,
+    changelog: 'https://tongyi.aliyun.com/lingma/changelog',
     
     supported_languages: [
         'Java',

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI编程工具中心 - Logo设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3a 50%, #2d2d5a 100%);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .title {
+            color: #00d4ff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .logo-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+        }
+
+        .logo-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .logo-description {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Logo 1: 神经网络风格 */
+        .logo-neural {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .neural-node {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .neural-connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            opacity: 0.6;
+            animation: flow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        @keyframes flow {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Logo 2: 代码块风格 */
+        .logo-code {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a1a3a 0%, #2d2d5a 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .code-line {
+            width: 60%;
+            height: 3px;
+            background: #00d4ff;
+            margin: 2px 0;
+            border-radius: 2px;
+            animation: typewriter 2s infinite ease-in-out;
+        }
+
+        .code-line:nth-child(2) {
+            width: 40%;
+            animation-delay: 0.3s;
+        }
+
+        .code-line:nth-child(3) {
+            width: 50%;
+            animation-delay: 0.6s;
+        }
+
+        .ai-symbol {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 12px;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        @keyframes typewriter {
+            0% { width: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { width: 60%; opacity: 1; }
+        }
+
+        /* Logo 3: 几何科技风格 */
+        .logo-geometric {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border: 2px solid #00d4ff;
+            animation: rotate 4s linear infinite;
+        }
+
+        .outer-hex {
+            width: 70px;
+            height: 70px;
+            clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
+            top: 5px;
+            left: 5px;
+        }
+
+        .inner-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            top: 20px;
+            left: 20px;
+            animation-direction: reverse;
+            animation-duration: 3s;
+        }
+
+        .center-dot {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(45deg, #00d4ff, #ffffff);
+            border-radius: 50%;
+            position: absolute;
+            top: 32px;
+            left: 32px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 15px rgba(0, 212, 255, 0.8); }
+            to { box-shadow: 0 0 25px rgba(0, 212, 255, 1), 0 0 35px rgba(255, 255, 255, 0.5); }
+        }
+
+        /* Logo 4: 脑电波风格 */
+        .logo-brain {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .brain-wave {
+            width: 60px;
+            height: 2px;
+            background: #00d4ff;
+            position: relative;
+            margin: 3px 0;
+        }
+
+        .brain-wave::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        .brain-wave:nth-child(2)::before {
+            animation-delay: 0.2s;
+        }
+
+        .brain-wave:nth-child(3)::before {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleX(1); opacity: 1; }
+            50% { transform: scaleX(0.3); opacity: 0.5; }
+        }
+
+        .download-section {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .download-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(45deg, #0099cc, #006b8c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .logo-showcase {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .logo-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🤖 AI编程工具中心 Logo设计方案</h1>
+        
+        <div class="logo-showcase">
+            <!-- Logo 1: 神经网络风格 -->
+            <div class="logo-card">
+                <div class="logo-container">
+                    <div class="logo-neural">
+                        <div class="neural-node" style="top: 10px; left: 10px;"></div>
+                        <div class="neural-node" style="top: 10px; right: 10px;"></div>
+                        <div class="neural-node" style="top: 35px; left: 35px;"></div>
+                        <div class="neural-node" style="bottom: 10px; left: 15px;"></div>
+                        <div class="neural-node" style="bottom: 10px; right: 15px;"></div>
+                        
+                        <div class="neural-connection" style="top: 16px; left: 22px; width: 36px; transform: rotate(0deg);"></div>
+                        <div class="neural-connection" style="top: 22px; left: 22px; width: 30px; transform: rotate(45deg);"></div>
+                        <div class="neural-connection" style="top: 41px; left: 15px; width: 30px; transform: rotate(-45deg);"></div>
+                        <div class="neural-connection" style="top: 41px; right: 15px; width: 30px; transform: rotate(45deg);"></div>
+                        <div class="neural-connection" style="bottom: 16px; left: 27px; width: 26px; transform: rotate(0deg);"></div>
+                    </div>
+                </div>
+                <div class="logo-title">神经网络风格</div>
+                <div class="logo-description">
+                    模拟AI神经网络结构，动态节点连接体现智能感，
+                    脉冲动画展现思维活跃度
+                </div>
+            </div>
+
+            <!-- Logo 2: 代码块风格 -->
+            <div class="logo-card">
+                <div class="logo-container">
+                    <div class="logo-code">
+                        <div class="ai-symbol">AI</div>
+                        <div class="code-line"></div>
+                        <div class="code-line"></div>
+                        <div class="code-line"></div>
+                    </div>
+                </div>
+                <div class="logo-title">代码块风格</div>
+                <div class="logo-description">
+                    融合代码编辑器界面设计，打字机动画效果，
+                    右上角AI标识突出智能属性
+                </div>
+            </div>
+
+            <!-- Logo 3: 几何科技风格 -->
+            <div class="logo-card">
+                <div class="logo-container">
+                    <div class="logo-geometric">
+                        <div class="geometric-shape outer-hex"></div>
+                        <div class="geometric-shape inner-circle"></div>
+                        <div class="center-dot"></div>
+                    </div>
+                </div>
+                <div class="logo-title">几何科技风格</div>
+                <div class="logo-description">
+                    六边形外框配合圆形内环，层次旋转动画，
+                    中心发光点营造未来科技感
+                </div>
+            </div>
+
+            <!-- Logo 4: 脑电波风格 -->
+            <div class="logo-card">
+                <div class="logo-container">
+                    <div class="logo-brain">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="brain-wave"></div>
+                            <div class="brain-wave"></div>
+                            <div class="brain-wave"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="logo-title">脑电波风格</div>
+                <div class="logo-description">
+                    模拟大脑思维波形，波动动画表现AI思考过程，
+                    圆形辐射背景增强科技氛围
+                </div>
+            </div>
+        </div>
+
+        <div class="download-section">
+            <h2 class="download-title">Logo应用建议</h2>
+            <div style="color: #cccccc; line-height: 1.6; margin-bottom: 20px;">
+                • <strong>主色调：</strong> 科技蓝 (#00d4ff) + 深空蓝背景<br>
+                • <strong>适用场景：</strong> 网站头部、移动端图标、社交媒体头像<br>
+                • <strong>尺寸规格：</strong> 支持16x16到512x512像素缩放<br>
+                • <strong>动画效果：</strong> 可在网页中保留动画，静态版本用于打印
+            </div>
+            <div class="download-buttons">
+                <button class="download-btn" onclick="downloadSVG('neural')">下载神经网络版</button>
+                <button class="download-btn" onclick="downloadSVG('code')">下载代码块版</button>
+                <button class="download-btn" onclick="downloadSVG('geometric')">下载几何版</button>
+                <button class="download-btn" onclick="downloadSVG('brain')">下载脑电波版</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function downloadSVG(type) {
+            let svgContent = '';
+            
+            switch(type) {
+                case 'neural':
+                    svgContent = `<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="nodeGradient" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0099cc;stop-opacity:1" />
+                            </radialGradient>
+                            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:transparent;stop-opacity:0" />
+                                <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:transparent;stop-opacity:0" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="16" cy="16" r="6" fill="url(#nodeGradient)" />
+                        <circle cx="64" cy="16" r="6" fill="url(#nodeGradient)" />
+                        <circle cx="40" cy="40" r="6" fill="url(#nodeGradient)" />
+                        <circle cx="20" cy="64" r="6" fill="url(#nodeGradient)" />
+                        <circle cx="60" cy="64" r="6" fill="url(#nodeGradient)" />
+                        <line x1="22" y1="16" x2="58" y2="16" stroke="url(#lineGradient)" stroke-width="2"/>
+                        <line x1="28" y1="28" x2="48" y2="48" stroke="url(#lineGradient)" stroke-width="2"/>
+                        <line x1="26" y1="52" x2="54" y2="52" stroke="url(#lineGradient)" stroke-width="2"/>
+                    </svg>`;
+                    break;
+                case 'code':
+                    svgContent = `<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a3a;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#2d2d5a;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="80" height="80" rx="12" fill="url(#bgGradient)" stroke="#00d4ff" stroke-width="2"/>
+                        <rect x="16" y="30" width="36" height="3" rx="1.5" fill="#00d4ff"/>
+                        <rect x="16" y="37" width="24" height="3" rx="1.5" fill="#00d4ff"/>
+                        <rect x="16" y="44" width="30" height="3" rx="1.5" fill="#00d4ff"/>
+                        <text x="65" y="15" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#00d4ff">AI</text>
+                    </svg>`;
+                    break;
+                case 'geometric':
+                    svgContent = `<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="centerGradient" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            </radialGradient>
+                        </defs>
+                        <polygon points="40,5 65,25 65,55 40,75 15,55 15,25" fill="none" stroke="#00d4ff" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="20" fill="none" stroke="#00d4ff" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="8" fill="url(#centerGradient)"/>
+                    </svg>`;
+                    break;
+                case 'brain':
+                    svgContent = `<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="bgRadial" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.1" />
+                                <stop offset="100%" style="stop-color:transparent;stop-opacity:0" />
+                            </radialGradient>
+                        </defs>
+                        <circle cx="40" cy="40" r="40" fill="url(#bgRadial)"/>
+                        <rect x="20" y="32" width="40" height="2" fill="#00d4ff"/>
+                        <rect x="20" y="38" width="40" height="2" fill="#00d4ff"/>
+                        <rect x="20" y="44" width="40" height="2" fill="#00d4ff"/>
+                    </svg>`;
+                    break;
+            }
+
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-tool-logo-${type}.svg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        document.querySelectorAll('.logo-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

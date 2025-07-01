@@ -70,24 +70,28 @@ class ToolCard extends Component {
     getCardHTML() {
         return `
             <div class="tool-card-header">
-                <div class="tool-logo">
-                    <div class="${this.tool.logo}"></div>
-                </div>
-                <div class="tool-badges">
-                    ${this.renderStatusBadge()}
-                    ${this.renderTypeBadge()}
-                </div>
                 ${this.showCompareButton ? this.renderCompareButton() : ''}
             </div>
             
             <div class="tool-card-body">
-                <div class="tool-header-info">
-                    <h3 class="tool-name" title="${this.tool.name}">
-                        ${this.tool.name}
-                    </h3>
-                    <div class="tool-rating">
-                        ${this.renderStars()}
-                        <span class="rating-text">${this.tool.rating}</span>
+                <div class="tool-title-section">
+                    <div class="tool-logo-name">
+                        <div class="tool-logo">
+                            <div class="${this.tool.logo}"></div>
+                        </div>
+                        <h3 class="tool-name" title="${this.tool.name}">
+                            ${this.tool.name}
+                        </h3>
+                    </div>
+                    <div class="tool-info-row">
+                        <div class="tool-rating">
+                            ${this.renderStars()}
+                            <span class="rating-text">${this.tool.rating}</span>
+                        </div>
+                        <div class="tool-badges">
+                            ${this.renderStatusBadge()}
+                            ${this.renderTypeBadge()}
+                        </div>
                     </div>
                 </div>
                 
@@ -122,7 +126,7 @@ class ToolCard extends Component {
                 <div class="tool-actions">
                     <button class="btn btn-outline btn-sm" data-action="website" title="访问官网">
                         <i class="fas fa-external-link-alt"></i>
-                        <span>访问</span>
+                        <span>官网</span>
                     </button>
                     <button class="btn btn-primary btn-sm" data-action="details" title="查看详情">
                         <i class="fas fa-info-circle"></i>
@@ -266,16 +270,7 @@ class ToolCard extends Component {
     bindEvents() {
         if (!this.element) return;
 
-        // 卡片点击事件
-        this.addEventListener(this.element, 'click', (e) => {
-            // 如果点击的是按钮，不触发卡片点击
-            if (e.target.closest('button') || e.target.closest('.btn-compare')) {
-                return;
-            }
-            this.handleCardClick(e);
-        });
-
-        // 按钮点击事件
+        // 为所有带data-action的按钮绑定点击事件（包括比较按钮）
         const buttons = this.element.querySelectorAll('[data-action]');
         buttons.forEach(button => {
             this.addEventListener(button, 'click', (e) => {
@@ -284,7 +279,7 @@ class ToolCard extends Component {
             });
         });
 
-        // 键盘事件支持
+        // 移除键盘事件中的自动跳转详情，只保留必要的键盘交互
         this.addEventListener(this.element, 'keydown', (e) => {
             this.handleKeyDown(e);
         });
@@ -300,8 +295,9 @@ class ToolCard extends Component {
     }
 
     /**
-     * 处理卡片点击
+     * 处理卡片点击（已废弃 - 现在只有按钮点击才会触发操作）
      * @param {Event} e - 事件对象
+     * @deprecated 该方法不再被自动调用，保留仅供兼容性
      */
     handleCardClick(e) {
         // Ctrl/Cmd + 点击 = 选择比较
@@ -339,23 +335,26 @@ class ToolCard extends Component {
      * @param {KeyboardEvent} e - 键盘事件
      */
     handleKeyDown(e) {
+        // 只有在按钮获得焦点时才处理键盘事件
+        const activeElement = document.activeElement;
+        if (!activeElement || !this.element.contains(activeElement)) {
+            return;
+        }
+
         switch (e.key) {
-            case 'Enter':
-            case ' ':
-                e.preventDefault();
-                this.handleViewDetails();
-                break;
             case 'c':
             case 'C':
-                if (this.showCompareButton) {
+                if (this.showCompareButton && !e.target.closest('button')) {
                     e.preventDefault();
                     this.handleCompareToggle();
                 }
                 break;
             case 'w':
             case 'W':
-                e.preventDefault();
-                this.handleVisitWebsite();
+                if (!e.target.closest('button')) {
+                    e.preventDefault();
+                    this.handleVisitWebsite();
+                }
                 break;
         }
     }

@@ -33,6 +33,7 @@ export const copilotTool = {
     website: 'https://github.com/features/copilot',
     documentation: 'https://docs.github.com/copilot',
     github: 'https://github.com/github/copilot-docs',
+    changelog: 'https://github.blog/changelog/label/copilot/',
     
     supported_languages: [
         'JavaScript',

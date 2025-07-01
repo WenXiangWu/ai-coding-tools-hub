@@ -33,6 +33,7 @@ export const codeiumTool = {
     website: 'https://codeium.com',
     documentation: 'https://codeium.com/docs',
     github: 'https://github.com/Exafunction/codeium',
+    changelog: 'https://codeium.com/blog',
     
     supported_languages: [
         'JavaScript',

@@ -33,6 +33,7 @@ export const cursorTool = {
     website: 'https://cursor.sh',
     documentation: 'https://docs.cursor.sh',
     github: 'https://github.com/getcursor/cursor',
+    changelog: 'https://docs.cursor.sh/changelog',
     
     supported_languages: [
         'JavaScript',

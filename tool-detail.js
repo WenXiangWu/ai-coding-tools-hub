@@ -53,33 +53,7 @@ function scrollToElement(elementId) {
     }
 }
 
-// 生成目录
-function generateTOC() {
-    const content = document.getElementById('toolContentBody');
-    if (!content) return;
-
-    const headers = content.querySelectorAll('h2, h3, h4');
-    const tocNav = document.getElementById('tocNav');
-    
-    if (!tocNav || headers.length === 0) return;
-
-    let tocHTML = '<ul class="toc-list">';
-    headers.forEach((header, index) => {
-        const id = `section-${index}`;
-        header.id = id;
-        header.classList.add('section-anchor');
-        
-        const level = header.tagName.toLowerCase();
-        const text = header.textContent;
-        
-        tocHTML += `<li class="toc-level-${level}">
-            <a href="#${id}" onclick="scrollToElement('${id}')">${text}</a>
-        </li>`;
-    });
-    tocHTML += '</ul>';
-    
-    tocNav.innerHTML = tocHTML;
-}
+// 目录功能已移除
 
 // 计算阅读时间
 function calculateReadingTime(text) {
@@ -172,14 +146,6 @@ function createQuickActions(tool) {
 function createArticleMeta(wordCount, readingTime, updatedDate) {
     return `
         <div class="article-meta">
-            <div class="reading-time">
-                <i class="fas fa-clock"></i>
-                <span>预计阅读 ${readingTime} 分钟</span>
-                </div>
-            <div class="word-count">
-                <i class="fas fa-file-alt"></i>
-                <span>约 ${wordCount} 字</span>
-            </div>
             <div class="last-updated">
                 <i class="fas fa-calendar-alt"></i>
                 <span>更新于 ${updatedDate}</span>
@@ -320,33 +286,48 @@ async function renderToolDetail() {
         const officialWebsite = document.getElementById('officialWebsite');
         const documentationLink = document.getElementById('documentationLink');
         const githubLink = document.getElementById('githubLink');
+        const changelogLink = document.getElementById('changelogLink');
         
-        if (officialWebsite && tool.website) {
-            officialWebsite.href = tool.website;
-            officialWebsite.style.display = 'block';
-        } else if (officialWebsite) {
-            officialWebsite.style.display = 'none';
+
+        
+        if (officialWebsite) {
+            if (tool.website) {
+                officialWebsite.href = tool.website;
+                officialWebsite.parentElement.style.display = 'list-item';
+            } else {
+                officialWebsite.parentElement.style.display = 'none';
+            }
         }
         
-        if (documentationLink && tool.documentation) {
-            documentationLink.href = tool.documentation;
-            documentationLink.style.display = 'block';
-        } else if (documentationLink) {
-            documentationLink.style.display = 'none';
+        if (documentationLink) {
+            if (tool.documentation) {
+                documentationLink.href = tool.documentation;
+                documentationLink.parentElement.style.display = 'list-item';
+            } else {
+                documentationLink.parentElement.style.display = 'none';
+            }
         }
         
-        if (githubLink && tool.github) {
-            githubLink.href = tool.github;
-            githubLink.style.display = 'block';
-        } else if (githubLink) {
-            githubLink.style.display = 'none';
+        if (githubLink) {
+            if (tool.github) {
+                githubLink.href = tool.github;
+                githubLink.parentElement.style.display = 'list-item';
+            } else {
+                githubLink.parentElement.style.display = 'none';
+            }
+        }
+        
+        if (changelogLink) {
+            if (tool.changelog) {
+                changelogLink.href = tool.changelog;
+                changelogLink.parentElement.style.display = 'list-item';
+            } else {
+                changelogLink.parentElement.style.display = 'none';
+            }
         }
 
         // 渲染主内容
         renderToolContent(tool);
-        
-        // 生成目录
-        generateTOC();
         
         // 创建用户体验增强功能
         createReadingProgress();
@@ -400,212 +381,631 @@ function renderToolContent(tool) {
     
     if (!headerContainer || !bodyContainer) return;
 
-    // 渲染Hero区域
-    headerContainer.innerHTML = `
-        <div class="tool-hero">
-            <div class="tool-hero-content">
-                <div style="display: flex; align-items: flex-start; gap: var(--spacing-xl);">
-                    <div class="tool-hero-icon">
-                        <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
+    // 不渲染Hero区域，让欢迎页面在主内容区域显示
+    headerContainer.innerHTML = '';
+
+    // 创建欢迎页面和tab内容容器
+    bodyContainer.innerHTML = `
+        <div class="tab-content-container">
+            ${renderWelcomePage(tool)}
+            ${renderPrefaceTab(tool)}
+            ${renderLearningPathTab(tool)}
+            ${renderBasicTutorialsTab(tool)}
+            ${renderAdvancedTutorialsTab(tool)}
+            ${renderPracticalProjectsTab(tool)}
+            ${renderFAQTab(tool)}
+        </div>
+    `;
+
+    // 初始化tab功能
+    setupTabNavigation();
+    setupFAQInteraction();
+}
+
+// 渲染科技感欢迎页面
+function renderWelcomePage(tool) {
+    return `
+        <div class="welcome-page active" id="welcome">
+            <div class="tech-welcome-container">
+                <div class="tech-background">
+                    <div class="tech-grid"></div>
+                    <div class="tech-particles"></div>
+                </div>
+                
+                <div class="welcome-content-main">
+                    <div class="tech-header">
+                        <div class="tool-logo-large">
+                            <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
+                            <div class="logo-glow"></div>
+                        </div>
+                        
+                        <div class="welcome-text">
+                            <h1 class="tech-title">
+                                <span class="title-line">欢迎来到</span>
+                                <span class="title-highlight">${tool.name}</span>
+                                <span class="title-line">学习中心</span>
+                            </h1>
+                            <p class="tech-subtitle">${tool.description || '革命性的AI代码编辑器，基于GPT-4构建，提供智能代码补全、自然语言编程和实时代码解释。'}</p>
+                        </div>
                     </div>
-                    <div class="tool-hero-info" style="flex: 1;">
-                        <h1>${tool.name}</h1>
-                        <div class="tool-hero-meta">
-                            <div class="hero-meta-item">
-                                <i class="fas fa-tag"></i>
-                                <span>${tool.category || tool.type}</span>
+                    
+                    <div class="tech-features">
+                        <div class="feature-matrix">
+                            <div class="matrix-item" data-delay="0">
+                                <div class="matrix-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h3>AI智能引擎</h3>
+                                <p>强大的AI驱动代码生成与优化</p>
                             </div>
-                            <div class="hero-meta-item">
-                                <i class="fas fa-star"></i>
-                                <span>${tool.rating || 'N/A'} / 5.0</span>
+                            <div class="matrix-item" data-delay="200">
+                                <div class="matrix-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h3>极速开发</h3>
+                                <p>10倍提升开发效率和代码质量</p>
                             </div>
-                            <div class="hero-meta-item">
-                                <i class="fas fa-users"></i>
-                                <span>${tool.users || '未知'}</span>
+                            <div class="matrix-item" data-delay="400">
+                                <div class="matrix-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h3>企业级安全</h3>
+                                <p>本地处理确保代码安全与隐私</p>
                             </div>
-                            <div class="hero-meta-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>${getPriceText(tool.price)}</span>
-                            </div>
-                        </div>
-                        <p class="tool-hero-description">${tool.description || '暂无描述'}</p>
-                        
-                        ${tool.features && tool.features.length > 0 ? `
-                        <div class="tool-features-preview">
-                            <h4>主要功能：</h4>
-                            <div class="feature-tags">
-                                ${tool.features.slice(0, 6).map(feature => 
-                                    `<span class="feature-tag">${feature}</span>`
-                                ).join('')}
-                                ${tool.features.length > 6 ? `<span class="feature-tag more">+${tool.features.length - 6}个功能</span>` : ''}
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        ${tool.platforms && tool.platforms.length > 0 ? `
-                        <div class="platform-info">
-                            <h4>支持平台：</h4>
-                            <div class="platform-tags">
-                                ${tool.platforms.map(platform => 
-                                    `<span class="platform-tag">${platform}</span>`
-                                ).join('')}
+                            <div class="matrix-item" data-delay="600">
+                                <div class="matrix-icon">
+                                    <i class="fas fa-infinity"></i>
+                                </div>
+                                <h3>无限可能</h3>
+                                <p>支持所有主流编程语言和框架</p>
                             </div>
                         </div>
-                        ` : ''}
+                    </div>
+                    
+                    <div class="tech-stats">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number" data-target="1000000">0</div>
+                                <div class="stat-label">活跃开发者</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" data-target="50000000">0</div>
+                                <div class="stat-label">代码行数生成</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" data-target="95">0</div>
+                                <div class="stat-label">满意度评分</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-cta">
+                        <div class="cta-text">
+                            <h2>开始您的AI编程之旅</h2>
+                            <p>选择左侧教程开始学习，或直接体验强大功能</p>
+                        </div>
+                        <div class="cta-buttons">
+                            <button class="tech-btn primary" onclick="document.querySelector('a[href=\\"#learning-path\\"]').click()">
+                                <i class="fas fa-play"></i>
+                                开始学习路线
+                            </button>
+                            <button class="tech-btn secondary" onclick="window.open('${tool.website}', '_blank')">
+                                <i class="fas fa-external-link-alt"></i>
+                                立即体验
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        ${createQuickActions(tool)}
     `;
+}
 
-    // 渲染详细内容
-    let contentHTML = '';
-    
-    // 获取工具文档内容
+// 渲染前言tab
+function renderPrefaceTab(tool) {
     const allContent = getAllContent(tool);
     const { wordCount, readingTime } = calculateReadingTime(allContent);
     
-    // 添加文章元信息
-    contentHTML += createArticleMeta(wordCount, readingTime, tool.updated);
-    
-    // 工具概述部分
-    contentHTML += `
-        <div class="content-section" id="overview">
-            <h2>工具概述</h2>
-            <div class="section-content">
-                <p>${tool.description || '暂无详细描述'}</p>
-                
-                ${tool.pros && tool.pros.length > 0 ? `
-                <div class="pros-cons">
-                    <div class="pros">
-                        <h4>优势</h4>
-                        <ul>
-                            ${tool.pros.map(pro => `<li>${pro}</li>`).join('')}
-                        </ul>
-                    </div>
-                    ${tool.cons && tool.cons.length > 0 ? `
-                    <div class="cons">
-                        <h4>注意事项</h4>
-                        <ul>
-                            ${tool.cons.map(con => `<li>${con}</li>`).join('')}
-                        </ul>
-                    </div>
-                    ` : ''}
-                </div>
-                ` : ''}
-            </div>
-        </div>
-    `;
-    
-    // 功能特性部分
-    if (tool.features && tool.features.length > 0) {
-        contentHTML += `
-            <div class="content-section" id="features">
-                <h2>功能特性</h2>
+    return `
+        <div class="tab-content" id="preface">
+            ${createArticleMeta(wordCount, readingTime, tool.updated)}
+            <div class="content-section">
+                <h2>前言</h2>
                 <div class="section-content">
-                    <div class="feature-list">
-                        ${tool.features.map(feature => `
-                            <div class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span>${feature}</span>
+                    <div class="preface-content">
+                        <div class="intro-grid">
+                            <div class="intro-item">
+                                <i class="fas fa-lightbulb"></i>
+                                <h4>为什么选择 ${tool.name}？</h4>
+                                <p>先进的AI技术，智能代码补全，大幅提升开发效率</p>
                             </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // 价格方案部分
-    contentHTML += `
-        <div class="content-section" id="pricing">
-            <h2>价格方案</h2>
-            <div class="section-content">
-                <div class="pricing-info">
-                    <div class="price-tag ${tool.price}">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>${getPriceText(tool.price)}</span>
-                    </div>
-                    <p>
-                        ${tool.price === 'free' ? '该工具完全免费使用。' : ''}
-                        ${tool.price === 'freemium' ? '该工具提供免费版本，付费版本有更多功能。' : ''}
-                        ${tool.price === 'paid' ? '该工具为付费工具。' : ''}
-                    </p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // 支持的编程语言
-    if (tool.supported_languages && tool.supported_languages.length > 0) {
-        contentHTML += `
-            <div class="content-section" id="languages">
-                <h2>支持的编程语言</h2>
-                <div class="section-content">
-                    <div class="platform-tags">
-                        ${tool.supported_languages.map(lang => 
-                            `<span class="platform-tag">${lang}</span>`
-                        ).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // 用户评价部分
-    contentHTML += `
-        <div class="content-section" id="reviews">
-            <h2>用户评价</h2>
-            <div class="section-content">
-                <div class="review-summary">
-                    <div class="rating-display">
-                        <div class="rating-score">${tool.rating || 'N/A'}</div>
-                        <div class="rating-stars">
-                            ${renderStars(tool.rating || 0)}
+                            <div class="intro-item">
+                                <i class="fas fa-rocket"></i>
+                                <h4>快速上手</h4>
+                                <p>简单配置，即刻开始使用，无需复杂的学习成本</p>
+                            </div>
+                            <div class="intro-item">
+                                <i class="fas fa-users"></i>
+                                <h4>社区支持</h4>
+                                <p>活跃的开发者社区，丰富的学习资源和技术支持</p>
+                            </div>
+                            <div class="intro-item">
+                                <i class="fas fa-book-open"></i>
+                                <h4>系统学习</h4>
+                                <p>从基础到进阶，完整的学习路径和实战项目</p>
+                            </div>
                         </div>
-                        <div class="rating-count">基于用户反馈</div>
+                        
+                        <div class="learning-guide">
+                            <h3>如何使用本学习中心</h3>
+                            <div class="guide-steps">
+                                <div class="guide-step">
+                                    <span class="step-number">1</span>
+                                    <div class="step-content">
+                                        <h5>按照学习路线</h5>
+                                        <p>建议按顺序学习，从学习路线开始</p>
+                                    </div>
+                                </div>
+                                <div class="guide-step">
+                                    <span class="step-number">2</span>
+                                    <div class="step-content">
+                                        <h5>动手实践</h5>
+                                        <p>通过入门和进阶教程进行实际操作</p>
+                                    </div>
+                                </div>
+                                <div class="guide-step">
+                                    <span class="step-number">3</span>
+                                    <div class="step-content">
+                                        <h5>项目实战</h5>
+                                        <p>完成实战项目，巩固所学知识</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p>用户数量：${tool.users || '数据暂不可用'}</p>
-                <p>最后更新：${tool.updated || '未知'}</p>
             </div>
         </div>
     `;
-    
-    // 教程和扩展（如果有的话）
-    if (tool.extensions && tool.extensions.tutorials && tool.extensions.tutorials.length > 0) {
-        contentHTML += `
-            <div class="content-section" id="tutorials">
-                <h2>学习教程</h2>
+}
+
+// 渲染学习路线tab
+function renderLearningPathTab(tool) {
+    return `
+        <div class="tab-content" id="learning-path">
+            <div class="content-section">
+                <h2>学习路线</h2>
+                <div class="section-content">
+                    <div class="learning-path-timeline">
+                        <div class="path-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>环境准备</h4>
+                                <p>安装必要的开发环境和 ${tool.name} 插件</p>
+                                <span class="time-estimate">预计时间：30分钟</span>
+                            </div>
+                        </div>
+                        <div class="path-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>基础配置</h4>
+                                <p>了解基本配置选项，设置个人偏好</p>
+                                <span class="time-estimate">预计时间：1小时</span>
+                            </div>
+                        </div>
+                        <div class="path-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>核心功能</h4>
+                                <p>掌握代码补全、智能建议等核心功能</p>
+                                <span class="time-estimate">预计时间：2小时</span>
+                            </div>
+                        </div>
+                        <div class="path-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>进阶技巧</h4>
+                                <p>学习高级功能和最佳实践</p>
+                                <span class="time-estimate">预计时间：3小时</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// 渲染入门教程tab
+function renderBasicTutorialsTab(tool) {
+    return `
+        <div class="tab-content" id="basic-tutorials">
+            <div class="content-section">
+                <h2>入门教程</h2>
                 <div class="section-content">
                     <div class="tutorial-grid">
-                        ${tool.extensions.tutorials.map(tutorial => `
-                            <div class="tutorial-card">
-                                <h4>${tutorial.title}</h4>
-                                <span class="tutorial-level">${tutorial.level}</span>
-                                <a href="${tutorial.url}" class="btn btn-outline btn-sm">查看教程</a>
+                        <div class="tutorial-card">
+                            <div class="tutorial-icon">
+                                <i class="fas fa-play-circle"></i>
                             </div>
-                        `).join('')}
+                            <h4>快速开始</h4>
+                            <p>5分钟快速上手 ${tool.name}，了解基本操作流程</p>
+                            <span class="tutorial-level">初级</span>
+                            <a href="${tool.website}" class="btn btn-outline btn-sm" target="_blank">开始学习</a>
+                        </div>
+                        <div class="tutorial-card">
+                            <div class="tutorial-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <h4>安装配置</h4>
+                            <p>详细的安装步骤和基础配置说明</p>
+                            <span class="tutorial-level">初级</span>
+                            <a href="${tool.documentation || tool.website}" class="btn btn-outline btn-sm" target="_blank">查看教程</a>
+                        </div>
+                        <div class="tutorial-card">
+                            <div class="tutorial-icon">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <h4>基础操作</h4>
+                            <p>学习常用快捷键和基本操作技巧</p>
+                            <span class="tutorial-level">初级</span>
+                            <a href="${tool.website}" class="btn btn-outline btn-sm" target="_blank">学习操作</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        `;
-    }
-    
-    // 如果有原始的文档章节，也渲染它们
-    if (tool.documentation_sections) {
-        Object.entries(tool.documentation_sections).forEach(([sectionKey, section]) => {
-            contentHTML += `
-                <div class="content-section" id="${sectionKey}">
-                    <h2>${section.title}</h2>
-                    ${renderSectionContent(section)}
+        </div>
+    `;
+}
+
+// 渲染进阶教程tab
+function renderAdvancedTutorialsTab(tool) {
+    return `
+        <div class="tab-content" id="advanced-tutorials">
+            <div class="content-section">
+                <h2>进阶教程</h2>
+                <div class="section-content">
+                    <div class="tutorial-grid">
+                        <div class="tutorial-card">
+                            <div class="tutorial-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <h4>高级功能</h4>
+                            <p>探索 ${tool.name} 的高级功能和特性</p>
+                            <span class="tutorial-level">高级</span>
+                            <a href="${tool.documentation || tool.website}" class="btn btn-outline btn-sm" target="_blank">深入学习</a>
+                        </div>
+                        <div class="tutorial-card">
+                            <div class="tutorial-icon">
+                                <i class="fas fa-sliders-h"></i>
+                            </div>
+                            <h4>自定义配置</h4>
+                            <p>根据需求定制个性化的开发环境</p>
+                            <span class="tutorial-level">中级</span>
+                            <a href="${tool.website}" class="btn btn-outline btn-sm" target="_blank">配置指南</a>
+                        </div>
+                        <div class="tutorial-card">
+                            <div class="tutorial-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h4>代码优化</h4>
+                            <p>利用AI功能提升代码质量和性能</p>
+                            <span class="tutorial-level">高级</span>
+                            <a href="${tool.website}" class="btn btn-outline btn-sm" target="_blank">优化技巧</a>
+                        </div>
+                    </div>
                 </div>
-            `;
-        });
+            </div>
+        </div>
+    `;
+}
+
+// 渲染实战项目tab
+function renderPracticalProjectsTab(tool) {
+    return `
+        <div class="tab-content" id="practical-projects">
+            <div class="content-section">
+                <h2>实战项目</h2>
+                <div class="section-content">
+                    <div class="project-grid">
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <span class="project-level">初级项目</span>
+                            </div>
+                            <h4>简单Web应用</h4>
+                            <p>使用 ${tool.name} 构建一个简单的Web应用，体验AI辅助开发</p>
+                            <div class="project-meta">
+                                <span><i class="fas fa-clock"></i> 2-4小时</span>
+                                <span><i class="fas fa-star"></i> 适合新手</span>
+                            </div>
+                            <a href="${tool.website}" class="btn btn-outline btn-sm" target="_blank">开始项目</a>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <span class="project-level">中级项目</span>
+                            </div>
+                            <h4>移动应用开发</h4>
+                            <p>创建一个移动应用，探索跨平台开发最佳实践</p>
+                            <div class="project-meta">
+                                <span><i class="fas fa-clock"></i> 1-2天</span>
+                                <span><i class="fas fa-star"></i> 有一定基础</span>
+                            </div>
+                            <a href="${tool.website}" class="btn btn-outline btn-sm" target="_blank">查看项目</a>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <span class="project-level">高级项目</span>
+                            </div>
+                            <h4>AI集成项目</h4>
+                            <p>构建一个集成AI功能的复杂应用系统</p>
+                            <div class="project-meta">
+                                <span><i class="fas fa-clock"></i> 1-2周</span>
+                                <span><i class="fas fa-star"></i> 经验丰富</span>
+                            </div>
+                            <a href="${tool.github || tool.website}" class="btn btn-outline btn-sm" target="_blank">挑战项目</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// 渲染FAQ tab
+function renderFAQTab(tool) {
+    return `
+        <div class="tab-content" id="faq">
+            <div class="content-section">
+                <h2>常见问题(FAQ)</h2>
+                <div class="section-content">
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>如何开始使用 ${tool.name}？</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>首先访问官方网站下载并安装 ${tool.name}，然后按照安装向导完成配置。建议先查看快速入门教程了解基本操作。</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>${tool.name} 支持哪些编程语言？</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>${tool.supported_languages ? 
+                                    `${tool.name} 支持 ${tool.supported_languages.join('、')} 等主流编程语言。` : 
+                                    `${tool.name} 支持多种主流编程语言，具体支持列表请查看官方文档。`}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>遇到问题时如何获取帮助？</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>可以通过以下方式获取帮助：1) 查看官方文档；2) 访问社区论坛；3) 提交GitHub Issue；4) 联系官方技术支持。</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>${tool.name} 是否免费使用？</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>${tool.price === 'free' ? `${tool.name} 完全免费使用。` : 
+                                    tool.price === 'freemium' ? `${tool.name} 提供免费版本，同时也有功能更丰富的付费版本。` : 
+                                    `${tool.name} 为付费工具，具体价格请查看官方网站。`}</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h4>如何更新到最新版本？</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>大多数情况下 ${tool.name} 会自动检测并提示更新。你也可以在设置中手动检查更新，或者到官方网站下载最新版本。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// 设置tab导航功能 - 增强版页面切换
+function setupTabNavigation() {
+    // 只选择内部导航的链接，排除外部链接
+    const navLinks = document.querySelectorAll('.nav-link:not([target="_blank"])');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    if (navLinks.length === 0 || tabContents.length === 0) {
+        return;
     }
     
-    bodyContainer.innerHTML = contentHTML;
+    let currentActiveTab = null;
+    
+    // 创建页面指示器
+    createPageIndicator();
+    
+    navLinks.forEach((link, index) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const targetId = link.getAttribute('href').substring(1);
+            const targetContent = document.getElementById(targetId);
+            
+            if (!targetContent) {
+                return;
+            }
+            
+            if (link.classList.contains('active')) {
+                return;
+            }
+            
+            // 执行页面切换动画
+            switchToPage(link, targetContent, navLinks, tabContents);
+        });
+    });
+    
+    // 初始化页面 - 默认显示欢迎页面，不选中任何tab
+    // 移除所有导航链接的active状态
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    // 移除所有tab内容的active状态，但保持欢迎页面的active状态
+    tabContents.forEach(content => {
+        if (!content.classList.contains('welcome-page')) {
+            content.classList.remove('active');
+        }
+    });
+    
+    // 确保欢迎页面是显示的
+    const welcomePage = document.getElementById('welcome');
+    if (welcomePage) {
+        welcomePage.classList.add('active');
+        currentActiveTab = welcomePage;
+    }
+    
+    // 欢迎页面不显示页面指示器
+    const pageIndicator = document.querySelector('.page-indicator');
+    if (pageIndicator) {
+        pageIndicator.classList.remove('show');
+    }
+    
+    // 初始化欢迎页面的动画和统计数字
+    initWelcomePageAnimations();
+}
+
+// 页面切换核心函数
+function switchToPage(newLink, newContent, allLinks, allContents) {
+    // 显示加载状态
+    showPageTransition();
+    
+    // 移除所有导航active状态
+    allLinks.forEach(link => link.classList.remove('active'));
+    
+    // 找到当前活动的内容（包括欢迎页面）
+    const currentContent = document.querySelector('.tab-content.active, .welcome-page.active');
+    
+    if (currentContent) {
+        // 当前页面退出动画
+        currentContent.classList.add('exiting');
+        
+        setTimeout(() => {
+            currentContent.classList.remove('active', 'exiting');
+            
+            // 激活新页面
+            activateNewPage(newLink, newContent);
+        }, 200);
+    } else {
+        // 直接激活新页面
+        activateNewPage(newLink, newContent);
+    }
+}
+
+// 激活新页面
+function activateNewPage(newLink, newContent) {
+    newLink.classList.add('active');
+    newContent.classList.add('active');
+    
+    // 更新页面指示器（只对tab页面显示）
+    if (newContent && !newContent.classList.contains('welcome-page')) {
+        updatePageIndicator(getPageTitle(newLink));
+    }
+    
+    // 隐藏加载状态
+    hidePageTransition();
+    
+    // 滚动到顶部
+    newContent.scrollTop = 0;
+}
+
+// 创建页面指示器
+function createPageIndicator() {
+    if (document.querySelector('.page-indicator')) return;
+    
+    const indicator = document.createElement('div');
+    indicator.className = 'page-indicator';
+    indicator.innerHTML = '<i class="fas fa-book-open"></i> <span class="page-title">前言</span>';
+    document.body.appendChild(indicator);
+}
+
+// 更新页面指示器
+function updatePageIndicator(title) {
+    const indicator = document.querySelector('.page-indicator');
+    if (indicator) {
+        const titleSpan = indicator.querySelector('.page-title');
+        if (titleSpan) {
+            titleSpan.textContent = title;
+        }
+        
+        // 显示指示器
+        indicator.classList.add('show');
+        
+        // 3秒后自动隐藏
+        clearTimeout(window.indicatorTimeout);
+        window.indicatorTimeout = setTimeout(() => {
+            indicator.classList.remove('show');
+        }, 3000);
+    }
+}
+
+// 获取页面标题
+function getPageTitle(link) {
+    const span = link.querySelector('span');
+    return span ? span.textContent : link.textContent;
+}
+
+// 显示页面切换过渡效果
+function showPageTransition() {
+    const container = document.querySelector('.tab-content-container');
+    if (container) {
+        container.style.opacity = '0.7';
+        container.style.transform = 'scale(0.98)';
+    }
+}
+
+// 隐藏页面切换过渡效果
+function hidePageTransition() {
+    const container = document.querySelector('.tab-content-container');
+    if (container) {
+        setTimeout(() => {
+            container.style.opacity = '1';
+            container.style.transform = 'scale(1)';
+        }, 100);
+    }
+}
+
+// 设置FAQ交互功能
+function setupFAQInteraction() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        if (question) {
+            question.addEventListener('click', () => {
+                // 切换当前FAQ项的展开状态
+                item.classList.toggle('active');
+                
+                // 可选：关闭其他已展开的FAQ项（手风琴效果）
+                // faqItems.forEach(otherItem => {
+                //     if (otherItem !== item) {
+                //         otherItem.classList.remove('active');
+                //     }
+                // });
+            });
+        }
+    });
 }
 
 // 获取所有内容用于计算字数
@@ -670,6 +1070,74 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// 初始化欢迎页面动画
+function initWelcomePageAnimations() {
+    // 初始化矩阵特性动画
+    const matrixItems = document.querySelectorAll('.matrix-item');
+    matrixItems.forEach((item, index) => {
+        const delay = item.getAttribute('data-delay') || index * 200;
+        setTimeout(() => {
+            item.classList.add('animate-in');
+        }, delay);
+    });
+    
+    // 初始化统计数字动画
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(statNumber => {
+        const target = parseInt(statNumber.getAttribute('data-target'));
+        animateNumber(statNumber, 0, target, 2000);
+    });
+    
+    // 初始化粒子背景动画
+    initParticleBackground();
+}
+
+// 数字动画函数
+function animateNumber(element, start, end, duration) {
+    const startTime = performance.now();
+    
+    function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // 使用缓动函数
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(start + (end - start) * easeOutQuart);
+        
+        // 格式化大数字
+        if (current >= 1000000) {
+            element.textContent = (current / 1000000).toFixed(1) + 'M+';
+        } else if (current >= 1000) {
+            element.textContent = (current / 1000).toFixed(0) + 'K+';
+        } else {
+            element.textContent = current + (end >= 95 && end <= 100 ? '%' : '+');
+        }
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        }
+    }
+    
+    requestAnimationFrame(updateNumber);
+}
+
+// 初始化粒子背景
+function initParticleBackground() {
+    const particlesContainer = document.querySelector('.tech-particles');
+    if (!particlesContainer) return;
+    
+    // 创建粒子
+    for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+        particlesContainer.appendChild(particle);
+    }
+}
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', renderToolDetail); 

@@ -63,6 +63,7 @@ export const TOOL_SCHEMA = {
     website: '',              // 官方网站 (必需)
     documentation: '',        // 官方文档 (必需)
     github: null,             // GitHub仓库 (可选)
+    changelog: null,          // 更新日志 (可选)
     
     // 技术信息
     supported_languages: [],   // 支持的编程语言 (必需)
@@ -150,9 +151,7 @@ export function standardizeToolData(toolData) {
     
     // 复制提供的数据
     Object.keys(toolData).forEach(key => {
-        if (standardized.hasOwnProperty(key)) {
-            standardized[key] = toolData[key];
-        }
+        standardized[key] = toolData[key];
     });
     
     // 确保数组字段不为null

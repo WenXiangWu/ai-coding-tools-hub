@@ -8,26 +8,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-    font-size: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    font-size: 20px;
     font-weight: bold;
     text-align: center;
     line-height: 1;
     position: relative;
+    flex-shrink: 0;
 }
 
 .tool-icon.large {
-    width: 48px;
-    height: 48px;
-    font-size: 24px;
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    border-radius: 12px;
 }
 
 .tool-icon.small {
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border-radius: 6px;
 }
 
 /* Cursor 图标 */
@@ -196,23 +199,41 @@
     transform: translate(-50%, -50%);
 }
 
-/* 悬浮动画效果 */
+/* 悬浮动画效果 - 温和的效果避免布局偏移 */
 .tool-icon:hover {
-    transform: scale(1.1);
-    transition: transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 在卡片中的图标样式 */
-.tool-card .tool-icon {
-    margin-right: 8px;
+/* 在卡片中的图标样式 - 适配新的ToolCard结构 */
+.tool-card .tool-icon,
+.tool-logo .tool-icon {
+    /* 移除margin-right，使用父容器的gap控制间距 */
+}
+
+/* 确保 tool-logo 容器正确显示图标 */
+.tool-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.tool-logo .tool-icon {
+    width: 100%;
+    height: 100%;
+    margin: 0;
 }
 
 .tool-hero-icon .tool-icon {
-    width: 64px;
-    height: 64px;
-    font-size: 32px;
-    border-radius: 12px;
+    width: 80px;
+    height: 80px;
+    font-size: 40px;
+    border-radius: 16px;
 }
 
 /* 侧边栏图标样式 */

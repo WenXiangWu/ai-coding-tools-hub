@@ -33,6 +33,7 @@ export const claudeTool = {
     website: 'https://claude.ai',
     documentation: 'https://docs.anthropic.com',
     github: null,
+    changelog: 'https://docs.anthropic.com/claude/changelog',
     
     supported_languages: [
         'Python',

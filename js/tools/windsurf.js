@@ -33,6 +33,7 @@ export const windsurfTool = {
     website: 'https://codeium.com/windsurf',
     documentation: 'https://windsurf.codeium.com/docs',
     github: null,
+    changelog: 'https://windsurf.codeium.com/changelog',
     
     supported_languages: [
         'JavaScript',

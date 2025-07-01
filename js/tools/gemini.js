@@ -33,6 +33,7 @@ export const geminiTool = {
     website: 'https://gemini.google.com',
     documentation: 'https://ai.google.dev/docs',
     github: null,
+    changelog: 'https://ai.google.dev/docs/changelog',
     
     supported_languages: [
         'Python',
