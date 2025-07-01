@@ -4,13 +4,129 @@
     <meta charset="UTF-8">
     <title>工具详情 - AI编程工具大全</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="专业的AI编程工具详情页面，提供详细的使用教程、配置指南和最佳实践">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/xxxx.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <main class="container" id="toolDetailContainer">
-        <!-- 工具详情内容将由JS动态渲染 -->
-    </main>
+<body class="tool-detail-page">
+    <!-- 页面头部 -->
+    <header class="tool-detail-header-top">
+        <div class="container">
+            <div class="tool-header-content">
+                <div class="tool-logo">
+                    <a href="index.html">
+                        <i class="fas fa-robot"></i>
+                        <span>AI编程工具中心</span>
+                    </a>
+                </div>
+                <div class="tool-breadcrumb">
+                    <a href="index.html">首页</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="index.html#tools">工具总览</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span id="toolBreadcrumbName">工具详情</span>
+                </div>
+                <div class="tool-actions">
+                    <button class="btn btn-outline" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要布局容器 -->
+    <div class="tool-layout">
+        <!-- 左侧导航栏 -->
+        <aside class="tool-sidebar">
+            <div class="tool-sidebar-header">
+                <div class="tool-info-compact">
+                    <div class="tool-icon-small" id="sidebarToolIcon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="tool-name-small">
+                        <h3 id="sidebarToolName">工具名称</h3>
+                        <span class="tool-category-small" id="sidebarToolCategory">分类</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="tool-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">
+                        <i class="fas fa-info-circle"></i>
+                        基本信息
+                    </div>
+                    <ul class="nav-links">
+                        <li><a href="#overview" class="nav-link active">工具概述</a></li>
+                        <li><a href="#features" class="nav-link">功能特性</a></li>
+                        <li><a href="#pricing" class="nav-link">价格方案</a></li>
+                        <li><a href="#reviews" class="nav-link">用户评价</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section" id="documentationNav">
+                    <!-- 文档导航将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">
+                        <i class="fas fa-external-link-alt"></i>
+                        相关链接
+                    </div>
+                    <ul class="nav-links">
+                        <li><a href="#" class="nav-link" id="officialWebsite" target="_blank">官方网站</a></li>
+                        <li><a href="#" class="nav-link" id="documentationLink" target="_blank">官方文档</a></li>
+                        <li><a href="#" class="nav-link" id="githubLink" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="tool-detail-content">
+            <div class="tool-content-header" id="toolContentHeader">
+                <!-- 工具基本信息将通过JavaScript渲染 -->
+            </div>
+            
+            <div class="tool-content-body" id="toolContentBody">
+                <!-- 详细内容将通过JavaScript渲染 -->
+            </div>
+        </main>
+
+        <!-- 右侧目录导航（可选） -->
+        <aside class="tool-toc">
+            <div class="toc-header">
+                <h4>页面目录</h4>
+            </div>
+            <nav class="toc-nav" id="tocNav">
+                <!-- 目录将通过JavaScript动态生成 -->
+            </nav>
+        </aside>
+    </div>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-sidebar-toggle" id="mobileSidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 移动端遮罩层 -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script type="module" src="tool-detail.js"></script>
 </body>
 </html> 

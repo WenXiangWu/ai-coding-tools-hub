@@ -214,7 +214,7 @@ class App {
                 </div>
             </div>
             
-            <div class="tool-content">
+            <div class="tool-card-content">
                 <h3 class="tool-name">${tool.name}</h3>
                 <p class="tool-category">${tool.category}</p>
                 <p class="tool-description">${tool.description}</p>
@@ -249,8 +249,8 @@ class App {
                     访问官网
                 </button>
                 <button class="btn btn-secondary" onclick="app.showToolDetails('${tool.id}')">
-                    <i class="fas fa-info-circle"></i>
-                    详细信息
+                    <i class="fas fa-eye"></i>
+                    查看详情
                 </button>
                 <button class="btn btn-outline compare-btn" onclick="app.toggleToolSelection('${tool.id}')">
                     <i class="fas fa-plus"></i>
@@ -308,120 +308,11 @@ class App {
     }
 
     showToolDetails(toolId) {
-        const tool = this.toolsManager.getTool(toolId);
-        if (!tool) return;
-
-        // 创建详情模态框
-        const modal = this.createToolDetailsModal(tool);
-        document.body.appendChild(modal);
-        
-        // 显示模态框
-        setTimeout(() => modal.classList.add('show'), 10);
+        // 跳转到专业的工具详情页面
+        window.open(`tool.html?id=${toolId}`, '_blank');
     }
 
-    createToolDetailsModal(tool) {
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.id = 'tool-details-modal';
-
-        const prosHTML = tool.pros.map(pro => `<li><i class="fas fa-check text-success"></i> ${pro}</li>`).join('');
-        const consHTML = tool.cons.map(con => `<li><i class="fas fa-times text-danger"></i> ${con}</li>`).join('');
-        const languagesHTML = tool.supported_languages.map(lang => `<span class="tech-tag">${lang}</span>`).join('');
-        const tutorialsHTML = tool.extensions?.tutorials?.map(tutorial => `
-            <div class="tutorial-item">
-                <h4>${tutorial.title}</h4>
-                <span class="level-badge level-${tutorial.level}">${tutorial.level}</span>
-            </div>
-        `).join('') || '<p>暂无教程</p>';
-
-        modal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="tool-info">
-                        <i class="${tool.logo} tool-icon-large"></i>
-                        <div>
-                            <h2>${tool.name}</h2>
-                            <p class="tool-category">${tool.category}</p>
-                        </div>
-                    </div>
-                    <button class="close-btn" onclick="app.hideToolDetails()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="detail-section">
-                        <h3>工具描述</h3>
-                        <p>${tool.description}</p>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>主要功能</h3>
-                        <div class="features-grid">
-                            ${tool.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>支持的编程语言</h3>
-                        <div class="tech-grid">
-                            ${languagesHTML}
-                        </div>
-                    </div>
-                    
-                    <div class="detail-grid">
-                        <div class="detail-section">
-                            <h3>优点</h3>
-                            <ul class="pros-list">
-                                ${prosHTML}
-                            </ul>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <h3>缺点</h3>
-                            <ul class="cons-list">
-                                ${consHTML}
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <h3>相关教程</h3>
-                        <div class="tutorials-list">
-                            ${tutorialsHTML}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="app.openToolWebsite('${tool.website}')">
-                        <i class="fas fa-external-link-alt"></i>
-                        访问官网
-                    </button>
-                    <button class="btn btn-secondary" onclick="app.openToolWebsite('${tool.documentation}')">
-                        <i class="fas fa-book"></i>
-                        查看文档
-                    </button>
-                    ${tool.github ? `
-                        <button class="btn btn-outline" onclick="app.openToolWebsite('${tool.github}')">
-                            <i class="fab fa-github"></i>
-                            GitHub
-                        </button>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-
-        return modal;
-    }
-
-    hideToolDetails() {
-        const modal = document.getElementById('tool-details-modal');
-        if (modal) {
-            modal.classList.remove('show');
-            setTimeout(() => modal.remove(), 300);
-        }
-    }
+    // 已移除模态框相关方法，现在直接跳转到专业详情页面
 
     toggleToolSelection(toolId) {
         if (selectedTools.has(toolId)) {
@@ -667,19 +558,7 @@ class App {
             });
         }
 
-        // 模态框关闭
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay')) {
-                this.hideToolDetails();
-            }
-        });
-
-        // ESC键关闭模态框
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.hideToolDetails();
-            }
-        });
+        // 模态框相关事件监听器已移除，现在直接跳转到专业详情页面
     }
 
     // 键盘快捷键
