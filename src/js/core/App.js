@@ -620,7 +620,7 @@ class App {
         if (detailsBtn) {
             detailsBtn.addEventListener('click', () => {
                 console.log('🔍 简化卡片详情按钮点击，跳转到详情页面:', tool);
-                const detailUrl = `tool.html?id=${encodeURIComponent(tool.id)}`;
+                const detailUrl = `src/pages/tool.html?id=${encodeURIComponent(tool.id)}`;
                 window.location.href = detailUrl;
             });
         }
@@ -810,7 +810,7 @@ class App {
         console.log('跳转到工具详情页面:', tool);
         
         // 构建详情页面URL
-        const detailUrl = `tool.html?id=${encodeURIComponent(toolId)}`;
+        const detailUrl = `src/pages/tool.html?id=${encodeURIComponent(toolId)}`;
         
         // 跳转到详情页面
         window.location.href = detailUrl;
@@ -985,7 +985,7 @@ class App {
             return;
         }
         
-        const detailUrl = `tool.html?id=${encodeURIComponent(tool.id)}`;
+        const detailUrl = `src/pages/tool.html?id=${encodeURIComponent(tool.id)}`;
         window.location.href = detailUrl;
     }
 
