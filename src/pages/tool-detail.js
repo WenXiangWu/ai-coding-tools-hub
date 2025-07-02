@@ -1,4 +1,5 @@
 import { toolsManager } from '../js/managers/tools-manager.js';
+import { getToolIcon } from '../js/config/icon-config.js';
 
 // 获取URL参数
 function getQueryParam(name) {
@@ -278,7 +279,16 @@ async function renderToolDetail() {
         document.getElementById('toolBreadcrumbName').textContent = tool.name;
         
         // 更新侧边栏信息
-        document.getElementById('sidebarToolIcon').innerHTML = `<div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>`;
+        const iconPath = getToolIcon(tool.id);
+        document.getElementById('sidebarToolIcon').innerHTML = `
+            <img src="${iconPath}" 
+                 alt="${tool.name} 图标" 
+                 class="tool-icon-img" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="tool-icon-fallback" style="display: none;">
+                <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
+            </div>
+        `;
         document.getElementById('sidebarToolName').textContent = tool.name;
         document.getElementById('sidebarToolCategory').textContent = tool.category || tool.type;
         
@@ -415,7 +425,13 @@ function renderWelcomePage(tool) {
                 <div class="welcome-content-main">
                     <div class="tech-header">
                         <div class="tool-logo-large">
-                            <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
+                            <img src="${getToolIcon(tool.id)}" 
+                                 alt="${tool.name} 图标" 
+                                 class="tool-icon-img large" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="tool-icon-fallback" style="display: none;">
+                                <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
+                            </div>
                             <div class="logo-glow"></div>
                         </div>
                         

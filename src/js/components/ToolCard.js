@@ -6,6 +6,7 @@ import { Component } from '../core/Component.js';
 import { eventBus } from '../core/EventBus.js';
 import { STATUS_TEXT_MAP, TYPE_TEXT_MAP, PRICE_TEXT_MAP, CSS_CLASSES } from '../constants/AppConstants.js';
 import { truncateText, formatDate } from '../utils/helpers.js';
+import { getToolIcon } from '../config/icon-config.js';
 
 class ToolCard extends Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class ToolCard extends Component {
                 <div class="tool-title-section">
                     <div class="tool-logo-name">
                         <div class="tool-logo">
-                            <div class="${this.tool.logo}"></div>
+                            ${this.renderToolIcon()}
                         </div>
                         <h3 class="tool-name" title="${this.tool.name}">
                             ${this.tool.name}
@@ -133,6 +134,24 @@ class ToolCard extends Component {
                         <span>详情</span>
                     </button>
                 </div>
+            </div>
+        `;
+    }
+
+    /**
+     * 渲染工具图标
+     * @returns {string} 工具图标HTML
+     */
+    renderToolIcon() {
+        const iconPath = getToolIcon(this.tool.id);
+        return `
+            <img src="${iconPath}" 
+                 alt="${this.tool.name} 图标" 
+                 class="tool-icon-img" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                 loading="lazy">
+            <div class="tool-icon-fallback" style="display: none;">
+                <div class="${this.tool.logo || 'tool-icon tool-icon-default'}"></div>
             </div>
         `;
     }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图标测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-test { margin: 20px 0; }
+        .icon-test img { width: 48px; height: 48px; margin-right: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>AI工具图标测试</h1>
+    
+    <div class="icon-test">
+        <h2>直接路径测试</h2>
+        <div>
+            <img src="./design/icon/cursor.png" alt="Cursor" onerror="this.nextElementSibling.style.display='block'">
+            <span class="error" style="display: none;">❌ cursor.png 加载失败</span>
+            <span>Cursor</span>
+        </div>
+        
+        <div>
+            <img src="./design/icon/windsurf.png" alt="Windsurf" onerror="this.nextElementSibling.style.display='block'">
+            <span class="error" style="display: none;">❌ windsurf.png 加载失败</span>
+            <span>Windsurf</span>
+        </div>
+        
+        <div>
+            <img src="./design/icon/claude.png" alt="Claude" onerror="this.nextElementSibling.style.display='block'">
+            <span class="error" style="display: none;">❌ claude.png 加载失败</span>
+            <span>Claude</span>
+        </div>
+        
+        <div>
+            <img src="./design/icon/githubcopilot.png" alt="GitHub Copilot" onerror="this.nextElementSibling.style.display='block'">
+            <span class="error" style="display: none;">❌ githubcopilot.png 加载失败</span>
+            <span>GitHub Copilot</span>
+        </div>
+        
+        <div>
+            <img src="./design/icon/gemini-.png" alt="Gemini" onerror="this.nextElementSibling.style.display='block'">
+            <span class="error" style="display: none;">❌ gemini-.png 加载失败</span>
+            <span>Gemini</span>
+        </div>
+        
+        <div>
+            <img src="./design/icon/tongyi.png" alt="通义千问" onerror="this.nextElementSibling.style.display='block'">
+            <span class="error" style="display: none;">❌ tongyi.png 加载失败</span>
+            <span>通义千问</span>
+        </div>
+    </div>
+    
+    <div class="icon-test">
+        <h2>JavaScript配置测试</h2>
+        <div id="js-test-container">正在加载...</div>
+    </div>
+    
+    <script type="module">
+        import { getToolIcon, getAllIconMappings } from './src/js/config/icon-config.js';
+        
+        console.log('图标配置测试');
+        console.log('当前路径:', window.location.pathname);
+        
+        const container = document.getElementById('js-test-container');
+        const mappings = getAllIconMappings();
+        
+        let html = '';
+        for (const [toolId, iconPath] of Object.entries(mappings)) {
+            html += `
+                <div style="margin: 10px 0;">
+                    <img src="${iconPath}" alt="${toolId}" style="width: 48px; height: 48px; margin-right: 10px; border: 1px solid #ddd; border-radius: 8px;" 
+                         onerror="this.nextElementSibling.style.display='inline'">
+                    <span class="error" style="display: none;">❌</span>
+                    <strong>${toolId}</strong>: ${iconPath}
+                </div>
+            `;
+        }
+        
+        container.innerHTML = html;
+    </script>
+</body>
+</html> 

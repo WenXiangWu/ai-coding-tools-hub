@@ -1,6 +1,9 @@
 // AI编程工具大全 - 主应用文件
 // 使用模块化架构管理AI工具数据
 
+// 导入图标配置
+import { getToolIcon } from './js/config/icon-config.js';
+
 // 全局变量
 let isLoading = true;
 let selectedTools = new Set();
@@ -204,7 +207,13 @@ class App {
         card.innerHTML = `
             <div class="tool-header">
                 <div class="tool-icon">
-                    <i class="${tool.logo}"></i>
+                    <img src="${getToolIcon(tool.id)}" 
+                         alt="${tool.name} 图标" 
+                         class="tool-icon-img" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="tool-icon-fallback" style="display: none;">
+                        <i class="${tool.logo}"></i>
+                    </div>
                 </div>
                 <div class="tool-status">
                     <span class="status-badge status-${tool.status}">
@@ -414,7 +423,14 @@ class App {
 
         let tableHTML = '<thead><tr><th>对比项目</th>';
         selectedToolsData.forEach(tool => {
-            tableHTML += `<th><div class="tool-header"><i class="${tool.logo}"></i> ${tool.name}</div></th>`;
+            tableHTML += `<th><div class="tool-header">
+                <img src="${getToolIcon(tool.id)}" 
+                     alt="${tool.name} 图标" 
+                     class="tool-icon-img small" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <i class="${tool.logo}" style="display: none;"></i>
+                ${tool.name}
+            </div></th>`;
         });
         tableHTML += '</tr></thead><tbody>';
 

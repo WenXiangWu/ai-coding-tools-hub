@@ -3,7 +3,51 @@
  * 使用真实的品牌图标和颜色
  */
 
-/* 基础图标样式 */
+/* 新的图片图标样式 */
+.tool-icon-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: contain;
+    object-position: center;
+    background: #f8f9fa;
+    padding: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tool-icon-img:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tool-icon-img.large {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    padding: 6px;
+}
+
+.tool-icon-img.small {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+/* 图标回退样式容器 */
+.tool-icon-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+/* 基础图标样式（作为回退） */
 .tool-icon {
     display: inline-flex;
     align-items: center;
