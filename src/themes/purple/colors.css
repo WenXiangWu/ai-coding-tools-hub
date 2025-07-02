@@ -1,0 +1,23 @@
+/* 紫罗兰主题颜色变量 */
+:root.theme-purple {
+    --primary-color: #8b5cf6;
+    --primary-hover: #7c3aed;
+    --primary-rgb: 139, 92, 246;
+    
+    --bg-primary: #faf5ff;
+    --bg-secondary: #f3e8ff;
+    --bg-tertiary: #e9d5ff;
+    --bg-card: #ffffff;
+    
+    --text-primary: #581c87;
+    --text-secondary: #6b21a8;
+    --text-muted: #7c2d92;
+    --text-inverse: #ffffff;
+    
+    --border-color: #e9d5ff;
+    --border-light: #f3e8ff;
+    --border-dark: #d8b4fe;
+    
+    --gradient-primary: linear-gradient(135deg, #8b5cf6, #a855f7);
+    --gradient-card: linear-gradient(135deg, #ffffff, #faf5ff);
+} 

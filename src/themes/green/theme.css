@@ -1,0 +1,24 @@
+/* 森林绿主题入口文件 */
+@import 'colors.css';
+
+.theme-green {
+    color-scheme: light;
+}
+
+.theme-green .tool-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+}
+
+.theme-green .tool-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px rgba(var(--primary-rgb), 0.15);
+}
+
+.theme-green .header {
+    background: rgba(240, 253, 244, 0.95);
+}
+
+.theme-green .btn-primary {
+    background: var(--gradient-primary);
+} 

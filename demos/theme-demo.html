@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题系统演示 - AI编程工具中心</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/theme-switcher.css">
+    
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .demo-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-card);
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .demo-card {
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .demo-nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主题切换器导航 -->
+    <div class="demo-nav">
+        <!-- 主题切换器将在这里动态插入 -->
+    </div>
+
+    <div class="demo-container">
+        <header class="demo-header">
+            <h1 class="tech-title">🎨 主题系统演示</h1>
+            <p>体验不同主题下的视觉效果变化</p>
+        </header>
+
+        <section class="demo-section">
+            <h2>颜色主题展示</h2>
+            <p>当前主题会影响所有组件的颜色、阴影和视觉效果。</p>
+            
+            <div class="demo-grid">
+                <div class="demo-card">
+                    <h3>🌟 默认主题</h3>
+                    <p>清新简洁的默认主题，适合日常使用。</p>
+                    <button class="btn-primary" onclick="switchDemo('default')">
+                        切换到默认主题
+                    </button>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>🌙 深色主题</h3>
+                    <p>护眼的深色主题，适合夜间编程。</p>
+                    <button class="btn-primary" onclick="switchDemo('dark')">
+                        切换到深色主题
+                    </button>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>🌊 海洋蓝</h3>
+                    <p>清新的蓝色主题，带来海洋般的宁静。</p>
+                    <button class="btn-primary" onclick="switchDemo('blue')">
+                        切换到蓝色主题
+                    </button>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>🌿 森林绿</h3>
+                    <p>自然的绿色主题，充满生机活力。</p>
+                    <button class="btn-primary" onclick="switchDemo('green')">
+                        切换到绿色主题
+                    </button>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>💜 紫罗兰</h3>
+                    <p>优雅的紫色主题，展现独特品味。</p>
+                    <button class="btn-primary" onclick="switchDemo('purple')">
+                        切换到紫色主题
+                    </button>
+                </div>
+                
+                <div class="demo-card">
+                    <h3>🔄 跟随系统</h3>
+                    <p>自动跟随系统主题偏好设置。</p>
+                    <button class="btn-primary" onclick="switchDemo('auto')">
+                        跟随系统主题
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2>组件效果演示</h2>
+            <p>查看不同主题下各种UI组件的视觉表现。</p>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn-primary">主要按钮</button>
+                <button class="btn-secondary">次要按钮</button>
+                <input type="text" placeholder="输入框示例" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                <select style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <option>选择选项</option>
+                    <option>选项1</option>
+                    <option>选项2</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h2>功能特性</h2>
+            <ul style="color: var(--text-secondary); line-height: 1.8;">
+                <li>✅ 6种精心设计的主题选择</li>
+                <li>✅ 自动跟随系统主题偏好</li>
+                <li>✅ 本地存储用户偏好设置</li>
+                <li>✅ 平滑的主题切换动画</li>
+                <li>✅ 高对比度和无障碍支持</li>
+                <li>✅ 响应式设计，支持所有设备</li>
+                <li>✅ 模块化设计，易于扩展</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- 主题系统 -->
+    <script type="module" src="../src/themes/theme-init.js"></script>
+    
+    <script>
+        // 演示页面的主题切换函数
+        function switchDemo(themeId) {
+            if (window.themeManager) {
+                window.themeManager.switchTheme(themeId);
+            } else {
+                console.warn('主题管理器未加载');
+            }
+        }
+        
+        // 显示当前主题信息
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等待主题系统加载
+            setTimeout(() => {
+                if (window.themeManager) {
+                    const currentTheme = window.themeManager.getCurrentTheme();
+                    console.log('🎨 当前主题:', currentTheme.name);
+                    
+                    // 监听主题变化
+                    window.themeManager.addObserver((theme) => {
+                        console.log('🔄 主题已切换至:', theme.name);
+                    });
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

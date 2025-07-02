@@ -1,0 +1,24 @@
+/* 紫罗兰主题入口文件 */
+@import 'colors.css';
+
+.theme-purple {
+    color-scheme: light;
+}
+
+.theme-purple .tool-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+}
+
+.theme-purple .tool-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px rgba(var(--primary-rgb), 0.15);
+}
+
+.theme-purple .header {
+    background: rgba(250, 245, 255, 0.95);
+}
+
+.theme-purple .btn-primary {
+    background: var(--gradient-primary);
+} 

@@ -1,0 +1,26 @@
+/* 海洋蓝主题入口文件 */
+@import 'colors.css';
+
+.theme-blue {
+    color-scheme: light;
+}
+
+.theme-blue .tool-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+}
+
+.theme-blue .tool-card:hover {
+    background: var(--gradient-ocean);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 25px rgba(var(--primary-rgb), 0.15);
+}
+
+.theme-blue .header {
+    background: rgba(240, 249, 255, 0.95);
+    backdrop-filter: blur(20px);
+}
+
+.theme-blue .btn-primary {
+    background: var(--gradient-primary);
+} 

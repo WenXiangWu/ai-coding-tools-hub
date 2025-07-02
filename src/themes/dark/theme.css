@@ -1,0 +1,189 @@
+/* 深色主题入口文件 */
+@import 'colors.css';
+
+/* 深色主题特定的组件覆盖 */
+.theme-dark {
+    color-scheme: dark;
+}
+
+/* 深色主题基础样式 */
+.theme-dark body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* 工具卡片深色样式 */
+.theme-dark .tool-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+.theme-dark .tool-card:hover {
+    background: var(--gradient-dark-glow);
+    border-color: var(--primary-color);
+    box-shadow: 
+        var(--shadow-xl),
+        0 0 20px rgba(var(--primary-rgb), 0.1);
+    transform: translateY(-2px);
+}
+
+/* 头部导航深色样式 */
+.theme-dark .header {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 按钮深色样式 */
+.theme-dark .btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: 
+        var(--shadow-md),
+        0 0 10px rgba(var(--primary-rgb), 0.2);
+}
+
+.theme-dark .btn-primary:hover {
+    box-shadow: 
+        var(--shadow-lg),
+        0 0 20px rgba(var(--primary-rgb), 0.3);
+    transform: translateY(-1px);
+}
+
+/* 搜索框深色样式 */
+.theme-dark .search-box input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.theme-dark .search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+.theme-dark .search-box input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+    background: var(--bg-tertiary);
+}
+
+/* 侧边栏深色样式 */
+.theme-dark .tool-sidebar {
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+}
+
+/* 导航链接深色样式 */
+.theme-dark .nav-link {
+    color: var(--text-secondary);
+}
+
+.theme-dark .nav-link:hover {
+    background: rgba(var(--primary-rgb), 0.1);
+    color: var(--text-primary);
+}
+
+.theme-dark .nav-link.active {
+    background: var(--gradient-primary);
+    color: var(--text-inverse);
+}
+
+/* 选项卡深色样式 */
+.theme-dark .tutorial-tab {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.theme-dark .tutorial-tab.active {
+    background: var(--gradient-primary);
+    color: var(--text-inverse);
+    border-color: var(--primary-color);
+}
+
+/* 徽章深色样式 */
+.theme-dark .badge {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 模态框深色样式 */
+.theme-dark .modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xl);
+}
+
+/* 下拉菜单深色样式 */
+.theme-dark .dropdown-menu {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+.theme-dark .dropdown-item:hover {
+    background: rgba(var(--primary-rgb), 0.1);
+}
+
+/* 表格深色样式 */
+.theme-dark .compare-table {
+    background: var(--bg-secondary);
+}
+
+.theme-dark .compare-table th {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+.theme-dark .compare-table td {
+    border-color: var(--border-color);
+}
+
+/* 滚动条深色样式 */
+.theme-dark ::-webkit-scrollbar {
+    background: var(--bg-secondary);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-light);
+}
+
+/* 特殊发光效果 */
+.theme-dark .tech-title {
+    text-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+}
+
+.theme-dark .logo-glow {
+    box-shadow: 
+        0 0 30px rgba(var(--primary-rgb), 0.2),
+        0 0 60px rgba(var(--primary-rgb), 0.1);
+}
+
+/* 深色主题下的特殊动画 */
+.theme-dark .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(var(--primary-rgb), 0.05),
+        transparent
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.theme-dark .tool-card:hover::before {
+    opacity: 1;
+} 

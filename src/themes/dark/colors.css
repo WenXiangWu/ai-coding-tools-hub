@@ -1,0 +1,47 @@
+/* 深色主题颜色变量 */
+:root.theme-dark {
+    /* 主色调 */
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-rgb: 99, 102, 241;
+    
+    /* 背景色 */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-card: #1e293b;
+    
+    /* 文字颜色 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --text-inverse: #0f172a;
+    
+    /* 边框颜色 */
+    --border-color: #334155;
+    --border-light: #475569;
+    --border-dark: #1e293b;
+    
+    /* 状态颜色 */
+    --success-color: #22c55e;
+    --warning-color: #eab308;
+    --error-color: #f87171;
+    --info-color: #60a5fa;
+    
+    /* 阴影 (深色主题下调整透明度) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    
+    /* 渐变 */
+    --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+    --gradient-secondary: linear-gradient(135deg, #1e293b, #334155);
+    --gradient-card: linear-gradient(135deg, #1e293b, #334155);
+    
+    /* 特殊的深色主题渐变 */
+    --gradient-dark-glow: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.1), 
+        rgba(139, 92, 246, 0.05)
+    );
+} 
