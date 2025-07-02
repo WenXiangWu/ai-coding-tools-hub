@@ -290,7 +290,6 @@ async function renderToolDetail() {
             </div>
         `;
         document.getElementById('sidebarToolName').textContent = tool.name;
-        document.getElementById('sidebarToolCategory').textContent = tool.category || tool.type;
         
         // 更新外部链接
         const officialWebsite = document.getElementById('officialWebsite');
