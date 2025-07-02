@@ -1,8 +1,13 @@
 /* 森林绿主题颜色变量 */
+:root.theme-green,
 body.theme-green {
     --primary-color: #10b981;
     --primary-hover: #059669;
     --primary-rgb: 16, 185, 129;
+    
+    /* 辅助色 */
+    --accent-color: #059669;
+    --accent-rgb: 5, 150, 105;
     
     --bg-primary: #f0fdf4;
     --bg-secondary: #dcfce7;

@@ -236,12 +236,28 @@ class ThemeManager {
             // 等待文件加载（如果需要）
             await loadPromise;
 
+            // 清理预加载的主题CSS，避免重复
+            this.cleanupPreloadedTheme();
+
             console.log(`✅ 主题切换完成: ${theme.name}`);
             return true;
             
         } catch (error) {
             console.error('❌ 主题切换失败:', error);
             return false;
+        }
+    }
+
+    /**
+     * 清理预加载的主题CSS
+     */
+    cleanupPreloadedTheme() {
+        const preloadedTheme = document.getElementById('theme-css-preload');
+        if (preloadedTheme) {
+            // 延迟移除，确保新的主题CSS已经加载完成
+            setTimeout(() => {
+                preloadedTheme.remove();
+            }, 100);
         }
     }
 
@@ -355,35 +371,41 @@ class ThemeManager {
         const theme = this.themes.get(themeId);
         if (!theme || !theme.colors) return;
         
-        const body = document.body;
+        const html = document.documentElement;
         
-        // 立即应用CSS变量到body样式
+        // 立即应用CSS变量到:root元素
         Object.entries(theme.colors).forEach(([property, value]) => {
-            body.style.setProperty(property, value);
+            html.style.setProperty(property, value);
         });
         
-        console.log(`⚡ 立即应用主题变量: ${theme.name}`);
+        console.log(`⚡ 立即应用主题变量到:root: ${theme.name}`);
     }
 
     /**
      * 更新body类名
      */
     updateBodyClass(themeId, category) {
+        const html = document.documentElement;
         const body = document.body;
         
-        // 移除所有主题类
-        body.classList.remove('theme-default', 'theme-dark', 'theme-blue', 'theme-green', 'theme-purple');
-        body.classList.remove('theme-light', 'theme-dark-mode');
+        // 移除所有主题类（从html和body元素）
+        const themeClasses = ['theme-default', 'theme-dark', 'theme-blue', 'theme-green', 'theme-purple', 'theme-light', 'theme-dark-mode'];
+        html.classList.remove(...themeClasses);
+        body.classList.remove(...themeClasses);
         
-        // 添加新主题类
+        // 添加新主题类到html和body元素
+        html.classList.add(`theme-${themeId}`);
         body.classList.add(`theme-${themeId}`);
+        
         if (category === 'dark') {
+            html.classList.add('theme-dark-mode');
             body.classList.add('theme-dark-mode');
         } else {
+            html.classList.add('theme-light');
             body.classList.add('theme-light');
         }
         
-        // 立即应用主题变量
+        // 立即应用主题变量到:root
         this.applyThemeVariables(themeId);
     }
 

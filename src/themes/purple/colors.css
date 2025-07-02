@@ -1,8 +1,13 @@
 /* 紫罗兰主题颜色变量 */
+:root.theme-purple,
 body.theme-purple {
     --primary-color: #8b5cf6;
     --primary-hover: #7c3aed;
     --primary-rgb: 139, 92, 246;
+    
+    /* 辅助色 */
+    --accent-color: #a855f7;
+    --accent-rgb: 168, 85, 247;
     
     --bg-primary: #faf5ff;
     --bg-secondary: #f3e8ff;

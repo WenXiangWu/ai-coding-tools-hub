@@ -6,6 +6,10 @@
     --primary-hover: #4338ca;
     --primary-rgb: 79, 70, 229;
     
+    /* 辅助色 */
+    --accent-color: #10b981;
+    --accent-rgb: 16, 185, 129;
+    
     /* 背景色 */
     --bg-primary: #ffffff;
     --bg-secondary: #f8fafc;

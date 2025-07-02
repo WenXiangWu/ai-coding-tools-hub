@@ -67,14 +67,20 @@ function loadThemeSystemFallback() {
         switchTheme: function(themeId) {
             console.log('🔄 切换主题到:', themeId);
             
-            // 移除所有主题类
+            // 移除所有主题类（从html和body元素）
+            document.documentElement.className = document.documentElement.className.replace(/theme-\w+/g, '');
             document.body.className = document.body.className.replace(/theme-\w+/g, '');
             
-            // 添加新主题类
-            document.body.classList.add(`theme-${themeId}`);
+            // 添加新主题类到html元素
+            if (themeId !== 'default') {
+                document.documentElement.classList.add(`theme-${themeId}`);
+                document.body.classList.add(`theme-${themeId}`);
+            }
             
             // 加载主题CSS
             let themeLink = document.getElementById('theme-css');
+            const preloadedTheme = document.getElementById('theme-css-preload');
+            
             if (!themeLink) {
                 themeLink = document.createElement('link');
                 themeLink.id = 'theme-css';
@@ -85,10 +91,24 @@ function loadThemeSystemFallback() {
             if (themeId !== 'default') {
                 // 检测当前页面路径来确定正确的相对路径
                 const isInDemos = window.location.pathname.includes('/demos/');
-                const basePath = isInDemos ? '../src/themes' : './src/themes';
+                const isInPages = window.location.pathname.includes('/pages/');
+                let basePath = './src/themes';
+                if (isInDemos) {
+                    basePath = '../src/themes';
+                } else if (isInPages) {
+                    basePath = '../src/themes';
+                }
                 themeLink.href = `${basePath}/${themeId}/theme.css`;
+                
+                // 清理预加载的主题CSS
+                if (preloadedTheme) {
+                    setTimeout(() => preloadedTheme.remove(), 100);
+                }
             } else {
                 themeLink.href = '';
+                if (preloadedTheme) {
+                    preloadedTheme.remove();
+                }
             }
             
             // 保存到本地存储

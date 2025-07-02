@@ -276,7 +276,10 @@ async function renderToolDetail() {
         
         // 更新页面标题和面包屑
         document.title = `${tool.name} - AI编程工具详情`;
-        document.getElementById('toolBreadcrumbName').textContent = tool.name;
+        const breadcrumbElement = document.getElementById('toolBreadcrumbSidebarName');
+        if (breadcrumbElement) {
+            breadcrumbElement.textContent = tool.name;
+        }
         
         // 更新侧边栏信息
         const iconPath = getToolIcon(tool.id);
@@ -423,21 +426,22 @@ function renderWelcomePage(tool) {
                 
                 <div class="welcome-content-main">
                     <div class="tech-header">
-                        <div class="tool-logo-large">
-                            <img src="${getToolIcon(tool.id)}" 
-                                 alt="${tool.name} 图标" 
-                                 class="tool-icon-img large" 
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <div class="tool-icon-fallback" style="display: none;">
-                                <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
-                            </div>
-                            <div class="logo-glow"></div>
-                        </div>
-                        
                         <div class="welcome-text">
                             <h1 class="tech-title">
                                 <span class="title-line">欢迎来到</span>
-                                <span class="title-highlight">${tool.name}</span>
+                                <div class="title-tool-section">
+                                    <div class="tool-logo-inline">
+                                        <img src="${getToolIcon(tool.id)}" 
+                                             alt="${tool.name} 图标" 
+                                             class="tool-icon-img inline" 
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <div class="tool-icon-fallback" style="display: none;">
+                                            <div class="${tool.logo || 'tool-icon fas fa-tools'}"></div>
+                                        </div>
+                                        <div class="logo-glow-inline"></div>
+                                    </div>
+                                    <span class="title-highlight">${tool.name}</span>
+                                </div>
                                 <span class="title-line">学习中心</span>
                             </h1>
                             <p class="tech-subtitle">${tool.description || '革命性的AI代码编辑器，基于GPT-4构建，提供智能代码补全、自然语言编程和实时代码解释。'}</p>
@@ -476,23 +480,7 @@ function renderWelcomePage(tool) {
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="tech-stats">
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-number" data-target="1000000">0</div>
-                                <div class="stat-label">活跃开发者</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number" data-target="50000000">0</div>
-                                <div class="stat-label">代码行数生成</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-number" data-target="95">0</div>
-                                <div class="stat-label">满意度评分</div>
-                            </div>
-                        </div>
-                    </div>
+
                     
                     <div class="tech-cta">
                         <div class="cta-text">
@@ -518,12 +506,8 @@ function renderWelcomePage(tool) {
 
 // 渲染前言tab
 function renderPrefaceTab(tool) {
-    const allContent = getAllContent(tool);
-    const { wordCount, readingTime } = calculateReadingTime(allContent);
-    
     return `
         <div class="tab-content" id="preface">
-            ${createArticleMeta(wordCount, readingTime, tool.updated)}
             <div class="content-section">
                 <h2>前言</h2>
                 <div class="section-content">
@@ -1097,45 +1081,13 @@ function initWelcomePageAnimations() {
         }, delay);
     });
     
-    // 初始化统计数字动画
-    const statNumbers = document.querySelectorAll('.stat-number');
-    statNumbers.forEach(statNumber => {
-        const target = parseInt(statNumber.getAttribute('data-target'));
-        animateNumber(statNumber, 0, target, 2000);
-    });
+
     
     // 初始化粒子背景动画
     initParticleBackground();
 }
 
-// 数字动画函数
-function animateNumber(element, start, end, duration) {
-    const startTime = performance.now();
-    
-    function updateNumber(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // 使用缓动函数
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        const current = Math.floor(start + (end - start) * easeOutQuart);
-        
-        // 格式化大数字
-        if (current >= 1000000) {
-            element.textContent = (current / 1000000).toFixed(1) + 'M+';
-        } else if (current >= 1000) {
-            element.textContent = (current / 1000).toFixed(0) + 'K+';
-        } else {
-            element.textContent = current + (end >= 95 && end <= 100 ? '%' : '+');
-        }
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateNumber);
-        }
-    }
-    
-    requestAnimationFrame(updateNumber);
-}
+
 
 // 初始化粒子背景
 function initParticleBackground() {

@@ -18,16 +18,33 @@
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/tool-icons.css">
     <link rel="stylesheet" href="../styles/theme-switcher.css">
+    
+    <!-- 主题预加载脚本，防止主题闪烁 -->
+    <script>
+        (function() {
+            try {
+                // 立即读取并应用保存的主题，避免闪烁
+                const savedTheme = localStorage.getItem('ai-tools-theme');
+                if (savedTheme && savedTheme !== 'default') {
+                    // 立即添加主题类到html元素
+                    document.documentElement.className = 'theme-' + savedTheme;
+                    
+                    // 立即创建并添加主题CSS链接
+                    const themeLink = document.createElement('link');
+                    themeLink.id = 'theme-css-preload';
+                    themeLink.rel = 'stylesheet';
+                    themeLink.href = '../src/themes/' + savedTheme + '/theme.css';
+                    document.head.appendChild(themeLink);
+                }
+            } catch (e) {
+                // 静默处理错误，不影响页面加载
+                console.warn('主题预加载失败:', e);
+            }
+        })();
+    </script>
 </head>
 <body class="tool-detail-page">
-    <!-- 页面头部 -->
-    <header class="tool-detail-header-top">
-        <div class="container">
-            <div class="tool-header-content">
-
-            </div>
-        </div>
-    </header>
+    <!-- 移除顶部区域，内容向上占满 -->
 
     <!-- 主要布局容器 -->
     <div class="tool-layout">
@@ -42,12 +59,14 @@
                         <h3 id="sidebarToolName">工具名称</h3>
                     </div>
                 </div>
+                
+                <!-- 区域二：面包屑导航 -->
                 <div class="tool-breadcrumb-sidebar">
                     <a href="../../index.html">首页</a>
                     <i class="fas fa-chevron-right"></i>
                     <a href="../../index.html#tools">工具总览</a>
                     <i class="fas fa-chevron-right"></i>
-                    <span id="toolBreadcrumbName">工具详情</span>
+                    <span id="toolBreadcrumbSidebarName">工具详情</span>
                 </div>
             </div>
             
@@ -102,6 +121,11 @@
 
         <!-- 主内容区域 -->
         <main class="tool-detail-content">
+            <!-- 区域三：右上角主题按钮 -->
+            <div class="theme-switcher-container">
+                <div id="themeSwitcher"></div>
+            </div>
+            
             <div class="tool-content-header" id="toolContentHeader">
                 <!-- 工具基本信息将通过JavaScript渲染 -->
             </div>

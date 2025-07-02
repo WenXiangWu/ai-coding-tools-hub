@@ -6,6 +6,22 @@
     z-index: 1000;
 }
 
+/* 详情页的主题切换器样式 */
+.theme-switcher-detail-page {
+    position: relative;
+    margin-left: 0;
+    z-index: 2000;
+}
+
+/* 工具详情页头部样式 */
+.tool-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem 0;
+    position: relative;
+}
+
 /* 触发器样式 */
 .theme-switcher-trigger {
     display: flex;
@@ -64,6 +80,7 @@
     top: calc(100% + 0.5rem);
     right: 0;
     min-width: 320px;
+    max-width: 90vw; /* 防止在小屏幕上超出视口 */
     background: var(--bg-primary, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 12px;
@@ -79,6 +96,14 @@
     z-index: 9999;
     /* 确保在深色背景下可见 */
     color: var(--text-primary, #1e293b);
+}
+
+/* 详情页下拉菜单特殊样式 */
+.theme-switcher-detail-page .theme-switcher-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    max-height: calc(100vh - 120px); /* 限制最大高度 */
 }
 
 .theme-switcher.open .theme-switcher-dropdown {
@@ -364,6 +389,20 @@
     .theme-option-description {
         font-size: 0.7rem;
     }
+    
+    /* 详情页移动端调整 */
+    .theme-switcher-detail-page {
+        position: relative;
+        margin-left: 0;
+        align-self: center;
+    }
+    
+    .theme-switcher-detail-page .theme-switcher-dropdown {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        max-height: calc(100vh - 100px);
+    }
 }
 
 @media (max-width: 480px) {
@@ -372,6 +411,25 @@
         left: -2rem;
         min-width: auto;
         max-width: none;
+    }
+    
+    /* 详情页小屏幕特殊处理 */
+    .theme-switcher-detail-page {
+        position: relative;
+        margin-left: 0;
+        align-self: center;
+    }
+    
+    .theme-switcher-detail-page .theme-switcher-dropdown {
+        position: fixed;
+        top: auto;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-width: none;
+        margin: 0;
+        max-height: calc(100vh - 80px);
+        transform: translateY(0.5rem);
     }
 }
 

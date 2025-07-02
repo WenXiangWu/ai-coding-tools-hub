@@ -65,4 +65,19 @@
 .theme-default .badge {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 默认主题下的特性卡片样式 */
+.theme-default .matrix-item {
+    background: var(--bg-tertiary) !important;
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+    color: var(--text-primary);
+}
+
+.theme-default .matrix-item h3 {
+    color: var(--text-primary) !important;
+}
+
+.theme-default .matrix-item p {
+    color: var(--text-secondary) !important;
 } 

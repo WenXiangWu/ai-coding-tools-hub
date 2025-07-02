@@ -179,24 +179,43 @@ class ThemeSwitcher {
         // 查找导航栏
         let targetElement = null;
         
-        // 优先级查找合适的容器
-        const selectors = [
-            '.main-nav',
-            '.header-content', 
-            '.demo-nav',  // 演示页面的导航
-            'header',
-            'body'
-        ];
+        // 检测是否为详情页
+        const isDetailPage = document.body.classList.contains('tool-detail-page');
         
-        for (const selector of selectors) {
-            targetElement = document.querySelector(selector);
-            if (targetElement) {
-                console.log(`🎨 主题切换器将插入到: ${selector}`);
-                break;
+        if (isDetailPage) {
+            // 详情页特殊处理，优先查找新的主题切换器容器
+            targetElement = document.querySelector('#themeSwitcher');
+            if (!targetElement) {
+                // 如果不存在，查找其他可能的容器
+                targetElement = document.querySelector('.theme-switcher-container');
+            }
+            if (!targetElement) {
+                // 如果还是不存在，查找工具内容区域
+                targetElement = document.querySelector('.tool-detail-content');
+            }
+        } else {
+            // 主页面的优先级查找合适的容器
+            const selectors = [
+                '.main-nav',
+                '.header-content', 
+                '.demo-nav',  // 演示页面的导航
+                'header'
+            ];
+            
+            for (const selector of selectors) {
+                targetElement = document.querySelector(selector);
+                if (targetElement) {
+                    console.log(`🎨 主题切换器将插入到: ${selector}`);
+                    break;
+                }
             }
         }
         
         if (targetElement) {
+            // 为详情页添加特殊的容器类
+            if (isDetailPage) {
+                this.container.classList.add('theme-switcher-detail-page');
+            }
             targetElement.appendChild(this.container);
         } else {
             console.warn('❌ 未找到合适的容器，主题切换器将插入到body');
@@ -225,6 +244,9 @@ class ThemeSwitcher {
         // 通知其他下拉菜单关闭
         document.dispatchEvent(new CustomEvent('theme-switcher-open'));
         
+        // 调整下拉菜单位置，防止超出视口
+        this.adjustDropdownPosition();
+        
         // 聚焦到第一个主题选项
         const firstOption = this.container.querySelector('.theme-option');
         if (firstOption) {
@@ -234,6 +256,44 @@ class ThemeSwitcher {
         // 添加打开动画
         const dropdown = this.container.querySelector('.theme-switcher-dropdown');
         dropdown.style.animation = 'fadeInUp 0.2s ease-out';
+    }
+
+    /**
+     * 调整下拉菜单位置，防止超出视口
+     */
+    adjustDropdownPosition() {
+        const dropdown = this.container.querySelector('.theme-switcher-dropdown');
+        if (!dropdown) return;
+
+        // 重置位置
+        dropdown.style.left = '';
+        dropdown.style.right = '0';
+        dropdown.style.transform = '';
+
+        // 获取下拉菜单和视口的尺寸
+        const rect = dropdown.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // 检查是否超出右边界
+        if (rect.right > viewportWidth) {
+            const overflowRight = rect.right - viewportWidth;
+            dropdown.style.right = `${-overflowRight - 20}px`; // 留20px边距
+        }
+
+        // 检查是否超出左边界
+        if (rect.left < 0) {
+            dropdown.style.left = '20px';
+            dropdown.style.right = 'auto';
+        }
+
+        // 检查是否超出下边界，如果超出则向上显示
+        if (rect.bottom > viewportHeight) {
+            dropdown.style.top = 'auto';
+            dropdown.style.bottom = '100%';
+            dropdown.style.marginBottom = '0.5rem';
+            dropdown.style.marginTop = '0';
+        }
     }
 
     /**

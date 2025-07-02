@@ -1,9 +1,14 @@
 /* 海洋蓝主题颜色变量 */
+:root.theme-blue,
 body.theme-blue {
     /* 主色调 - 海洋蓝系 */
     --primary-color: #0ea5e9;
     --primary-hover: #0284c7;
     --primary-rgb: 14, 165, 233;
+    
+    /* 辅助色 */
+    --accent-color: #06b6d4;
+    --accent-rgb: 6, 182, 212;
     
     /* 背景色 - 清新蓝调 */
     --bg-primary: #f0f9ff;
