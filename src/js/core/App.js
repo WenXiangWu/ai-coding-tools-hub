@@ -7,6 +7,7 @@ import { eventBus } from './EventBus.js';
 import { ToolService } from '../services/ToolService.js';
 import { CompareService } from '../services/CompareService.js';
 import { ToolCard } from '../components/ToolCard.js';
+import { NavigationManager } from '../managers/navigation-manager.js';
 import { APP_CONFIG, UI_CONSTANTS, CSS_CLASSES } from '../constants/AppConstants.js';
 import { debounce, storage, getDeviceInfo } from '../utils/helpers.js';
 
@@ -15,6 +16,7 @@ class App {
         this.store = new Store();
         this.toolService = null;
         this.compareService = null;
+        this.navigationManager = null;
         this.components = {
             toolCards: new Map(),
             modals: new Map()
@@ -40,6 +42,9 @@ class App {
             // 🔑 关键修复：先初始化UI，确保DOM元素可用
             this.initializeUI();
             
+            // 初始化导航管理器
+            await this.initializeNavigation();
+            
             // 然后设置事件监听，这样事件处理器中可以安全访问DOM元素
             this.setupEventListeners();
             
@@ -60,6 +65,20 @@ class App {
         } catch (error) {
             this.handleError('应用初始化失败', error);
             throw error;
+        }
+    }
+
+    /**
+     * 初始化导航
+     */
+    async initializeNavigation() {
+        try {
+            this.navigationManager = new NavigationManager();
+            await this.navigationManager.initialize();
+            console.log('✅ 导航初始化完成');
+        } catch (error) {
+            console.error('❌ 导航初始化失败:', error);
+            // 导航初始化失败不应该阻止应用启动，所以不抛出错误
         }
     }
 
@@ -1122,6 +1141,9 @@ class App {
         // 清理服务
         this.toolService?.destroy();
         this.compareService?.destroy();
+        
+        // 清理导航管理器
+        this.navigationManager?.destroy();
         
         // 清理事件监听
         window.removeEventListener('resize', this.handleResize);

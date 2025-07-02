@@ -163,6 +163,13 @@ class ThemeSwitcher {
                 this.close();
             }
         });
+
+        // 监听全局关闭下拉菜单事件
+        document.addEventListener('close-all-dropdowns', () => {
+            if (this.isOpen) {
+                this.close();
+            }
+        });
     }
 
     /**
@@ -214,6 +221,9 @@ class ThemeSwitcher {
     open() {
         this.isOpen = true;
         this.container.classList.add('open');
+        
+        // 通知其他下拉菜单关闭
+        document.dispatchEvent(new CustomEvent('theme-switcher-open'));
         
         // 聚焦到第一个主题选项
         const firstOption = this.container.querySelector('.theme-option');

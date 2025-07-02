@@ -3,366 +3,790 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>工具管理器演示 - AI编程工具大全</title>
+    <title>导航配置管理演示 - AI编程工具中心</title>
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/theme-switcher.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
         }
-        .container {
-            background: white;
-            padding: 30px;
+        
+        .manager-container {
+            max-width: 1400px;
+            margin: 100px auto 50px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
         }
-        h1, h2 {
-            color: #333;
+        
+        .manager-title {
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
         }
-        .demo-section {
-            margin-bottom: 30px;
-            padding: 20px;
+        
+        .manager-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .manager-panel {
             background: #f8f9fa;
             border-radius: 8px;
-            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
         }
-        .tool-card {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        
+        .panel-title {
+            color: #495057;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .tool-name {
-            font-weight: bold;
-            color: #007bff;
+        
+        .form-group {
+            margin-bottom: 1rem;
         }
-        .tool-category {
-            color: #666;
-            font-size: 14px;
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
         }
-        button {
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
             background: #007bff;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 5px;
         }
-        button:hover {
+        
+        .btn-primary:hover {
             background: #0056b3;
         }
-        .log {
-            background: #1e1e1e;
-            color: #00ff00;
-            padding: 15px;
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .status-area {
+            background: #e9ecef;
             border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
             max-height: 300px;
             overflow-y: auto;
-            white-space: pre-wrap;
         }
-        .stats {
+        
+        .current-config {
+            grid-column: 1 / -1;
+        }
+        
+        .config-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .quick-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
-        .stat-card {
+        
+        .quick-action {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
+            padding: 1rem;
             border-radius: 8px;
             text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
+        
+        .quick-action:hover {
+            transform: translateY(-2px);
         }
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.9;
+        
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .manager-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 AI编程工具大全 - 工具管理器演示</h1>
-        <p>这个演示页面展示了模块化工具管理器的API功能和使用方法。</p>
-        
-        <div class="demo-section">
-            <h2>📊 系统状态</h2>
-            <div class="stats" id="stats-grid">
-                <!-- 统计信息将在这里显示 -->
-            </div>
-            <button onclick="loadStatistics()">刷新统计</button>
-        </div>
-
-        <div class="demo-section">
-            <h2>🔧 工具管理器 API</h2>
-            <button onclick="initializeManager()">初始化管理器</button>
-            <button onclick="loadAllTools()">加载所有工具</button>
-            <button onclick="searchTools()">搜索工具</button>
-            <button onclick="filterTools()">筛选工具</button>
-            <button onclick="getToolDetails()">获取工具详情</button>
-            
-            <h3>控制台日志：</h3>
-            <div class="log" id="console-log"></div>
-        </div>
-
-        <div class="demo-section">
-            <h2>🔍 工具列表</h2>
-            <div id="tools-list">
-                <!-- 工具列表将在这里显示 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>AI编程工具中心</span>
+                </div>
+                <nav class="main-nav">
+                    <!-- 导航将通过JavaScript动态生成 -->
+                </nav>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
+    </header>
 
-        <div class="demo-section">
-            <h2>⚙️ 配置管理</h2>
-            <button onclick="showConfig()">显示配置</button>
-            <button onclick="toggleTool()">切换工具状态</button>
-            <button onclick="addNewTool()">模拟添加新工具</button>
-            
-            <h3>配置信息：</h3>
-            <div class="log" id="config-log"></div>
+    <div class="manager-container">
+        <h1 class="manager-title">
+            <i class="fas fa-cogs"></i>
+            导航配置管理工具
+        </h1>
+
+        <!-- 快速操作 -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="window.configManager.addSampleNavigation()">
+                <i class="fas fa-plus"></i>
+                <h4>添加示例导航</h4>
+                <p>快速添加一个示例导航项</p>
+            </div>
+            <div class="quick-action" onclick="window.configManager.addSampleTool()">
+                <i class="fas fa-wrench"></i>
+                <h4>添加示例工具</h4>
+                <p>快速添加一个示例开发工具</p>
+            </div>
+            <div class="quick-action" onclick="window.configManager.showStats()">
+                <i class="fas fa-chart-bar"></i>
+                <h4>查看统计</h4>
+                <p>显示当前配置统计信息</p>
+            </div>
+            <div class="quick-action" onclick="window.configManager.resetConfig()">
+                <i class="fas fa-undo"></i>
+                <h4>重置配置</h4>
+                <p>恢复到默认导航配置</p>
+            </div>
         </div>
+
+        <div class="manager-grid">
+            <!-- 添加导航项 -->
+            <div class="manager-panel">
+                <h3 class="panel-title">
+                    <i class="fas fa-plus-circle"></i>
+                    添加导航项
+                </h3>
+                <form id="addNavForm">
+                    <div class="form-group">
+                        <label>ID (必填)</label>
+                        <input type="text" id="navId" placeholder="unique-nav-id">
+                    </div>
+                    <div class="form-group">
+                        <label>名称 (必填)</label>
+                        <input type="text" id="navName" placeholder="导航名称">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>链接</label>
+                            <input type="text" id="navHref" placeholder="#section 或 http://...">
+                        </div>
+                        <div class="form-group">
+                            <label>图标</label>
+                            <input type="text" id="navIcon" placeholder="fas fa-star">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>类型</label>
+                            <select id="navType">
+                                <option value="internal">内部链接</option>
+                                <option value="external">外部链接</option>
+                                <option value="dropdown">下拉菜单</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>优先级</label>
+                            <select id="navPriority">
+                                <option value="high">高</option>
+                                <option value="medium">中</option>
+                                <option value="low">低</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea id="navDescription" placeholder="导航项描述"></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" onclick="window.configManager.addNavigation()">
+                            <i class="fas fa-plus"></i> 添加导航项
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 添加开发工具 -->
+            <div class="manager-panel">
+                <h3 class="panel-title">
+                    <i class="fas fa-tools"></i>
+                    添加开发工具
+                </h3>
+                <form id="addToolForm">
+                    <div class="form-group">
+                        <label>ID (必填)</label>
+                        <input type="text" id="toolId" placeholder="unique-tool-id">
+                    </div>
+                    <div class="form-group">
+                        <label>名称 (必填)</label>
+                        <input type="text" id="toolName" placeholder="工具名称">
+                    </div>
+                    <div class="form-group">
+                        <label>链接 (必填)</label>
+                        <input type="text" id="toolHref" placeholder="devtools/tool.html">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>图标</label>
+                            <input type="text" id="toolIcon" placeholder="fas fa-tool">
+                        </div>
+                        <div class="form-group">
+                            <label>分类</label>
+                            <select id="toolCategory">
+                                <option value="utility">实用工具</option>
+                                <option value="format">格式化</option>
+                                <option value="compare">对比工具</option>
+                                <option value="generator">生成工具</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea id="toolDescription" placeholder="工具描述"></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success" onclick="window.configManager.addTool()">
+                            <i class="fas fa-plus"></i> 添加工具
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 管理现有项目 -->
+            <div class="manager-panel">
+                <h3 class="panel-title">
+                    <i class="fas fa-list"></i>
+                    管理现有项目
+                </h3>
+                <div class="form-group">
+                    <label>选择项目</label>
+                    <select id="existingItems" onchange="window.configManager.selectItem()">
+                        <option value="">选择要管理的项目...</option>
+                    </select>
+                </div>
+                <div id="itemDetails" style="display: none;">
+                    <div class="status-area" id="selectedItemInfo"></div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="window.configManager.updateSelected()">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="window.configManager.removeSelected()">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="window.configManager.enableSelected()">
+                            <i class="fas fa-check"></i> 启用
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 配置管理 -->
+            <div class="manager-panel">
+                <h3 class="panel-title">
+                    <i class="fas fa-cog"></i>
+                    配置管理
+                </h3>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="window.configManager.exportConfig()">
+                        <i class="fas fa-download"></i> 导出配置
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                        <i class="fas fa-upload"></i> 导入配置
+                    </button>
+                    <input type="file" id="importFile" style="display: none" accept=".json" onchange="window.configManager.importConfig(event)">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" onclick="window.configManager.resetConfig()">
+                        <i class="fas fa-undo"></i> 重置为默认
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="window.configManager.validateConfig()">
+                        <i class="fas fa-check-circle"></i> 验证配置
+                    </button>
+                </div>
+            </div>
+
+            <!-- 当前配置 -->
+            <div class="manager-panel current-config">
+                <h3 class="panel-title">
+                    <i class="fas fa-info-circle"></i>
+                    当前配置信息
+                </h3>
+                <div class="config-display" id="configDisplay">
+                    点击"刷新状态"查看当前配置
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="window.configManager.refreshStatus()">
+                        <i class="fas fa-refresh"></i> 刷新状态
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 状态显示 -->
+        <div id="statusArea" class="status-area">
+            等待操作...
+        </div>
+
+        <!-- 消息提示区域 -->
+        <div id="messageArea"></div>
     </div>
 
     <script type="module">
-        let toolsManager = null;
-        let utils = null;
-        let config = null;
+        import { NavigationManager } from '../src/js/managers/navigation-manager.js';
+        import { navigationConfigManager } from '../src/js/utils/navigation-config-manager.js';
 
-        // 日志函数
-        function log(message, elementId = 'console-log') {
-            const logElement = document.getElementById(elementId);
-            const timestamp = new Date().toLocaleTimeString();
-            logElement.textContent += `[${timestamp}] ${message}\n`;
-            logElement.scrollTop = logElement.scrollHeight;
-            console.log(message);
+        class ConfigManager {
+            constructor() {
+                this.navigationManager = null;
+                this.selectedItemId = null;
+            }
+
+            async initialize() {
+                try {
+                    // 初始化导航管理器
+                    this.navigationManager = new NavigationManager();
+                    await this.navigationManager.initialize();
+                    
+                    // 刷新项目列表
+                    this.refreshItemList();
+                    
+                    // 显示初始状态
+                    this.refreshStatus();
+                    
+                    this.showMessage('配置管理器初始化成功', 'success');
+                    
+                } catch (error) {
+                    console.error('初始化失败:', error);
+                    this.showMessage('初始化失败: ' + error.message, 'danger');
+                }
+            }
+
+            addNavigation() {
+                try {
+                    const item = {
+                        id: document.getElementById('navId').value.trim(),
+                        name: document.getElementById('navName').value.trim(),
+                        href: document.getElementById('navHref').value.trim(),
+                        icon: document.getElementById('navIcon').value.trim(),
+                        type: document.getElementById('navType').value,
+                        description: document.getElementById('navDescription').value.trim(),
+                        mobile: {
+                            priority: document.getElementById('navPriority').value,
+                            showInCollapsed: true
+                        }
+                    };
+
+                    if (!item.id || !item.name) {
+                        throw new Error('ID和名称是必填字段');
+                    }
+
+                    this.navigationManager.addNavigationItem(item);
+                    this.showMessage(`导航项 "${item.name}" 添加成功`, 'success');
+                    this.clearForm('addNavForm');
+                    this.refreshItemList();
+                    
+                } catch (error) {
+                    this.showMessage('添加失败: ' + error.message, 'danger');
+                }
+            }
+
+            addTool() {
+                try {
+                    const tool = {
+                        id: document.getElementById('toolId').value.trim(),
+                        name: document.getElementById('toolName').value.trim(),
+                        href: document.getElementById('toolHref').value.trim(),
+                        icon: document.getElementById('toolIcon').value.trim(),
+                        category: document.getElementById('toolCategory').value,
+                        description: document.getElementById('toolDescription').value.trim()
+                    };
+
+                    if (!tool.id || !tool.name || !tool.href) {
+                        throw new Error('ID、名称和链接是必填字段');
+                    }
+
+                    this.navigationManager.addDevtoolItem(tool);
+                    this.showMessage(`开发工具 "${tool.name}" 添加成功`, 'success');
+                    this.clearForm('addToolForm');
+                    this.refreshItemList();
+                    
+                } catch (error) {
+                    this.showMessage('添加失败: ' + error.message, 'danger');
+                }
+            }
+
+            addSampleNavigation() {
+                const sampleNav = {
+                    id: 'sample-nav-' + Date.now(),
+                    name: '示例导航',
+                    href: '#sample',
+                    icon: 'fas fa-star',
+                    type: 'internal',
+                    description: '这是一个示例导航项',
+                    mobile: {
+                        priority: 'medium',
+                        showInCollapsed: true
+                    }
+                };
+
+                try {
+                    this.navigationManager.addNavigationItem(sampleNav);
+                    this.showMessage('示例导航添加成功', 'success');
+                    this.refreshItemList();
+                } catch (error) {
+                    this.showMessage('添加失败: ' + error.message, 'danger');
+                }
+            }
+
+            addSampleTool() {
+                const sampleTool = {
+                    id: 'sample-tool-' + Date.now(),
+                    name: '示例工具',
+                    href: 'devtools/sample.html',
+                    icon: 'fas fa-flask',
+                    category: 'utility',
+                    description: '这是一个示例开发工具'
+                };
+
+                try {
+                    this.navigationManager.addDevtoolItem(sampleTool);
+                    this.showMessage('示例工具添加成功', 'success');
+                    this.refreshItemList();
+                } catch (error) {
+                    this.showMessage('添加失败: ' + error.message, 'danger');
+                }
+            }
+
+            refreshItemList() {
+                const select = document.getElementById('existingItems');
+                select.innerHTML = '<option value="">选择要管理的项目...</option>';
+
+                const navItems = navigationConfigManager.getAllNavigationItems();
+                const devtools = navigationConfigManager.getAllDevtools();
+
+                // 添加导航项
+                navItems.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = `[导航] ${item.name}`;
+                    select.appendChild(option);
+                });
+
+                // 添加开发工具
+                devtools.forEach(tool => {
+                    const option = document.createElement('option');
+                    option.value = tool.id;
+                    option.textContent = `[工具] ${tool.name}`;
+                    select.appendChild(option);
+                });
+            }
+
+            selectItem() {
+                const select = document.getElementById('existingItems');
+                const itemId = select.value;
+                
+                if (!itemId) {
+                    document.getElementById('itemDetails').style.display = 'none';
+                    return;
+                }
+
+                this.selectedItemId = itemId;
+                
+                const item = navigationConfigManager.getNavigationItem(itemId);
+                if (item) {
+                    document.getElementById('selectedItemInfo').textContent = JSON.stringify(item, null, 2);
+                    document.getElementById('itemDetails').style.display = 'block';
+                }
+            }
+
+            removeSelected() {
+                if (!this.selectedItemId) return;
+
+                try {
+                    this.navigationManager.removeNavigationItem(this.selectedItemId);
+                    this.showMessage('项目删除成功', 'success');
+                    this.refreshItemList();
+                    document.getElementById('itemDetails').style.display = 'none';
+                } catch (error) {
+                    this.showMessage('删除失败: ' + error.message, 'danger');
+                }
+            }
+
+            enableSelected() {
+                if (!this.selectedItemId) return;
+
+                try {
+                    this.navigationManager.enableNavigationItem(this.selectedItemId);
+                    this.showMessage('项目启用成功', 'success');
+                    this.refreshItemList();
+                    this.selectItem(); // 刷新详情
+                } catch (error) {
+                    this.showMessage('启用失败: ' + error.message, 'danger');
+                }
+            }
+
+            updateSelected() {
+                // 这里可以实现编辑功能
+                this.showMessage('编辑功能开发中...', 'warning');
+            }
+
+            exportConfig() {
+                try {
+                    const config = this.navigationManager.exportConfig();
+                    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `navigation-config-${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    
+                    URL.revokeObjectURL(url);
+                    this.showMessage('配置导出成功', 'success');
+                } catch (error) {
+                    this.showMessage('导出失败: ' + error.message, 'danger');
+                }
+            }
+
+            importConfig(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const config = JSON.parse(e.target.result);
+                        this.navigationManager.importConfig(config);
+                        this.showMessage('配置导入成功', 'success');
+                        this.refreshItemList();
+                        this.refreshStatus();
+                    } catch (error) {
+                        this.showMessage('导入失败: ' + error.message, 'danger');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            resetConfig() {
+                if (confirm('确定要重置为默认配置吗？这将删除所有自定义设置。')) {
+                    this.navigationManager.resetConfig();
+                    this.showMessage('配置已重置为默认', 'success');
+                    this.refreshItemList();
+                    this.refreshStatus();
+                }
+            }
+
+            validateConfig() {
+                const validation = navigationConfigManager.validateConfig();
+                let message = `配置验证完成\n有效性: ${validation.valid ? '有效' : '无效'}`;
+                
+                if (validation.errors.length > 0) {
+                    message += `\n错误: ${validation.errors.join(', ')}`;
+                }
+                
+                if (validation.warnings.length > 0) {
+                    message += `\n警告: ${validation.warnings.join(', ')}`;
+                }
+
+                this.showStatus(message);
+                this.showMessage(validation.valid ? '配置验证通过' : '配置验证失败', validation.valid ? 'success' : 'danger');
+            }
+
+            showStats() {
+                const stats = this.navigationManager.getConfigStats();
+                const status = this.navigationManager.getStatus();
+                
+                const info = `
+配置统计信息:
+- 总导航项: ${stats.totalNavigationItems}
+- 总开发工具: ${stats.totalDevtools}
+- 自定义项目: ${stats.customItems}
+- 禁用项目: ${stats.disabledItems}
+- 内置导航: ${stats.builtinNavigation}
+- 内置工具: ${stats.builtinDevtools}
+
+导航状态:
+- 初始化状态: ${status.initialized ? '已初始化' : '未初始化'}
+- 移动端菜单: ${status.mobileMenuOpen ? '已打开' : '已关闭'}
+- 当前断点: ${status.currentBreakpoint}
+- 配置有效性: ${status.configValid ? '有效' : '无效'}`;
+
+                this.showStatus(info);
+            }
+
+            refreshStatus() {
+                this.showStats();
+                
+                const config = this.navigationManager.exportConfig();
+                document.getElementById('configDisplay').textContent = JSON.stringify(config, null, 2);
+            }
+
+            clearForm(formId) {
+                const form = document.getElementById(formId);
+                const inputs = form.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    if (input.type === 'select-one') {
+                        input.selectedIndex = 0;
+                    } else {
+                        input.value = '';
+                    }
+                });
+            }
+
+            showStatus(message) {
+                document.getElementById('statusArea').textContent = message;
+            }
+
+            showMessage(message, type = 'info') {
+                const messageArea = document.getElementById('messageArea');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                
+                messageArea.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
         }
 
-        // 初始化管理器
-        window.initializeManager = async function() {
-            try {
-                log('开始初始化工具管理器...');
-                
-                // 导入模块
-                const managerModule = await import('./js/managers/tools-manager.js');
-                const utilsModule = await import('./js/utils/tool-schema.js');
-                const configModule = await import('./js/config/tools-config.js');
-                
-                toolsManager = managerModule.toolsManager;
-                utils = utilsModule;
-                config = configModule;
-                
-                log('模块导入成功');
-                
-                // 初始化管理器
-                await toolsManager.initialize();
-                log('✅ 工具管理器初始化完成');
-                
-                // 显示加载状态
-                const status = toolsManager.getLoadingStatus();
-                log(`已加载 ${status.toolsLoaded}/${status.totalTools} 个工具`);
-                
-            } catch (error) {
-                log(`❌ 初始化失败: ${error.message}`);
-            }
-        };
+        // 创建全局实例
+        window.configManager = new ConfigManager();
 
-        // 加载所有工具
-        window.loadAllTools = function() {
-            if (!toolsManager) {
-                log('请先初始化管理器');
-                return;
-            }
-            
-            try {
-                const tools = toolsManager.getAllTools();
-                log(`获取到 ${tools.length} 个工具:`);
-                
-                const toolsList = document.getElementById('tools-list');
-                toolsList.innerHTML = '';
-                
-                tools.forEach(tool => {
-                    const toolCard = document.createElement('div');
-                    toolCard.className = 'tool-card';
-                    toolCard.innerHTML = `
-                        <div class="tool-name">${tool.name}</div>
-                        <div class="tool-category">${tool.category} | ${tool.price} | 评分: ${tool.rating}</div>
-                        <div>${tool.description.substring(0, 100)}...</div>
-                    `;
-                    toolsList.appendChild(toolCard);
-                });
-                
-                log(`✅ 工具列表渲染完成`);
-            } catch (error) {
-                log(`❌ 加载工具失败: ${error.message}`);
-            }
-        };
-
-        // 搜索工具
-        window.searchTools = function() {
-            if (!toolsManager) {
-                log('请先初始化管理器');
-                return;
-            }
-            
-            try {
-                const query = 'cursor';
-                const results = toolsManager.searchTools(query);
-                log(`搜索 "${query}" 找到 ${results.length} 个结果:`);
-                
-                results.forEach(tool => {
-                    log(`- ${tool.name}: ${tool.description.substring(0, 50)}...`);
-                });
-            } catch (error) {
-                log(`❌ 搜索失败: ${error.message}`);
-            }
-        };
-
-        // 筛选工具
-        window.filterTools = function() {
-            if (!toolsManager) {
-                log('请先初始化管理器');
-                return;
-            }
-            
-            try {
-                const filters = { category: 'AI代码编辑器' };
-                const results = toolsManager.filterTools(filters);
-                log(`按分类筛选找到 ${results.length} 个结果:`);
-                
-                results.forEach(tool => {
-                    log(`- ${tool.name} (${tool.category})`);
-                });
-            } catch (error) {
-                log(`❌ 筛选失败: ${error.message}`);
-            }
-        };
-
-        // 获取工具详情
-        window.getToolDetails = function() {
-            if (!toolsManager) {
-                log('请先初始化管理器');
-                return;
-            }
-            
-            try {
-                const tool = toolsManager.getTool('cursor');
-                if (tool) {
-                    log(`获取 Cursor 详情:`);
-                    log(`- 名称: ${tool.name}`);
-                    log(`- 类型: ${tool.type}`);
-                    log(`- 功能: ${tool.features.join(', ')}`);
-                    log(`- 平台: ${tool.platforms.join(', ')}`);
-                    log(`- 评分: ${tool.rating}/5.0`);
-                    log(`- 用户数: ${tool.users}`);
-                } else {
-                    log('未找到指定工具');
-                }
-            } catch (error) {
-                log(`❌ 获取详情失败: ${error.message}`);
-            }
-        };
-
-        // 加载统计信息
-        window.loadStatistics = function() {
-            if (!toolsManager) {
-                log('请先初始化管理器');
-                return;
-            }
-            
-            try {
-                const stats = toolsManager.getStatistics();
-                
-                // 显示统计卡片
-                const statsGrid = document.getElementById('stats-grid');
-                statsGrid.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-number">${stats.total}</div>
-                        <div class="stat-label">总工具数</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${stats.averageRating.toFixed(1)}</div>
-                        <div class="stat-label">平均评分</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${Object.keys(stats.byCategory).length}</div>
-                        <div class="stat-label">分类数量</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${Math.round(stats.totalUsers / 1000)}K+</div>
-                        <div class="stat-label">总用户数</div>
-                    </div>
-                `;
-                
-                log('✅ 统计信息已更新');
-                log(`按分类统计: ${JSON.stringify(stats.byCategory, null, 2)}`);
-            } catch (error) {
-                log(`❌ 获取统计失败: ${error.message}`);
-            }
-        };
-
-        // 显示配置
-        window.showConfig = function() {
-            if (!config) {
-                log('配置模块未加载', 'config-log');
-                return;
-            }
-            
-            try {
-                const toolsConfig = config.TOOLS_CONFIG;
-                const globalConfig = config.GLOBAL_CONFIG;
-                
-                log(`工具配置 (${toolsConfig.length} 项):`, 'config-log');
-                toolsConfig.forEach(tool => {
-                    log(`- ${tool.id}: enabled=${tool.enabled}, priority=${tool.priority}`, 'config-log');
-                });
-                
-                log(`\n全局配置:`, 'config-log');
-                log(JSON.stringify(globalConfig, null, 2), 'config-log');
-            } catch (error) {
-                log(`❌ 显示配置失败: ${error.message}`, 'config-log');
-            }
-        };
-
-        // 切换工具状态
-        window.toggleTool = function() {
-            if (!config) {
-                log('配置模块未加载', 'config-log');
-                return;
-            }
-            
-            try {
-                const toolConfig = config.getToolConfig('gemini');
-                if (toolConfig) {
-                    toolConfig.enabled = !toolConfig.enabled;
-                    log(`已${toolConfig.enabled ? '启用' : '禁用'} ${toolConfig.id}`, 'config-log');
-                }
-            } catch (error) {
-                log(`❌ 切换状态失败: ${error.message}`, 'config-log');
-            }
-        };
-
-        // 模拟添加新工具
-        window.addNewTool = function() {
-            log('模拟添加新工具的步骤:', 'config-log');
-            log('1. 创建 js/tools/newtool.js 文件', 'config-log');
-            log('2. 在配置中添加工具项', 'config-log');
-            log('3. 刷新页面查看效果', 'config-log');
-            log('详细步骤请参考 README.md 文档', 'config-log');
-        };
-
-        // 页面加载时自动初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            log('页面加载完成，点击"初始化管理器"开始演示');
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            window.configManager.initialize();
         });
     </script>
 </body>
