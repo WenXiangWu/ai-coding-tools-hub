@@ -1,5 +1,5 @@
 /* 海洋蓝主题颜色变量 */
-:root.theme-blue {
+body.theme-blue {
     /* 主色调 - 海洋蓝系 */
     --primary-color: #0ea5e9;
     --primary-hover: #0284c7;

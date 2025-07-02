@@ -21,6 +21,31 @@ class ThemeManager {
         this.createThemeLink();
         await this.restoreTheme();
         this.initSystemThemeDetection();
+        
+        // 预加载热门主题以提升切换速度
+        this.preloadPopularThemes();
+        
+        console.log('🎨 主题管理器初始化完成');
+    }
+
+    /**
+     * 预加载热门主题
+     */
+    preloadPopularThemes() {
+        // 异步预加载，不阻塞初始化
+        setTimeout(() => {
+            const popularThemes = ['dark', 'blue'];
+            popularThemes.forEach(themeId => {
+                const theme = this.themes.get(themeId);
+                if (theme && theme.file) {
+                    const link = document.createElement('link');
+                    link.rel = 'prefetch';
+                    link.href = this.getThemeUrl(theme.file);
+                    document.head.appendChild(link);
+                }
+            });
+            console.log('🚀 热门主题预加载完成');
+        }, 1000);
     }
 
     /**
@@ -33,35 +58,80 @@ class ThemeManager {
                 description: '清新简洁的默认主题',
                 icon: '🌟',
                 category: 'light',
-                file: 'default/theme.css'
+                file: 'default/theme.css',
+                colors: {
+                    '--bg-primary': '#ffffff',
+                    '--bg-secondary': '#f8fafc',
+                    '--bg-card': '#ffffff',
+                    '--text-primary': '#1e293b',
+                    '--text-secondary': '#64748b',
+                    '--primary-color': '#2563eb',
+                    '--border-color': '#e2e8f0'
+                }
             }],
             ['dark', {
                 name: '深色主题',
                 description: '护眼的深色主题',
                 icon: '🌙',
                 category: 'dark',
-                file: 'dark/theme.css'
+                file: 'dark/theme.css',
+                colors: {
+                    '--bg-primary': '#0f172a',
+                    '--bg-secondary': '#1e293b',
+                    '--bg-card': '#1e293b',
+                    '--text-primary': '#f1f5f9',
+                    '--text-secondary': '#cbd5e1',
+                    '--primary-color': '#6366f1',
+                    '--border-color': '#334155'
+                }
             }],
             ['blue', {
                 name: '海洋蓝',
                 description: '清新的蓝色主题',
                 icon: '🌊',
                 category: 'light',
-                file: 'blue/theme.css'
+                file: 'blue/theme.css',
+                colors: {
+                    '--bg-primary': '#f0f9ff',
+                    '--bg-secondary': '#e0f2fe',
+                    '--bg-card': '#ffffff',
+                    '--text-primary': '#0c4a6e',
+                    '--text-secondary': '#075985',
+                    '--primary-color': '#0ea5e9',
+                    '--border-color': '#bae6fd'
+                }
             }],
             ['green', {
                 name: '森林绿',
                 description: '自然的绿色主题',
                 icon: '🌿',
                 category: 'light',
-                file: 'green/theme.css'
+                file: 'green/theme.css',
+                colors: {
+                    '--bg-primary': '#f0fdf4',
+                    '--bg-secondary': '#dcfce7',
+                    '--bg-card': '#ffffff',
+                    '--text-primary': '#064e3b',
+                    '--text-secondary': '#065f46',
+                    '--primary-color': '#10b981',
+                    '--border-color': '#bbf7d0'
+                }
             }],
             ['purple', {
                 name: '紫罗兰',
                 description: '优雅的紫色主题',
                 icon: '💜',
                 category: 'light',
-                file: 'purple/theme.css'
+                file: 'purple/theme.css',
+                colors: {
+                    '--bg-primary': '#faf5ff',
+                    '--bg-secondary': '#f3e8ff',
+                    '--bg-card': '#ffffff',
+                    '--text-primary': '#581c87',
+                    '--text-secondary': '#6b21a8',
+                    '--primary-color': '#8b5cf6',
+                    '--border-color': '#e9d5ff'
+                }
             }],
             ['auto', {
                 name: '跟随系统',
@@ -99,12 +169,35 @@ class ThemeManager {
     }
 
     /**
+     * 获取主题文件的正确路径
+     * @param {string} themeFile - 主题文件路径
+     * @returns {string} 完整的URL路径
+     */
+    getThemeUrl(themeFile) {
+        // 检测当前页面位置来确定正确的相对路径
+        const currentPath = window.location.pathname;
+        const isInDemos = currentPath.includes('/demos/');
+        const isInPages = currentPath.includes('/pages/');
+        
+        let basePath = './src/themes';
+        if (isInDemos) {
+            basePath = '../src/themes';
+        } else if (isInPages) {
+            basePath = '../src/themes';
+        }
+        
+        return `${basePath}/${themeFile}`;
+    }
+
+    /**
      * 切换主题
      * @param {string} themeId - 主题ID
      * @returns {Promise<boolean>} 是否切换成功
      */
     async switchTheme(themeId) {
         try {
+            console.log(`🚀 快速切换主题: ${themeId}`);
+            
             if (!this.themes.has(themeId)) {
                 console.warn(`主题 "${themeId}" 不存在`);
                 return false;
@@ -112,43 +205,42 @@ class ThemeManager {
 
             const theme = this.themes.get(themeId);
             
+            // 立即更新UI状态，不等待文件加载
+            this.currentTheme = themeId;
+            this.updateBodyClass(themeId, theme.category);
+            this.addSwitchAnimation();
+            
             // 处理自动主题
             if (themeId === 'auto') {
-                return await this.enableAutoTheme();
+                this.disableAutoTheme();
+                const systemTheme = this.getSystemTheme();
+                await this.switchToSystemTheme(systemTheme);
+                this.autoThemeEnabled = true;
+                this.saveTheme(themeId);
+                this.notifyObservers(themeId, theme);
+                return true;
             }
 
             // 禁用自动主题
             this.disableAutoTheme();
 
-            // 加载主题文件
-            if (theme.file) {
-                const themeUrl = `src/themes/${theme.file}`;
-                await this.loadThemeFile(themeUrl);
-            } else {
-                // 移除主题文件，使用默认样式
-                this.themeLink.href = '';
-            }
+            // 异步加载主题文件（不阻塞UI）
+            const loadPromise = theme.file ? 
+                this.loadThemeFile(this.getThemeUrl(theme.file)) : 
+                Promise.resolve();
 
-            // 更新当前主题
-            this.currentTheme = themeId;
-            
-            // 保存主题选择
+            // 立即保存和通知，不等待文件加载完成
             this.saveTheme(themeId);
-            
-            // 更新body类名
-            this.updateBodyClass(themeId, theme.category);
-            
-            // 通知观察者
             this.notifyObservers(themeId, theme);
-            
-            // 添加切换动画
-            this.addSwitchAnimation();
 
-            console.log(`主题已切换至: ${theme.name}`);
+            // 等待文件加载（如果需要）
+            await loadPromise;
+
+            console.log(`✅ 主题切换完成: ${theme.name}`);
             return true;
             
         } catch (error) {
-            console.error('主题切换失败:', error);
+            console.error('❌ 主题切换失败:', error);
             return false;
         }
     }
@@ -158,24 +250,46 @@ class ThemeManager {
      * @param {string} url - 主题文件URL
      */
     async loadThemeFile(url) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const link = this.themeLink;
             
-            const onLoad = () => {
+            // 缩短超时时间，快速失败
+            const timeout = setTimeout(() => {
                 link.removeEventListener('load', onLoad);
                 link.removeEventListener('error', onError);
+                console.warn(`⚠️ 主题文件加载超时: ${url}`);
+                resolve(); // 快速resolve，不阻塞UI
+            }, 1500); // 减少到1.5秒
+            
+            const onLoad = () => {
+                clearTimeout(timeout);
+                link.removeEventListener('load', onLoad);
+                link.removeEventListener('error', onError);
+                console.log(`✅ 主题文件加载成功: ${url}`);
                 resolve();
             };
             
-            const onError = () => {
+            const onError = (e) => {
+                clearTimeout(timeout);
                 link.removeEventListener('load', onLoad);
                 link.removeEventListener('error', onError);
-                reject(new Error(`Failed to load theme: ${url}`));
+                console.warn(`⚠️ 主题文件加载失败，使用默认样式: ${url}`);
+                resolve(); // 错误时也快速resolve
             };
+            
+            // 检查是否已经是相同URL，避免重复加载
+            if (link.href && link.href.endsWith(url.split('/').pop())) {
+                console.log(`🔄 主题文件已加载，跳过: ${url}`);
+                resolve();
+                return;
+            }
             
             link.addEventListener('load', onLoad);
             link.addEventListener('error', onError);
+            
+            // 开始加载
             link.href = url;
+            console.log(`📥 快速加载主题文件: ${url}`);
         });
     }
 
@@ -204,7 +318,7 @@ class ThemeManager {
         const theme = this.themes.get(themeId);
         
         if (theme.file) {
-            const themeUrl = `src/themes/${theme.file}`;
+            const themeUrl = this.getThemeUrl(theme.file);
             await this.loadThemeFile(themeUrl);
         }
         
@@ -235,6 +349,23 @@ class ThemeManager {
     }
 
     /**
+     * 立即应用主题CSS变量
+     */
+    applyThemeVariables(themeId) {
+        const theme = this.themes.get(themeId);
+        if (!theme || !theme.colors) return;
+        
+        const body = document.body;
+        
+        // 立即应用CSS变量到body样式
+        Object.entries(theme.colors).forEach(([property, value]) => {
+            body.style.setProperty(property, value);
+        });
+        
+        console.log(`⚡ 立即应用主题变量: ${theme.name}`);
+    }
+
+    /**
      * 更新body类名
      */
     updateBodyClass(themeId, category) {
@@ -251,6 +382,9 @@ class ThemeManager {
         } else {
             body.classList.add('theme-light');
         }
+        
+        // 立即应用主题变量
+        this.applyThemeVariables(themeId);
     }
 
     /**

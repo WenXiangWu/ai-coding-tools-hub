@@ -1,5 +1,5 @@
 /* 深色主题颜色变量 */
-:root.theme-dark {
+body.theme-dark {
     /* 主色调 */
     --primary-color: #6366f1;
     --primary-hover: #4f46e5;

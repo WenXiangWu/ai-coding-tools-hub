@@ -170,11 +170,29 @@ class ThemeSwitcher {
      */
     attachToDOM() {
         // 查找导航栏
-        const nav = document.querySelector('.main-nav') || document.querySelector('.header-content');
-        if (nav) {
-            nav.appendChild(this.container);
+        let targetElement = null;
+        
+        // 优先级查找合适的容器
+        const selectors = [
+            '.main-nav',
+            '.header-content', 
+            '.demo-nav',  // 演示页面的导航
+            'header',
+            'body'
+        ];
+        
+        for (const selector of selectors) {
+            targetElement = document.querySelector(selector);
+            if (targetElement) {
+                console.log(`🎨 主题切换器将插入到: ${selector}`);
+                break;
+            }
+        }
+        
+        if (targetElement) {
+            targetElement.appendChild(this.container);
         } else {
-            // 备用位置：body
+            console.warn('❌ 未找到合适的容器，主题切换器将插入到body');
             document.body.appendChild(this.container);
         }
     }
@@ -221,14 +239,18 @@ class ThemeSwitcher {
      * 选择主题
      */
     async selectTheme(themeId) {
-        // 添加加载状态
+        // 立即更新UI，减少延迟感
+        this.updateCurrentTheme();
+        this.close();
+        
+        // 短暂的加载状态
         this.setLoadingState(true);
         
         try {
             const success = await this.themeManager.switchTheme(themeId);
             if (success) {
+                // 再次确保UI状态正确
                 this.updateCurrentTheme();
-                this.close();
                 
                 // 显示成功提示
                 this.showNotification('主题已更换', 'success');
@@ -239,7 +261,10 @@ class ThemeSwitcher {
             console.error('主题切换错误:', error);
             this.showNotification('主题切换出错', 'error');
         } finally {
-            this.setLoadingState(false);
+            // 延迟很短时间再移除loading状态，确保用户感知到操作已完成
+            setTimeout(() => {
+                this.setLoadingState(false);
+            }, 200);
         }
     }
 

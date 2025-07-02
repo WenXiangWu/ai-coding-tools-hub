@@ -1,5 +1,5 @@
 /* 紫罗兰主题颜色变量 */
-:root.theme-purple {
+body.theme-purple {
     --primary-color: #8b5cf6;
     --primary-hover: #7c3aed;
     --primary-rgb: 139, 92, 246;
