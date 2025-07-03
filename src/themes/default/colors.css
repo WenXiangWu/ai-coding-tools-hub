@@ -43,6 +43,8 @@
     --gradient-primary: linear-gradient(135deg, #4f46e5, #7c3aed);
     --gradient-secondary: linear-gradient(135deg, #f8fafc, #e2e8f0);
     --gradient-card: linear-gradient(135deg, #ffffff, #f8fafc);
+    --bg-gradient: linear-gradient(135deg, #4f46e5, #7c3aed);
+    --bg-gradient-light: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
     
     /* 间距系统 */
     --spacing-xs: 0.25rem;

@@ -43,6 +43,8 @@ body.theme-dark {
     --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
     --gradient-secondary: linear-gradient(135deg, #1e293b, #334155);
     --gradient-card: linear-gradient(135deg, #1e293b, #334155);
+    --bg-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+    --bg-gradient-light: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
     
     /* 特殊的深色主题渐变 */
     --gradient-dark-glow: linear-gradient(135deg, 

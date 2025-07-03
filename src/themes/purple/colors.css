@@ -25,4 +25,6 @@ body.theme-purple {
     
     --gradient-primary: linear-gradient(135deg, #8b5cf6, #a855f7);
     --gradient-card: linear-gradient(135deg, #ffffff, #faf5ff);
+    --bg-gradient: linear-gradient(135deg, #8b5cf6, #a855f7);
+    --bg-gradient-light: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
 } 

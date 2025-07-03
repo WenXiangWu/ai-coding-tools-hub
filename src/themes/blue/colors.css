@@ -37,6 +37,8 @@ body.theme-blue {
     --gradient-primary: linear-gradient(135deg, #0ea5e9, #06b6d4);
     --gradient-secondary: linear-gradient(135deg, #f0f9ff, #e0f2fe);
     --gradient-card: linear-gradient(135deg, #ffffff, #f0f9ff);
+    --bg-gradient: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    --bg-gradient-light: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(6, 182, 212, 0.1));
     
     /* 海洋特效渐变 */
     --gradient-ocean: linear-gradient(135deg, 
