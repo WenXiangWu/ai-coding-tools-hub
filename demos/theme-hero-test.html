@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题Hero区域科技感效果测试 - AITOOLBOX</title>
+    
+    <!-- 引入主要样式 -->
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* 快速主题切换器样式 */
+        .theme-test-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-test-switcher h3 {
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            color: #334155;
+            text-align: center;
+        }
+        
+        .theme-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        
+        .theme-btn {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .theme-btn.default {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: #334155;
+        }
+        
+        .theme-btn.dark {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #f1f5f9;
+        }
+        
+        .theme-btn.blue {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            color: white;
+        }
+        
+        .theme-btn.green {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .theme-btn.purple {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+        
+        .theme-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-btn.active {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* 信息面板 */
+        .info-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+        
+        .info-panel h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1e293b;
+        }
+        
+        .info-panel ul {
+            margin: 0;
+            padding-left: 1rem;
+        }
+        
+        .info-panel li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰元素 -->
+    <div class="background-elements">
+        <div class="gradient-orb gradient-orb-1"></div>
+        <div class="gradient-orb gradient-orb-2"></div>
+        <div class="gradient-orb gradient-orb-3"></div>
+        <div class="floating-particles"></div>
+    </div>
+
+    <!-- Hero区域 -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content hero-content-centered">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="title-line">智能无限，</span>
+                        <span class="title-line highlight">协作无间</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        AITOOLBOX，致力于成为真正的 AI 工程师。以智能生产力为核心，无缝融入你的开发流程，与你默契配合，更高质量、高效率完成每一个任务。
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-large">
+                            <i class="fas fa-download"></i>
+                            立即获取 AITOOLBOX
+                        </button>
+                        <button class="btn btn-secondary btn-large">
+                            <i class="fas fa-play"></i>
+                            查看所有下载选项
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主题测试切换器 -->
+    <div class="theme-test-switcher">
+        <h3>🎨 主题测试</h3>
+        <div class="theme-buttons">
+            <button class="theme-btn default active" onclick="switchTheme('default')">
+                🌟 默认
+            </button>
+            <button class="theme-btn dark" onclick="switchTheme('dark')">
+                🌙 深色
+            </button>
+            <button class="theme-btn blue" onclick="switchTheme('blue')">
+                🌊 海洋蓝
+            </button>
+            <button class="theme-btn green" onclick="switchTheme('green')">
+                🌿 森林绿
+            </button>
+            <button class="theme-btn purple" onclick="switchTheme('purple')">
+                💜 紫罗兰
+            </button>
+        </div>
+    </div>
+
+    <!-- 信息面板 -->
+    <div class="info-panel">
+        <h4>🔬 科技感效果测试</h4>
+        <ul>
+            <li>动态背景渐变</li>
+            <li>文字颜色自动变化</li>
+            <li>主题适配动画</li>
+            <li>科技感装饰效果</li>
+            <li>按钮发光动画</li>
+        </ul>
+        <p>当前主题: <span id="current-theme">默认主题</span></p>
+    </div>
+
+    <script>
+        let currentTheme = 'default';
+        
+        function switchTheme(themeId) {
+            // 移除所有主题类
+            document.documentElement.className = document.documentElement.className.replace(/theme-\w+/g, '');
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+            
+            // 添加新主题类
+            if (themeId !== 'default') {
+                document.documentElement.classList.add(`theme-${themeId}`);
+                document.body.classList.add(`theme-${themeId}`);
+            }
+            
+            // 更新按钮状态
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.theme-btn.${themeId}`).classList.add('active');
+            
+            // 更新当前主题显示
+            const themeNames = {
+                'default': '默认主题',
+                'dark': '深色主题',
+                'blue': '海洋蓝主题',
+                'green': '森林绿主题',
+                'purple': '紫罗兰主题'
+            };
+            document.getElementById('current-theme').textContent = themeNames[themeId];
+            
+            currentTheme = themeId;
+            console.log('🎨 切换到主题:', themeId);
+        }
+        
+        // 初始化
+        console.log('🚀 主题测试页面已加载');
+        console.log('💡 点击右上角按钮切换主题，观察科技感效果的变化');
+        
+        // 键盘快捷键切换主题
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '1' && e.key <= '5') {
+                const themes = ['default', 'dark', 'blue', 'green', 'purple'];
+                const index = parseInt(e.key) - 1;
+                if (themes[index]) {
+                    switchTheme(themes[index]);
+                }
+            }
+        });
+        
+        console.log('⌨️ 键盘快捷键: 1-5 快速切换主题');
+    </script>
+</body>
+</html> 

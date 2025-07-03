@@ -109,14 +109,6 @@ class ToolCard extends Component {
                         <i class="fas fa-desktop" title="支持平台"></i>
                         <span>${this.renderPlatforms()}</span>
                     </div>
-                    <div class="tool-users">
-                        <i class="fas fa-users" title="用户数量"></i>
-                        <span>${this.tool.users}</span>
-                    </div>
-                    <div class="tool-updated">
-                        <i class="fas fa-clock" title="最后更新"></i>
-                        <span>${formatDate(this.tool.updated)}</span>
-                    </div>
                 </div>
             </div>
             

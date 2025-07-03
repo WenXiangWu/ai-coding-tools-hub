@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 主渐变 -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 光效渐变 -->
+    <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <!-- 文字渐变 -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 阴影滤镜 -->
+    <filter id="dropshadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="2" result="offset" />
+      <feFlood flood-color="#667eea" flood-opacity="0.2"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+    
+    <!-- 发光效果 -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景光效 -->
+  <circle cx="30" cy="30" r="25" fill="url(#glowGradient)" filter="url(#glow)" opacity="0.3"/>
+  
+  <!-- 主图标容器 -->
+  <g filter="url(#dropshadow)">
+    <!-- 外圆环 -->
+    <circle cx="30" cy="30" r="20" fill="none" stroke="url(#primaryGradient)" stroke-width="2" opacity="0.6"/>
+    
+    <!-- 内部图标背景 -->
+    <circle cx="30" cy="30" r="15" fill="url(#primaryGradient)"/>
+    
+    <!-- AI字母 -->
+    <text x="30" y="37" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="white">AI</text>
+    
+    <!-- 科技装饰元素 -->
+    <g opacity="0.7">
+      <!-- 左上角装饰 -->
+      <rect x="15" y="15" width="4" height="1" fill="url(#primaryGradient)" rx="0.5">
+        <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="15" y="17" width="6" height="1" fill="url(#primaryGradient)" rx="0.5">
+        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      
+      <!-- 右下角装饰 -->
+      <rect x="41" y="42" width="4" height="1" fill="url(#primaryGradient)" rx="0.5">
+        <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="1s"/>
+      </rect>
+      <rect x="39" y="44" width="6" height="1" fill="url(#primaryGradient)" rx="0.5">
+        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" begin="1s"/>
+      </rect>
+    </g>
+  </g>
+  
+  <!-- 品牌文字 -->
+  <g>
+    <text x="70" y="25" font-family="'Space Grotesk', 'Inter', Arial, sans-serif" font-size="18" font-weight="700" fill="url(#textGradient)">AITOOLBOX</text>
+    <text x="70" y="40" font-family="'Inter', Arial, sans-serif" font-size="10" font-weight="400" fill="#6b7280" letter-spacing="1px">智能无限，协作无间</text>
+  </g>
+  
+  <!-- 连接线装饰 -->
+  <g opacity="0.4">
+    <line x1="55" y1="20" x2="65" y2="20" stroke="url(#primaryGradient)" stroke-width="1" stroke-dasharray="2,2">
+      <animate attributeName="stroke-dashoffset" values="0;4" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="55" y1="35" x2="65" y2="35" stroke="url(#primaryGradient)" stroke-width="1" stroke-dasharray="2,2">
+      <animate attributeName="stroke-dashoffset" values="4;0" dur="3s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- 微妙的粒子效果 -->
+  <g opacity="0.5">
+    <circle cx="45" cy="12" r="1" fill="url(#primaryGradient)">
+      <animate attributeName="cy" values="12;8;12" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="52" cy="48" r="0.8" fill="url(#primaryGradient)">
+      <animate attributeName="cy" values="48;52;48" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="180" cy="15" r="1.2" fill="url(#primaryGradient)">
+      <animate attributeName="cy" values="15;10;15" dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.9;0.4" dur="5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg> 

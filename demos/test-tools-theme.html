@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具区域主题适配测试 - AITOOLBOX</title>
+    
+    <!-- 引入主要样式 -->
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/hero-modern.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* 快速主题切换器样式 */
+        .theme-test-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .theme-test-switcher h3 {
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            color: #334155;
+            text-align: center;
+        }
+        
+        .theme-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        
+        .theme-btn {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .theme-btn.default {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: #334155;
+        }
+        
+        .theme-btn.dark {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #f1f5f9;
+        }
+        
+        .theme-btn.blue {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            color: white;
+        }
+        
+        .theme-btn.green {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .theme-btn.purple {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+        
+        .theme-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-btn.active {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 工具总览区域 -->
+    <section class="tools-section">
+        <div class="container">
+            <h2>精选AI工具集合</h2>
+            <p>发现并对比最优秀的AI编程助手工具</p>
+            
+            <!-- 工具筛选器 -->
+            <div class="tools-filter">
+                <div class="filter-group">
+                    <label for="type-filter">类型筛选:</label>
+                    <select id="type-filter">
+                        <option value="">全部类型</option>
+                        <option value="code-completion">代码补全</option>
+                        <option value="ai-assistant">AI助手</option>
+                        <option value="code-review">代码审查</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="price-filter">价格筛选:</label>
+                    <select id="price-filter">
+                        <option value="">全部价格</option>
+                        <option value="free">免费</option>
+                        <option value="paid">付费</option>
+                        <option value="freemium">免费增值</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sort-filter">排序方式:</label>
+                    <select id="sort-filter">
+                        <option value="popularity">热门度</option>
+                        <option value="rating">评分</option>
+                        <option value="newest">最新</option>
+                    </select>
+                </div>
+                
+                <button class="compare-btn">
+                    <i class="fas fa-balance-scale"></i>
+                    对比选中的工具 (0)
+                </button>
+            </div>
+            
+            <!-- 工具网格 -->
+            <div class="tools-grid">
+                <!-- 工具卡片 1: Claude -->
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-logo">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3 class="tool-name">Claude</h3>
+                            <span class="tool-category">AI助手</span>
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        由Anthropic开发的AI助手，专注于安全性和有用性，提供强大的代码生成和分析能力。
+                    </p>
+                    <div class="tool-badges">
+                        <span class="badge badge-type">AI助手</span>
+                        <span class="badge badge-price">免费增值</span>
+                        <span class="badge badge-status">活跃</span>
+                    </div>
+                    <div class="tool-meta">
+                        <div class="tool-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">4.8 (2.1k评价)</span>
+                        </div>
+                        <div class="tool-actions">
+                            <button class="btn btn-sm">访问</button>
+                            <button class="btn btn-sm btn-outline">详情</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 工具卡片 2: Cursor -->
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-logo">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3 class="tool-name">Cursor</h3>
+                            <span class="tool-category">代码编辑器</span>
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        AI-first代码编辑器，内置强大的AI编程助手，提供智能代码补全和生成功能。
+                    </p>
+                    <div class="tool-badges">
+                        <span class="badge badge-type">代码编辑器</span>
+                        <span class="badge badge-price">免费增值</span>
+                        <span class="badge badge-status">活跃</span>
+                    </div>
+                    <div class="tool-meta">
+                        <div class="tool-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">4.9 (1.8k评价)</span>
+                        </div>
+                        <div class="tool-actions">
+                            <button class="btn btn-sm">访问</button>
+                            <button class="btn btn-sm btn-outline">详情</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 工具卡片 3: GitHub Copilot -->
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-logo">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3 class="tool-name">GitHub Copilot</h3>
+                            <span class="tool-category">代码补全</span>
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        由GitHub和OpenAI合作开发的AI编程助手，提供实时代码建议和自动补全。
+                    </p>
+                    <div class="tool-badges">
+                        <span class="badge badge-type">代码补全</span>
+                        <span class="badge badge-price">付费</span>
+                        <span class="badge badge-status">活跃</span>
+                    </div>
+                    <div class="tool-meta">
+                        <div class="tool-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="rating-text">4.6 (5.2k评价)</span>
+                        </div>
+                        <div class="tool-actions">
+                            <button class="btn btn-sm">访问</button>
+                            <button class="btn btn-sm btn-outline">详情</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 工具卡片 4: Gemini -->
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-logo">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="tool-info">
+                            <h3 class="tool-name">Gemini</h3>
+                            <span class="tool-category">AI助手</span>
+                        </div>
+                    </div>
+                    <p class="tool-description">
+                        Google的下一代AI模型，具备多模态理解能力，在代码生成和问题解决方面表现出色。
+                    </p>
+                    <div class="tool-badges">
+                        <span class="badge badge-type">AI助手</span>
+                        <span class="badge badge-price">免费增值</span>
+                        <span class="badge badge-status">活跃</span>
+                    </div>
+                    <div class="tool-meta">
+                        <div class="tool-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-text">4.7 (3.4k评价)</span>
+                        </div>
+                        <div class="tool-actions">
+                            <button class="btn btn-sm">访问</button>
+                            <button class="btn btn-sm btn-outline">详情</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 工具计数 -->
+            <div class="tools-count">
+                <span>共找到 4 个工具</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主题测试切换器 -->
+    <div class="theme-test-switcher">
+        <h3>🎨 主题测试</h3>
+        <div class="theme-buttons">
+            <button class="theme-btn default active" onclick="switchTheme('default')">
+                🌟 默认
+            </button>
+            <button class="theme-btn dark" onclick="switchTheme('dark')">
+                🌙 深色
+            </button>
+            <button class="theme-btn blue" onclick="switchTheme('blue')">
+                🌊 海洋蓝
+            </button>
+            <button class="theme-btn green" onclick="switchTheme('green')">
+                🌿 森林绿
+            </button>
+            <button class="theme-btn purple" onclick="switchTheme('purple')">
+                💜 紫罗兰
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentTheme = 'default';
+        
+        function switchTheme(themeId) {
+            // 移除所有主题类
+            document.documentElement.className = document.documentElement.className.replace(/theme-\w+/g, '');
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+            
+            // 添加新主题类
+            if (themeId !== 'default') {
+                document.documentElement.classList.add(`theme-${themeId}`);
+                document.body.classList.add(`theme-${themeId}`);
+            }
+            
+            // 更新按钮状态
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.theme-btn.${themeId}`).classList.add('active');
+            
+            currentTheme = themeId;
+            console.log('🎨 切换到主题:', themeId);
+        }
+        
+        // 键盘快捷键切换主题
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '1' && e.key <= '5') {
+                const themes = ['default', 'dark', 'blue', 'green', 'purple'];
+                const index = parseInt(e.key) - 1;
+                if (themes[index]) {
+                    switchTheme(themes[index]);
+                }
+            }
+        });
+        
+        console.log('🚀 工具区域主题测试页面已加载');
+        console.log('💡 点击右上角按钮切换主题，观察工具区域的主题适配效果');
+        console.log('⌨️ 键盘快捷键: 1-5 快速切换主题');
+    </script>
+</body>
+</html> 
