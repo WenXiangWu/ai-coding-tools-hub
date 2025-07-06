@@ -12,6 +12,17 @@ class Store {
     }
 
     /**
+     * 获取Store单例实例
+     * @returns {Store} Store实例
+     */
+    static getInstance() {
+        if (!Store.instance) {
+            Store.instance = new Store();
+        }
+        return Store.instance;
+    }
+
+    /**
      * 获取初始状态
      * @returns {Object} 初始状态对象
      */
@@ -29,7 +40,6 @@ class Store {
                 category: 'all'
             },
             sort: 'popularity',
-            searchQuery: '',
             
             // UI状态
             loading: true,

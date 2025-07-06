@@ -155,7 +155,7 @@ export const DEVTOOLS_DROPDOWN = [
  * 搜索框配置
  */
 export const SEARCH_CONFIG = {
-    enabled: true,
+    enabled: false,  // 禁用搜索功能
     placeholder: '搜索工具或教程...',
     icon: 'fas fa-search',
     mobile: {

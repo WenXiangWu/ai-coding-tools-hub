@@ -40,6 +40,12 @@ export class NavigationManager {
         try {
             console.log('🧭 初始化导航管理器...');
             
+            // 防止重复初始化
+            if (this.isInitialized) {
+                console.log('⚠️ 导航管理器已初始化，跳过重复初始化');
+                return;
+            }
+            
             // 获取DOM元素
             this.getDOMElements();
             
@@ -84,7 +90,11 @@ export class NavigationManager {
         // 监听配置变化，自动重新渲染导航
         this.configListener = (event, data) => {
             console.log('🔄 配置发生变化，重新渲染导航:', event, data);
+            // 防止频繁重新渲染导致重复组件
+            clearTimeout(this.renderTimeout);
+            this.renderTimeout = setTimeout(() => {
             this.renderNavigation();
+            }, 100);
         };
         
         navigationConfigManager.addListener(this.configListener);
@@ -97,6 +107,15 @@ export class NavigationManager {
         // 使用配置管理器获取导航项和开发工具
         const navigation = navigationConfigManager.getAllNavigationItems();
         const devtools = navigationConfigManager.getAllDevtools();
+        
+        // 保存静态容器和主题切换器
+        const languageSwitcherContainer = this.mainNavElement.querySelector('#languageSwitcherContainer');
+        const existingThemeSwitcher = this.mainNavElement.querySelector('.theme-switcher-container, [data-nav-theme-switcher]');
+        
+        console.log('🔄 开始渲染导航...');
+        if (existingThemeSwitcher) {
+            console.log('💾 发现现有主题切换器，将保存并恢复');
+        }
         
         // 清空现有导航
         this.mainNavElement.innerHTML = '';
@@ -113,11 +132,33 @@ export class NavigationManager {
             this.mainNavElement.appendChild(searchElement);
         }
         
+        // 恢复或创建语言切换器容器
+        if (languageSwitcherContainer) {
+            this.mainNavElement.appendChild(languageSwitcherContainer);
+        } else {
+            // 如果容器不存在，创建一个新的
+            const newContainer = document.createElement('div');
+            newContainer.className = 'language-switcher-container';
+            newContainer.id = 'languageSwitcherContainer';
+            newContainer.innerHTML = '<!-- 语言切换器将在这里渲染 -->';
+            this.mainNavElement.appendChild(newContainer);
+        }
+        
+        // 只有在没有现有主题切换器时才创建新的
+        if (existingThemeSwitcher) {
+            console.log('🔄 恢复现有主题切换器');
+            this.mainNavElement.appendChild(existingThemeSwitcher);
+        } else {
+            console.log('🎨 创建新的主题切换器');
         // 添加主题切换器
         await this.addThemeSwitcher();
+        }
         
         // 创建移动端覆盖层
         this.createMobileOverlay();
+        
+        // 通知语言切换器容器已恢复，需要重新初始化
+        this.notifyLanguageSwitcherContainerRestored();
         
         console.log('📱 导航渲染完成');
     }
@@ -219,42 +260,275 @@ export class NavigationManager {
      */
     async addThemeSwitcher() {
         try {
+            console.log('🎨 开始添加主题切换器...');
+            
+            // 检查是否已经存在主题切换器（更严格的检查）
+            const existingThemeSwitchers = document.querySelectorAll('.theme-switcher-container, .theme-switcher, [data-nav-theme-switcher]');
+            if (existingThemeSwitchers.length > 0) {
+                console.log('⚠️ 检测到已存在的主题切换器，跳过创建:', existingThemeSwitchers.length, '个');
+                existingThemeSwitchers.forEach((switcher, index) => {
+                    console.log(`  - 主题切换器 ${index + 1}:`, switcher.className, switcher);
+                });
+                return;
+            }
+            
+            // 先彻底清理所有现有的主题切换器（全局搜索）
+            this.cleanupAllThemeSwitchers();
+            
+            // 检测协议类型
+            const isFileProtocol = window.location.protocol === 'file:';
+            
+            if (isFileProtocol) {
+                // file协议下使用简化的主题切换器
+                console.log('🔄 file协议下创建简化主题切换器');
+                this.createSimpleThemeSwitcher();
+            } else {
             // 动态导入主题模块
             const [
-                { ThemeManager },
-                { ThemeSwitcher }
+                    ThemeManagerModule,
+                    ThemeSwitcherModule
             ] = await Promise.all([
                 import('../managers/theme-manager.js'),
                 import('../components/ThemeSwitcher.js')
             ]);
             
-            // 检查是否已经存在主题切换器
-            const existingThemeSwitcher = this.mainNavElement.querySelector('.theme-switcher-container');
-            if (existingThemeSwitcher) {
-                existingThemeSwitcher.remove();
-            }
+                // 获取默认导出的类
+                const ThemeManager = ThemeManagerModule.default;
+                const ThemeSwitcher = ThemeSwitcherModule.default;
             
             // 创建主题切换器容器
             const themeSwitcherContainer = document.createElement('div');
             themeSwitcherContainer.className = 'theme-switcher-container';
+                themeSwitcherContainer.setAttribute('data-nav-theme-switcher', 'true');
             
             // 初始化主题管理器（如果还没有初始化）
             if (!window.themeManager) {
                 window.themeManager = new ThemeManager();
-                await window.themeManager.initialize();
+                    // ThemeManager的构造函数中已经调用了init()，所以不需要再次调用
             }
             
             // 创建主题切换器
             const themeSwitcher = new ThemeSwitcher(window.themeManager);
             await themeSwitcher.render(themeSwitcherContainer);
             
-            // 添加到导航中
+                // 保存到window对象以便全局访问
+                window.themeSwitcher = themeSwitcher;
+                
+                // 找到语言切换器容器，在其后插入主题切换器
+                const languageSwitcherContainer = this.mainNavElement.querySelector('#languageSwitcherContainer');
+                if (languageSwitcherContainer && languageSwitcherContainer.nextSibling) {
+                    // 在语言切换器容器之后插入
+                    this.mainNavElement.insertBefore(themeSwitcherContainer, languageSwitcherContainer.nextSibling);
+                } else {
+                    // 如果找不到语言切换器或它是最后一个元素，就添加到末尾
             this.mainNavElement.appendChild(themeSwitcherContainer);
+                }
+            }
+            
+            console.log('✅ 主题切换器添加成功');
             
         } catch (error) {
             console.error('❌ 添加主题切换器失败:', error);
-            // 主题切换器失败不应该阻止导航渲染
+            
+            // 再次检查是否已经有主题切换器，避免重复创建
+            const existingAfterError = document.querySelectorAll('.theme-switcher-container, .theme-switcher, [data-nav-theme-switcher]');
+            if (existingAfterError.length > 0) {
+                console.log('⚠️ 错误处理时发现已有主题切换器，跳过降级创建');
+                return;
+            }
+            
+            // 主题切换器失败时使用简化版本
+            console.log('🔄 降级到简化主题切换器');
+            this.createSimpleThemeSwitcher();
         }
+    }
+
+    /**
+     * 创建简化的主题切换器（用于file协议或模块加载失败时）
+     */
+    createSimpleThemeSwitcher() {
+        try {
+            // 检查是否已经存在简化主题切换器
+            const existingSimpleThemeSwitcher = document.querySelector('.simple-theme-switcher');
+            if (existingSimpleThemeSwitcher) {
+                console.log('⚠️ 简化主题切换器已存在，跳过创建');
+                return;
+            }
+            
+            // 创建主题切换器容器
+            const themeSwitcherContainer = document.createElement('div');
+            themeSwitcherContainer.className = 'theme-switcher-container simple-theme-switcher';
+            themeSwitcherContainer.setAttribute('data-nav-theme-switcher', 'true');
+            
+            // 创建简单的主题切换按钮
+            const themeButton = document.createElement('button');
+            themeButton.className = 'theme-switcher-btn';
+            themeButton.innerHTML = `
+                <i class="fas fa-palette"></i>
+                <span>主题</span>
+            `;
+            
+            // 创建主题选项
+            const themeDropdown = document.createElement('div');
+            themeDropdown.className = 'theme-dropdown';
+            themeDropdown.style.display = 'none';
+            
+            const themes = [
+                { id: 'default', name: '默认主题', icon: '🌟' },
+                { id: 'dark', name: '深色主题', icon: '🌙' },
+                { id: 'blue', name: '海洋蓝', icon: '🌊' },
+                { id: 'green', name: '森林绿', icon: '🌿' },
+                { id: 'purple', name: '紫罗兰', icon: '💜' }
+            ];
+            
+            themes.forEach(theme => {
+                const option = document.createElement('div');
+                option.className = 'theme-option';
+                option.dataset.theme = theme.id;
+                option.innerHTML = `
+                    <span class="theme-icon">${theme.icon}</span>
+                    <span class="theme-name">${theme.name}</span>
+                `;
+                
+                option.addEventListener('click', () => {
+                    if (window.themeManager && window.themeManager.switchTheme) {
+                        window.themeManager.switchTheme(theme.id);
+                    }
+                    themeDropdown.style.display = 'none';
+                });
+                
+                themeDropdown.appendChild(option);
+            });
+            
+            // 切换下拉菜单
+            themeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = themeDropdown.style.display !== 'none';
+                themeDropdown.style.display = isVisible ? 'none' : 'block';
+            });
+            
+            // 点击外部关闭
+            document.addEventListener('click', () => {
+                themeDropdown.style.display = 'none';
+            });
+            
+            themeSwitcherContainer.appendChild(themeButton);
+            themeSwitcherContainer.appendChild(themeDropdown);
+            
+            // 添加样式
+            if (!document.getElementById('simple-theme-switcher-styles')) {
+                const style = document.createElement('style');
+                style.id = 'simple-theme-switcher-styles';
+                style.textContent = `
+                    .simple-theme-switcher {
+                        position: relative;
+                        display: inline-block;
+                    }
+                    .theme-switcher-btn {
+                        background: none;
+                        border: none;
+                        color: inherit;
+                        cursor: pointer;
+                        padding: 8px 12px;
+                        border-radius: 4px;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        transition: background-color 0.2s;
+                    }
+                    .theme-switcher-btn:hover {
+                        background-color: rgba(0,0,0,0.1);
+                    }
+                    .theme-dropdown {
+                        position: absolute;
+                        top: 100%;
+                        right: 0;
+                        background: white;
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        min-width: 150px;
+                        z-index: 1000;
+                    }
+                    .theme-option {
+                        padding: 8px 12px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: background-color 0.2s;
+                    }
+                    .theme-option:hover {
+                        background-color: #f5f5f5;
+                    }
+                    .theme-icon {
+                        font-size: 14px;
+                    }
+                    .theme-name {
+                        font-size: 14px;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // 找到语言切换器容器，在其后插入主题切换器
+            const languageSwitcherContainer = this.mainNavElement.querySelector('#languageSwitcherContainer');
+            if (languageSwitcherContainer && languageSwitcherContainer.nextSibling) {
+                // 在语言切换器容器之后插入
+                this.mainNavElement.insertBefore(themeSwitcherContainer, languageSwitcherContainer.nextSibling);
+            } else {
+                // 如果找不到语言切换器或它是最后一个元素，就添加到末尾
+                this.mainNavElement.appendChild(themeSwitcherContainer);
+            }
+            
+            console.log('✅ 简化主题切换器创建成功');
+            
+        } catch (error) {
+            console.error('❌ 创建简化主题切换器失败:', error);
+        }
+    }
+
+    /**
+     * 彻底清理所有主题切换器
+     */
+    cleanupAllThemeSwitchers() {
+        console.log('🧹 开始清理所有主题切换器...');
+        
+        // 清理当前导航中的主题切换器
+        const navThemeSwitchers = this.mainNavElement.querySelectorAll('.theme-switcher-container, .theme-switcher');
+        navThemeSwitchers.forEach(switcher => {
+            console.log('🗑️ 移除导航中的主题切换器:', switcher.className);
+            switcher.remove();
+        });
+        
+        // 全局清理所有主题切换器（包括可能被theme-init.js创建的）
+        const allThemeSwitchers = document.querySelectorAll('.theme-switcher-container, .theme-switcher, .fallback-theme-switcher');
+        allThemeSwitchers.forEach(switcher => {
+            console.log('🗑️ 移除全局主题切换器:', switcher.className);
+            switcher.remove();
+        });
+        
+        // 清理带有特定属性的主题切换器
+        const navThemeSwitchersByAttr = document.querySelectorAll('[data-nav-theme-switcher]');
+        navThemeSwitchersByAttr.forEach(switcher => {
+            console.log('🗑️ 移除带属性的主题切换器:', switcher.className);
+            switcher.remove();
+        });
+        
+        // 清理可能存在的window.themeSwitcher实例
+        if (window.themeSwitcher) {
+            console.log('🗑️ 清理window.themeSwitcher实例');
+            if (typeof window.themeSwitcher.destroy === 'function') {
+                try {
+                    window.themeSwitcher.destroy();
+                } catch (e) {
+                    console.warn('销毁主题切换器实例时出错:', e);
+                }
+            }
+            window.themeSwitcher = null;
+        }
+        
+        console.log('🧹 主题切换器清理完成');
     }
 
     /**
@@ -270,6 +544,17 @@ export class NavigationManager {
         this.mobileOverlay.addEventListener('click', this.handleMobileMenuToggle);
         
         document.body.appendChild(this.mobileOverlay);
+    }
+
+    /**
+     * 通知语言切换器容器已恢复
+     */
+    notifyLanguageSwitcherContainerRestored() {
+        // 通知App实例重新初始化语言切换器
+        if (window.app && window.app.reinitializeLanguageSwitcher) {
+            console.log('🔄 通知App重新初始化语言切换器');
+            window.app.reinitializeLanguageSwitcher();
+        }
     }
 
     /**
@@ -456,8 +741,14 @@ export class NavigationManager {
      * 设置桌面端导航
      */
     setupDesktopNavigation() {
-        // 恢复原始导航顺序
-        this.renderNavigation();
+        // 恢复原始导航顺序，但不重新渲染整个导航
+        // 只需要重置移动端的样式修改
+        const navItems = Array.from(this.mainNavElement.children);
+        navItems.forEach(item => {
+            if (item.style.order) {
+                item.style.order = '';
+            }
+        });
     }
 
     /**

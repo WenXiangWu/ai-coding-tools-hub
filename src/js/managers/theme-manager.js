@@ -527,6 +527,6 @@ class ThemeManager {
 }
 
 // 创建全局主题管理器实例
-window.themeManager = new ThemeManager();
+// window.themeManager = new ThemeManager();  // 移除这行，让theme-init.js负责创建实例
 
 export default ThemeManager; 

@@ -73,26 +73,25 @@
                     <span class="logo-text">AITOOLBOX</span>
                 </div>
                 <nav class="main-nav">
-                    <a href="#tools" class="nav-link">工具总览</a>
-                    <a href="#compare" class="nav-link">工具对比</a>
-                    <a href="#tutorials" class="nav-link">学习中心</a>
+                    <a href="#tools" class="nav-link" data-i18n="header.navigation.tools">工具总览</a>
+                    <a href="#compare" class="nav-link" data-i18n="header.navigation.compare">工具对比</a>
+                    <a href="#tutorials" class="nav-link" data-i18n="header.navigation.tutorials">学习中心</a>
                     <div class="dropdown devtools-dropdown">
                         <button class="nav-link dropdown-toggle" id="devtoolsDropdownBtn">
-                            开发工具 <i class="fas fa-caret-down"></i>
+                            <span data-i18n="header.navigation.devtools">开发工具</span> <i class="fas fa-caret-down"></i>
                         </button>
                         <div class="dropdown-menu" id="devtoolsDropdownMenu">
-                            <a href="devtools/json.html" class="dropdown-item">JSON解析器</a>
-                            <a href="devtools/diff.html" class="dropdown-item">文本对比</a>
-                            <a href="devtools/cron.html" class="dropdown-item">Cron表达式</a>
-                            <a href="devtools/timestamp.html" class="dropdown-item">时间戳转换</a>
-                            <a href="devtools/qrcode.html" class="dropdown-item">二维码生成</a>
-                            <a href="devtools/regex.html" class="dropdown-item">正则表达式</a>
+                            <a href="devtools/json.html" class="dropdown-item" data-i18n="header.devtools.json">JSON解析器</a>
+                            <a href="devtools/diff.html" class="dropdown-item" data-i18n="header.devtools.diff">文本对比</a>
+                            <a href="devtools/cron.html" class="dropdown-item" data-i18n="header.devtools.cron">Cron表达式</a>
+                            <a href="devtools/timestamp.html" class="dropdown-item" data-i18n="header.devtools.timestamp">时间戳转换</a>
+                            <a href="devtools/qrcode.html" class="dropdown-item" data-i18n="header.devtools.qrcode">二维码生成</a>
+                            <a href="devtools/regex.html" class="dropdown-item" data-i18n="header.devtools.regex">正则表达式</a>
                         </div>
                     </div>
-                    <button class="cta-button">
-                        <i class="fas fa-rocket"></i>
-                        立即获取
-                    </button>
+                    <div class="language-switcher-container" id="languageSwitcherContainer">
+                        <!-- 语言切换器将在这里渲染 -->
+                    </div>
                 </nav>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
@@ -108,19 +107,19 @@
             <div class="container">
                 <div class="hero-content hero-content-centered">
                     <div class="hero-text">
-                        <h1 class="hero-title">
+                        <h1 class="hero-title" data-i18n="home.hero.title">
                             <span class="title-line">智能无限，</span>
                             <span class="title-line highlight">协作无间</span>
                         </h1>
-                        <p class="hero-subtitle">
+                        <p class="hero-subtitle" data-i18n="home.hero.subtitle">
                             AITOOLBOX，致力于成为真正的 AI 工程师。以智能生产力为核心，无缝融入你的开发流程，与你默契配合，更高质量、高效率完成每一个任务。
                         </p>
                         <div class="hero-actions">
-                            <button class="btn btn-primary btn-large">
+                            <button class="btn btn-primary btn-large" data-i18n="home.hero.primaryButton">
                                 <i class="fas fa-download"></i>
                                 立即获取 AITOOLBOX
                             </button>
-                            <button class="btn btn-secondary btn-large">
+                            <button class="btn btn-secondary btn-large" data-i18n="home.hero.secondaryButton">
                                 <i class="fas fa-play"></i>
                                 查看所有下载选项
                             </button>
@@ -139,12 +138,12 @@
                         <div class="tools-header-left">
                             <div class="tools-icon-title">
                                 <i class="fas fa-layer-group tools-icon"></i>
-                                <h3 class="tools-title">精选AI工具集合</h3>
+                                <h3 class="tools-title" data-i18n="home.featuredTools.title">精选AI工具集合</h3>
                             </div>
-                            <p class="tools-subtitle">发现并对比最优秀的AI编程助手工具</p>
+                            <p class="tools-subtitle" data-i18n="home.featuredTools.subtitle">发现并对比最优秀的AI编程助手工具</p>
                             <div class="tools-stats">
-                                <span class="stats-number">50+</span>
-                                <span class="stats-label">优质工具</span>
+                                <span class="stats-number" data-i18n="home.featuredTools.stats.number">50+</span>
+                                <span class="stats-label" data-i18n="home.featuredTools.stats.label">优质工具</span>
                             </div>
                         </div>
                     </div>
@@ -479,158 +478,6 @@
                 }
             `;
             document.head.appendChild(style);
-        });
-    </script>
-
-    <!-- 快速访问区域功能脚本 -->
-    <script>
-        // 快速访问区域功能
-        document.addEventListener('DOMContentLoaded', function() {
-            // 全局搜索功能
-            const globalSearchInput = document.getElementById('globalSearchInput');
-            const globalSearchBtn = document.getElementById('globalSearchBtn');
-            const searchSuggestions = document.getElementById('searchSuggestions');
-
-            // 搜索建议数据
-            const searchData = [
-                { name: 'ChatGPT', category: 'AI对话', icon: '🤖' },
-                { name: 'Midjourney', category: 'AI图像', icon: '🎨' },
-                { name: 'Claude', category: 'AI对话', icon: '🤖' },
-                { name: 'Stable Diffusion', category: 'AI图像', icon: '🎨' },
-                { name: 'GitHub Copilot', category: 'AI编程', icon: '💻' },
-                { name: 'Notion AI', category: 'AI写作', icon: '✍️' },
-                { name: 'Cursor', category: 'AI编程', icon: '💻' },
-                { name: 'Perplexity', category: 'AI搜索', icon: '🔍' }
-            ];
-
-            // 搜索输入事件
-            if (globalSearchInput) {
-                globalSearchInput.addEventListener('input', function() {
-                    const query = this.value.toLowerCase().trim();
-                    
-                    if (query.length > 0) {
-                        const filteredData = searchData.filter(item => 
-                            item.name.toLowerCase().includes(query) ||
-                            item.category.toLowerCase().includes(query)
-                        );
-                        
-                        if (filteredData.length > 0) {
-                            searchSuggestions.innerHTML = filteredData.map(item => 
-                                `<div class="search-suggestion-item">
-                                    <span class="suggestion-icon">${item.icon}</span>
-                                    <div class="suggestion-content">
-                                        <span class="suggestion-name">${item.name}</span>
-                                        <span class="suggestion-category">${item.category}</span>
-                                    </div>
-                                </div>`
-                            ).join('');
-                            searchSuggestions.style.display = 'block';
-                        } else {
-                            searchSuggestions.style.display = 'none';
-                        }
-                    } else {
-                        searchSuggestions.style.display = 'none';
-                    }
-                });
-            }
-
-            // 搜索按钮点击事件
-            if (globalSearchBtn) {
-                globalSearchBtn.addEventListener('click', function() {
-                    const query = globalSearchInput.value.trim();
-                    if (query) {
-                        // 滚动到工具区域
-                        const toolsSection = document.getElementById('tools');
-                        if (toolsSection) {
-                            toolsSection.scrollIntoView({ 
-                                behavior: 'smooth' 
-                            });
-                        }
-                    }
-                });
-            }
-
-            // 回车搜索
-            if (globalSearchInput) {
-                globalSearchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        globalSearchBtn.click();
-                    }
-                });
-            }
-
-            // 点击外部关闭搜索建议
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.global-search') && searchSuggestions) {
-                    searchSuggestions.style.display = 'none';
-                }
-            });
-
-            // 搜索建议点击事件
-            if (searchSuggestions) {
-                searchSuggestions.addEventListener('click', function(e) {
-                    const suggestionItem = e.target.closest('.search-suggestion-item');
-                    if (suggestionItem) {
-                        const name = suggestionItem.querySelector('.suggestion-name').textContent;
-                        globalSearchInput.value = name;
-                        searchSuggestions.style.display = 'none';
-                        // 触发搜索
-                        globalSearchBtn.click();
-                    }
-                });
-            }
-
-            // 快速工具点击事件
-            const quickToolItems = document.querySelectorAll('.quick-tool-item');
-            quickToolItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const toolName = this.querySelector('span').textContent;
-                    
-                    if (toolName === '查看全部') {
-                        // 滚动到工具区域
-                        const toolsSection = document.getElementById('tools');
-                        if (toolsSection) {
-                            toolsSection.scrollIntoView({ 
-                                behavior: 'smooth' 
-                            });
-                        }
-                    } else if (globalSearchInput) {
-                        // 搜索特定工具
-                        globalSearchInput.value = toolName;
-                        globalSearchBtn.click();
-                    }
-                });
-            });
-
-            // 动态更新统计数据
-            function updateStats() {
-                const statNumbers = document.querySelectorAll('.stat-number');
-                statNumbers.forEach(stat => {
-                    const originalText = stat.textContent;
-                    const targetValue = parseInt(originalText.replace(/[^0-9]/g, ''));
-                    
-                    if (targetValue > 0) {
-                        let currentValue = 0;
-                        const increment = targetValue / 100;
-                        
-                        const updateValue = () => {
-                            currentValue += increment;
-                            if (currentValue >= targetValue) {
-                                stat.textContent = targetValue.toLocaleString() + '+';
-                            } else {
-                                stat.textContent = Math.floor(currentValue).toLocaleString();
-                                requestAnimationFrame(updateValue);
-                            }
-                        };
-                        
-                        // 延迟启动动画
-                        setTimeout(updateValue, 1500);
-                    }
-                });
-            }
-
-            // 启动统计动画
-            updateStats();
         });
     </script>
 

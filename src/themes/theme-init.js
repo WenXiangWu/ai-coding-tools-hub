@@ -1,59 +1,49 @@
 /**
  * 主题系统初始化脚本
- * 自动启动主题管理器和主题切换器
+ * 支持ES模块和传统script标签两种加载方式
  */
 
 // 等待DOM加载完成
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🎨 开始初始化主题系统...');
     
+    // 检测是否为file协议
+    const isFileProtocol = window.location.protocol === 'file:';
+    
     // 动态加载主题管理器
     if (!window.themeManager) {
-        // 尝试使用ES模块加载
-        import('../js/managers/theme-manager.js').then(module => {
-            console.log('✅ 主题管理器模块加载成功');
-            const ThemeManager = module.default;
-            window.themeManager = new ThemeManager();
-            initThemeSwitcher();
-        }).catch(error => {
-            console.error('❌ 主题管理器ES模块加载失败:', error);
-            // 降级到非模块化版本
+        if (isFileProtocol) {
+            // file协议下使用传统方式
+            console.log('🔄 检测到file协议，使用传统加载方式');
             loadThemeSystemFallback();
-        });
+        } else {
+            // http/https协议下使用ES模块
+            import('../js/managers/theme-manager.js').then(module => {
+                console.log('✅ 主题管理器模块加载成功');
+                const ThemeManager = module.default;
+                window.themeManager = new ThemeManager();
+                console.log('✅ window.themeManager 已创建:', window.themeManager);
+                
+                // 只预加载主题，不创建切换器
+                if (window.themeManager) {
+                    // 预加载主要主题
+                    window.themeManager.preloadThemes(['dark', 'blue', 'green']);
+                    console.log('🎨 主题系统已完全启动（仅管理器）');
+                }
+            }).catch(error => {
+                console.error('❌ 主题管理器ES模块加载失败:', error);
+                // 降级到非模块化版本
+                loadThemeSystemFallback();
+            });
+        }
     } else {
         console.log('✅ 主题管理器已存在');
-        initThemeSwitcher();
+        // 只预加载主题
+        if (window.themeManager && window.themeManager.preloadThemes) {
+            window.themeManager.preloadThemes(['dark', 'blue', 'green']);
+        }
     }
 });
-
-/**
- * 初始化主题切换器
- */
-function initThemeSwitcher() {
-    console.log('🔄 正在初始化主题切换器...');
-    
-    // 延迟导入主题切换器组件
-    import('../js/components/ThemeSwitcher.js').then(module => {
-        console.log('✅ 主题切换器模块加载成功');
-        const ThemeSwitcher = module.default;
-        
-        // 创建主题切换器实例
-        if (window.themeManager) {
-            window.themeSwitcher = new ThemeSwitcher(window.themeManager);
-            
-            // 预加载主要主题
-            window.themeManager.preloadThemes(['dark', 'blue', 'green']);
-            
-            console.log('🎨 主题系统已完全启动');
-        } else {
-            console.error('❌ 主题管理器不存在，无法创建主题切换器');
-        }
-    }).catch(error => {
-        console.error('❌ 主题切换器ES模块加载失败:', error);
-        // 创建简单的降级主题切换器
-        createFallbackThemeSwitcher();
-    });
-}
 
 /**
  * 降级处理：加载非模块化版本
@@ -137,6 +127,15 @@ function loadThemeSystemFallback() {
                 'auto': '跟随系统'
             };
             return names[id] || '未知主题';
+        },
+        preloadThemes: function(themeIds) {
+            // 空实现，降级模式下不预加载
+            console.log('🔄 降级模式下跳过主题预加载');
+        },
+        // 添加init方法以保持兼容性
+        init: function() {
+            console.log('🎨 降级模式主题管理器初始化');
+            return Promise.resolve();
         }
     };
     
@@ -150,128 +149,7 @@ function loadThemeSystemFallback() {
         console.warn('无法恢复主题设置');
     }
     
-    // 创建简单的主题切换器
-    createFallbackThemeSwitcher();
-}
-
-/**
- * 创建降级版本的主题切换器
- */
-function createFallbackThemeSwitcher() {
-    console.log('🔄 创建降级版主题切换器...');
-    
-    const themes = [
-        { id: 'default', name: '🌟 默认主题', icon: '🌟' },
-        { id: 'dark', name: '🌙 深色主题', icon: '🌙' },
-        { id: 'blue', name: '🌊 海洋蓝', icon: '🌊' },
-        { id: 'green', name: '🌿 森林绿', icon: '🌿' },
-        { id: 'purple', name: '💜 紫罗兰', icon: '💜' }
-    ];
-    
-    // 创建主题切换器HTML
-    const switcherHtml = `
-        <div class="theme-switcher fallback-theme-switcher" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
-            <div class="theme-switcher-trigger" style="
-                display: flex;
-                align-items: center;
-                padding: 0.5rem 0.75rem;
-                background: rgba(255, 255, 255, 0.9);
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                color: #1e293b;
-                font-size: 0.875rem;
-                gap: 0.5rem;
-            ">
-                <span class="theme-icon">🎨</span>
-                <span>主题</span>
-                <span class="theme-arrow" style="transition: transform 0.3s;">▼</span>
-            </div>
-            <div class="theme-switcher-dropdown" style="
-                position: absolute;
-                top: calc(100% + 0.5rem);
-                right: 0;
-                min-width: 200px;
-                background: white;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-                display: none;
-                z-index: 10000;
-            ">
-                <div style="padding: 0.5rem;">
-                    ${themes.map(theme => `
-                        <div class="theme-option" data-theme-id="${theme.id}" style="
-                            display: flex;
-                            align-items: center;
-                            gap: 0.5rem;
-                            padding: 0.5rem;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            color: #1e293b;
-                            font-size: 0.875rem;
-                        " onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
-                            <span>${theme.icon}</span>
-                            <span>${theme.name}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // 插入到页面
-    document.body.insertAdjacentHTML('beforeend', switcherHtml);
-    
-    // 绑定事件
-    const switcher = document.querySelector('.fallback-theme-switcher');
-    const trigger = switcher.querySelector('.theme-switcher-trigger');
-    const dropdown = switcher.querySelector('.theme-switcher-dropdown');
-    const arrow = switcher.querySelector('.theme-arrow');
-    
-    let isOpen = false;
-    
-    trigger.addEventListener('click', function(e) {
-        e.stopPropagation();
-        isOpen = !isOpen;
-        dropdown.style.display = isOpen ? 'block' : 'none';
-        arrow.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-    });
-    
-    // 绑定主题选项点击事件
-    dropdown.addEventListener('click', function(e) {
-        const option = e.target.closest('.theme-option');
-        if (option && window.themeManager) {
-            const themeId = option.dataset.themeId;
-            window.themeManager.switchTheme(themeId);
-            isOpen = false;
-            dropdown.style.display = 'none';
-            arrow.style.transform = 'rotate(0deg)';
-            
-            // 更新图标
-            const icon = switcher.querySelector('.theme-icon');
-            const themeIcons = {
-                'default': '🌟',
-                'dark': '🌙', 
-                'blue': '🌊',
-                'green': '🌿',
-                'purple': '💜'
-            };
-            icon.textContent = themeIcons[themeId] || '🎨';
-        }
-    });
-    
-    // 点击外部关闭
-    document.addEventListener('click', function() {
-        if (isOpen) {
-            isOpen = false;
-            dropdown.style.display = 'none';
-            arrow.style.transform = 'rotate(0deg)';
-        }
-    });
-    
-    console.log('✅ 降级版主题切换器创建完成');
+    console.log('🎨 降级模式主题管理器已初始化（仅管理器）');
 }
 
 /**
@@ -295,4 +173,4 @@ if (typeof window !== 'undefined') {
             window.themeSwitcher = new window.ThemeSwitcher(window.themeManager);
         }
     };
-} 
+}

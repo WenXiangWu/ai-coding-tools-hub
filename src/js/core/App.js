@@ -7,7 +7,9 @@ import { eventBus } from './EventBus.js';
 import { ToolService } from '../services/ToolService.js';
 import { CompareService } from '../services/CompareService.js';
 import { ToolCard } from '../components/ToolCard.js';
+import { LanguageSwitcher } from '../components/LanguageSwitcher.js';
 import { NavigationManager } from '../managers/navigation-manager.js';
+import { getI18nManager } from '../managers/i18n-manager.js';
 import { APP_CONFIG, UI_CONSTANTS, CSS_CLASSES } from '../constants/AppConstants.js';
 import { debounce, storage, getDeviceInfo } from '../utils/helpers.js';
 
@@ -17,6 +19,8 @@ class App {
         this.toolService = null;
         this.compareService = null;
         this.navigationManager = null;
+        this.i18nManager = null;
+        this.languageSwitcher = null;
         this.components = {
             toolCards: new Map(),
             modals: new Map()
@@ -25,7 +29,6 @@ class App {
         this.deviceInfo = getDeviceInfo();
         
         // 绑定方法上下文
-        this.handleSearch = debounce(this.handleSearch.bind(this), 300);
         this.handleResize = debounce(this.handleResize.bind(this), 250);
     }
 
@@ -39,8 +42,14 @@ class App {
             // 设置全局错误处理
             this.setupErrorHandling();
             
+            // 初始化国际化系统（优先初始化）
+            await this.initializeI18n();
+            
             // 🔑 关键修复：先初始化UI，确保DOM元素可用
             this.initializeUI();
+            
+            // 初始化语言切换器
+            this.initializeLanguageSwitcher();
             
             // 初始化导航管理器
             await this.initializeNavigation();
@@ -65,6 +74,70 @@ class App {
         } catch (error) {
             this.handleError('应用初始化失败', error);
             throw error;
+        }
+    }
+
+    /**
+     * 初始化国际化系统
+     */
+    async initializeI18n() {
+        try {
+            this.i18nManager = getI18nManager();
+            await this.i18nManager.init();
+            
+            // 监听语言变化事件
+            this.i18nManager.onLanguageChange((event) => {
+                this.handleLanguageChange(event);
+            });
+            
+            console.log('✅ 国际化系统初始化完成');
+        } catch (error) {
+            console.error('❌ 国际化系统初始化失败:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * 初始化语言切换器
+     */
+    initializeLanguageSwitcher() {
+        try {
+            const container = document.getElementById('languageSwitcherContainer');
+            if (container) {
+                this.languageSwitcher = new LanguageSwitcher(container);
+                console.log('✅ 语言切换器初始化完成');
+            } else {
+                console.warn('⚠️ 找不到语言切换器容器');
+            }
+        } catch (error) {
+            console.error('❌ 语言切换器初始化失败:', error);
+            // 语言切换器初始化失败不应该阻止应用启动
+        }
+    }
+
+    /**
+     * 重新初始化语言切换器
+     * 当导航管理器重新渲染并恢复语言切换器容器时调用
+     */
+    reinitializeLanguageSwitcher() {
+        try {
+            console.log('🔄 重新初始化语言切换器...');
+            
+            // 清理现有的语言切换器
+            if (this.languageSwitcher) {
+                if (typeof this.languageSwitcher.destroy === 'function') {
+                    this.languageSwitcher.destroy();
+                }
+                this.languageSwitcher = null;
+            }
+            
+            // 等待DOM更新后重新初始化
+            setTimeout(() => {
+                this.initializeLanguageSwitcher();
+            }, 50);
+            
+        } catch (error) {
+            console.error('❌ 重新初始化语言切换器失败:', error);
         }
     }
 
@@ -184,7 +257,6 @@ class App {
     initializeUI() {
         // 获取主要DOM元素
         this.elements = {
-            searchInput: document.getElementById('searchInput'),
             toolsContainer: document.getElementById('toolsContainer'),
             loadingIndicator: document.getElementById('loadingIndicator'),
             errorMessage: document.getElementById('errorMessage'),
@@ -195,9 +267,6 @@ class App {
             comparePanel: document.getElementById('comparePanel')
         };
 
-        // 设置搜索框
-        this.setupSearchInput();
-        
         // 设置筛选控件
         this.setupFilterControls();
         
@@ -210,28 +279,6 @@ class App {
         console.log('✅ UI初始化完成');
         
         // UI初始化完成，工具数据将在ToolService初始化完成后自动渲染
-    }
-
-    /**
-     * 设置搜索输入框
-     */
-    setupSearchInput() {
-        if (!this.elements.searchInput) return;
-
-        this.elements.searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim();
-            this.handleSearch(query);
-        });
-
-        this.elements.searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                e.target.value = '';
-                this.handleSearch('');
-            }
-        });
-
-        // 设置占位符
-        this.elements.searchInput.placeholder = UI_CONSTANTS.MESSAGES.SEARCH_PLACEHOLDER;
     }
 
     /**
@@ -311,19 +358,6 @@ class App {
     }
 
     /**
-     * 处理搜索
-     */
-    handleSearch(query) {
-        this.store.setState({ searchQuery: query }, 'SEARCH');
-        
-        // 重新应用筛选，这会包含搜索逻辑
-        this.applyFilters();
-        
-        // 高亮搜索关键词
-        this.highlightSearchKeyword(query);
-    }
-
-    /**
      * 处理筛选变化
      */
     handleFilterChange(filterType, filterValue) {
@@ -387,26 +421,11 @@ class App {
         let filteredTools = tools;
         
         if (this.toolService) {
-            // 合并搜索和筛选条件
-            const combinedFilters = {
-                ...state.filters,
-                search: state.searchQuery
-            };
-
-            // 应用筛选（包含搜索）
-            filteredTools = this.toolService.filterTools(combinedFilters);
+            // 应用筛选（不包含搜索）
+            filteredTools = this.toolService.filterTools(state.filters);
 
             // 应用排序
             filteredTools = this.toolService.sortTools(filteredTools, state.sort);
-        } else {
-            // 简单筛选：只处理搜索
-            if (state.searchQuery) {
-                const query = state.searchQuery.toLowerCase();
-                filteredTools = tools.filter(tool => 
-                    tool.name.toLowerCase().includes(query) ||
-                    tool.description.toLowerCase().includes(query)
-                );
-            }
         }
 
         console.log('✅ applyFilters - 筛选结果:', filteredTools.length);
@@ -648,8 +667,6 @@ class App {
         console.log(`✅ 简化工具卡片渲染成功: ${tool.name}`);
     }
 
-
-
     /**
      * 清空工具卡片
      */
@@ -688,10 +705,7 @@ class App {
                 return;
             }
             
-            const state = this.store.getState();
-            const message = state.searchQuery 
-                ? UI_CONSTANTS.MESSAGES.NO_RESULTS
-                : UI_CONSTANTS.MESSAGES.NO_TOOLS;
+            const message = UI_CONSTANTS.MESSAGES.NO_TOOLS;
 
             this.elements.toolsContainer.innerHTML = `
                 <div class="empty-state">
@@ -700,7 +714,7 @@ class App {
                     </div>
                     <h3>暂无内容</h3>
                     <p>${message}</p>
-                    ${state.searchQuery ? '<button class="btn btn-outline" onclick="document.getElementById(\'searchInput\').value=\'\'; window.app.handleSearch(\'\')">清除搜索</button>' : ''}
+
                 </div>
             `;
             
@@ -954,19 +968,6 @@ class App {
     }
 
     /**
-     * 高亮搜索关键词
-     */
-    highlightSearchKeyword(keyword) {
-        this.components.toolCards.forEach(card => {
-            if (keyword) {
-                card.highlightKeyword(keyword);
-            } else {
-                card.clearHighlight();
-            }
-        });
-    }
-
-    /**
      * 更新工具数量显示
      */
     updateToolsCount(count) {
@@ -1025,15 +1026,93 @@ class App {
     }
 
     /**
+     * 处理语言变化
+     */
+    handleLanguageChange(event) {
+        try {
+            const { oldLanguage, newLanguage } = event;
+            console.log(`🌍 语言已切换: ${oldLanguage} → ${newLanguage}`);
+            
+            // 翻译页面中的所有元素
+            this.i18nManager.translatePage();
+            
+            // 更新页面标题和meta信息
+            this.updatePageMeta();
+            
+            // 重新渲染工具卡片（如果需要）
+            this.rerenderToolsForLanguage();
+            
+            // 触发语言变化事件
+            eventBus.emit('app:languageChanged', { oldLanguage, newLanguage });
+            
+        } catch (error) {
+            console.error('❌ 处理语言变化失败:', error);
+        }
+    }
+
+    /**
+     * 更新页面meta信息
+     */
+    updatePageMeta() {
+        try {
+            const title = this.i18nManager.t('meta.title');
+            const description = this.i18nManager.t('meta.description');
+            const keywords = this.i18nManager.t('meta.keywords');
+            
+            // 更新页面标题
+            document.title = title;
+            
+            // 更新meta description
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+                metaDescription.setAttribute('content', description);
+            }
+            
+            // 更新meta keywords
+            const metaKeywords = document.querySelector('meta[name="keywords"]');
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', keywords);
+            }
+            
+            // 更新Open Graph信息
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) {
+                ogTitle.setAttribute('content', title);
+            }
+            
+            const ogDescription = document.querySelector('meta[property="og:description"]');
+            if (ogDescription) {
+                ogDescription.setAttribute('content', description);
+            }
+            
+        } catch (error) {
+            console.error('❌ 更新页面meta信息失败:', error);
+        }
+    }
+
+    /**
+     * 为语言变化重新渲染工具
+     */
+    rerenderToolsForLanguage() {
+        try {
+            // 如果工具已经加载，重新渲染以更新URL链接
+            const state = this.store.getState();
+            if (state.tools && state.tools.length > 0) {
+                // 清除现有的工具卡片
+                this.clearToolCards();
+                
+                // 重新渲染工具
+                this.renderTools();
+            }
+        } catch (error) {
+            console.error('❌ 重新渲染工具失败:', error);
+        }
+    }
+
+    /**
      * 处理全局键盘事件
      */
     handleGlobalKeyDown(e) {
-        // 搜索快捷键 (/)
-        if (e.key === '/' && !e.target.matches('input, textarea')) {
-            e.preventDefault();
-            this.elements.searchInput?.focus();
-        }
-
         // 比较快捷键 (c)
         if (e.key === 'c' && e.ctrlKey && !e.target.matches('input, textarea')) {
             e.preventDefault();
@@ -1042,13 +1121,10 @@ class App {
 
         // ESC 键
         if (e.key === 'Escape') {
-            // 关闭模态框或清除搜索
+            // 关闭模态框
             const modals = document.querySelectorAll('.modal');
             if (modals.length > 0) {
                 modals[modals.length - 1].remove();
-            } else if (this.elements.searchInput?.value) {
-                this.elements.searchInput.value = '';
-                this.handleSearch('');
             }
         }
     }
@@ -1144,6 +1220,10 @@ class App {
         
         // 清理导航管理器
         this.navigationManager?.destroy();
+        
+        // 清理国际化系统
+        this.i18nManager?.destroy();
+        this.languageSwitcher?.destroy();
         
         // 清理事件监听
         window.removeEventListener('resize', this.handleResize);

@@ -332,6 +332,166 @@ body::before {
     cursor: pointer;
 }
 
+/* 语言切换器样式 */
+.language-switcher-container {
+    position: relative;
+    display: inline-block;
+    margin-left: var(--spacing-md);
+}
+
+.language-switcher {
+    position: relative;
+}
+
+.language-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    min-width: 120px;
+}
+
+.language-button:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.language-button.active {
+    border-color: var(--primary-color);
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+}
+
+.language-icon {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.language-button.active .language-icon {
+    color: var(--primary-color);
+}
+
+.language-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+.language-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.language-button.active .language-arrow {
+    transform: rotate(180deg);
+    color: var(--primary-color);
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 0.25rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.language-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.language-dropdown.dropdown-up {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+    transform: translateY(10px);
+}
+
+.language-dropdown.dropdown-up.active {
+    transform: translateY(0);
+}
+
+.language-dropdown-content {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.language-option:last-child {
+    border-bottom: none;
+}
+
+.language-option:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.language-option.active {
+    background: var(--bg-gradient-light);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.language-option.active:hover {
+    background: var(--bg-gradient-light);
+}
+
+.language-flag {
+    font-size: 1.25rem;
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+.language-name {
+    flex: 1;
+    text-align: left;
+}
+
+.language-option i.fas.fa-check {
+    color: var(--success-color);
+    font-size: 0.875rem;
+}
+
 /* Hero 区域 */
 /* 快速访问区域 */
 /* 已收录工具区域 */
@@ -1282,13 +1442,36 @@ body::before {
     .container {
         padding: 0 var(--spacing-md);
     }
-    
-    .main-nav {
-        display: none;
-    }
-    
+
+        .main-nav {
+            display: none;
+        }
+
     .mobile-menu-btn {
         display: block;
+    }
+    
+    /* 语言切换器响应式 */
+    .language-switcher-container {
+        margin-left: auto;
+        margin-top: var(--spacing-sm);
+        order: 1;
+    }
+    
+    .language-button {
+        width: 100%;
+        min-width: auto;
+        justify-content: space-between;
+    }
+    
+    .language-dropdown {
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+    
+    .language-option {
+        padding: 1rem;
     }
     
     .hero-title {
@@ -8069,4 +8252,91 @@ body.theme-purple .tools-count {
 
 .tool-card {
     animation: toolCardSlideUp 0.6s ease-out;
+}
+
+/* 语言切换器深色主题 */
+:root.theme-dark .language-button {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+:root.theme-dark .language-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+:root.theme-dark .language-button.active {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
+    color: rgba(102, 126, 234, 1);
+}
+
+:root.theme-dark .language-dropdown-content {
+    background: rgba(26, 32, 44, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+:root.theme-dark .language-option {
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root.theme-dark .language-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+:root.theme-dark .language-option.active {
+    background: rgba(102, 126, 234, 0.2);
+    color: rgba(102, 126, 234, 1);
+}
+
+/* 语言切换器键盘导航支持 */
+.language-option:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+}
+
+.language-button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* 语言切换器加载和错误状态 */
+.language-button.loading {
+    opacity: 0.7;
+    cursor: default;
+    pointer-events: none;
+}
+
+.language-button.loading .language-text {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.language-button.loading .language-icon {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.language-button.error {
+    border-color: var(--error-color, #dc3545);
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--error-color, #dc3545);
+}
+
+.language-button.error:hover {
+    background: rgba(220, 53, 69, 0.2);
+    transform: none;
+}
+
+.language-button.error .language-icon {
+    color: var(--error-color, #dc3545);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }

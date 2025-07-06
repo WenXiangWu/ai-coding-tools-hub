@@ -9,17 +9,6 @@ class ThemeSwitcher {
         this.isOpen = false;
         this.selectedTheme = null;
         
-        this.init();
-    }
-
-    /**
-     * 初始化主题切换器
-     */
-    init() {
-        this.render();
-        this.bindEvents();
-        this.updateCurrentTheme();
-        
         // 监听主题变化
         this.themeManager.addObserver((theme) => {
             this.updateCurrentTheme();
@@ -27,15 +16,14 @@ class ThemeSwitcher {
     }
 
     /**
-     * 渲染主题切换器
+     * 初始化主题切换器
      */
-    render() {
-        const container = document.createElement('div');
-        container.className = 'theme-switcher';
-        container.innerHTML = this.getTemplate();
-        
-        this.container = container;
-        this.attachToDOM();
+    init() {
+        // 只绑定事件和更新主题，不自动创建DOM
+        if (this.container) {
+            this.bindEvents();
+            this.updateCurrentTheme();
+        }
     }
 
     /**
@@ -173,54 +161,29 @@ class ThemeSwitcher {
     }
 
     /**
-     * 将组件附加到DOM
+     * 渲染主题切换器到指定容器
      */
-    attachToDOM() {
-        // 查找导航栏
-        let targetElement = null;
-        
-        // 检测是否为详情页
-        const isDetailPage = document.body.classList.contains('tool-detail-page');
-        
-        if (isDetailPage) {
-            // 详情页特殊处理，优先查找新的主题切换器容器
-            targetElement = document.querySelector('#themeSwitcher');
-            if (!targetElement) {
-                // 如果不存在，查找其他可能的容器
-                targetElement = document.querySelector('.theme-switcher-container');
-            }
-            if (!targetElement) {
-                // 如果还是不存在，查找工具内容区域
-                targetElement = document.querySelector('.tool-detail-content');
-            }
-        } else {
-            // 主页面的优先级查找合适的容器
-            const selectors = [
-                '.main-nav',
-                '.header-content', 
-                '.demo-nav',  // 演示页面的导航
-                'header'
-            ];
-            
-            for (const selector of selectors) {
-                targetElement = document.querySelector(selector);
-                if (targetElement) {
-                    console.log(`🎨 主题切换器将插入到: ${selector}`);
-                    break;
-                }
-            }
+    async render(container) {
+        if (!container) {
+            console.error('❌ ThemeSwitcher: 未提供容器');
+            return;
         }
         
-        if (targetElement) {
-            // 为详情页添加特殊的容器类
-            if (isDetailPage) {
-                this.container.classList.add('theme-switcher-detail-page');
-            }
-            targetElement.appendChild(this.container);
-        } else {
-            console.warn('❌ 未找到合适的容器，主题切换器将插入到body');
-            document.body.appendChild(this.container);
-        }
+        // 清空容器以防止重复内容
+        container.innerHTML = '';
+        
+        const switcherElement = document.createElement('div');
+        switcherElement.className = 'theme-switcher';
+        switcherElement.innerHTML = this.getTemplate();
+        
+        this.container = switcherElement;
+        container.appendChild(switcherElement);
+        
+        // 绑定事件
+        this.bindEvents();
+        this.updateCurrentTheme();
+        
+        console.log('✅ ThemeSwitcher: 渲染完成');
     }
 
     /**
@@ -265,10 +228,17 @@ class ThemeSwitcher {
         const dropdown = this.container.querySelector('.theme-switcher-dropdown');
         if (!dropdown) return;
 
-        // 重置位置
+        // 重置位置为默认向下展开
         dropdown.style.left = '';
         dropdown.style.right = '0';
+        dropdown.style.top = 'calc(100% + 0.5rem)';
+        dropdown.style.bottom = 'auto';
+        dropdown.style.marginBottom = '0';
+        dropdown.style.marginTop = '0';
         dropdown.style.transform = '';
+
+        // 强制重绘以获取准确的位置信息
+        dropdown.offsetHeight;
 
         // 获取下拉菜单和视口的尺寸
         const rect = dropdown.getBoundingClientRect();
@@ -287,12 +257,20 @@ class ThemeSwitcher {
             dropdown.style.right = 'auto';
         }
 
-        // 检查是否超出下边界，如果超出则向上显示
-        if (rect.bottom > viewportHeight) {
+        // 只有当下拉菜单确实超出视口下边界很多时才向上显示
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        const dropdownHeight = rect.height;
+        
+        // 如果下方空间不足，且上方空间更充足，则向上显示
+        if (spaceBelow < 20 && spaceAbove > dropdownHeight + 20) {
             dropdown.style.top = 'auto';
             dropdown.style.bottom = '100%';
             dropdown.style.marginBottom = '0.5rem';
             dropdown.style.marginTop = '0';
+            console.log('🔄 ThemeSwitcher: 下拉菜单向上展开');
+        } else {
+            console.log('🔄 ThemeSwitcher: 下拉菜单向下展开');
         }
     }
 

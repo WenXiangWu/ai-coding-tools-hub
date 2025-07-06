@@ -485,56 +485,8 @@ class App {
         this.renderTools();
     }
 
-    searchTools(query) {
-        if (!this.toolsManager) return;
-        
-        const results = this.toolsManager.searchTools(query);
-        this.displaySearchResults(results);
-    }
-
-    displaySearchResults(results) {
-        const toolsGrid = document.getElementById('toolsGrid');
-        if (!toolsGrid) return;
-
-        toolsGrid.innerHTML = '';
-        
-        if (results.length === 0) {
-            toolsGrid.innerHTML = `
-                <div class="no-results" style="
-                    grid-column: 1 / -1;
-                    text-align: center;
-                    padding: 60px 20px;
-                    color: #666;
-                ">
-                    <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
-                    <h3>未找到相关工具</h3>
-                    <p>请尝试使用其他关键词搜索</p>
-                </div>
-            `;
-            return;
-        }
-
-        results.forEach(tool => {
-            const toolCard = this.createToolCard(tool);
-            toolsGrid.appendChild(toolCard);
-        });
-    }
-
     // 事件监听器设置
     setupEventListeners() {
-        // 搜索功能
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.trim();
-                if (query.length === 0) {
-                    this.renderTools();
-                } else {
-                    this.searchTools(query);
-                }
-            });
-        }
-
         // 筛选功能
         const typeFilter = document.getElementById('typeFilter');
         const priceFilter = document.getElementById('priceFilter');
@@ -580,15 +532,6 @@ class App {
     // 键盘快捷键
     initializeKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + K 聚焦搜索框
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput) {
-                    searchInput.focus();
-                }
-            }
-
             // 数字键快速筛选
             if (e.key >= '1' && e.key <= '9') {
                 const filterButtons = document.querySelectorAll('.filter-btn');

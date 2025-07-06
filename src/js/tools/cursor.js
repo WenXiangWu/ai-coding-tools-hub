@@ -4,6 +4,21 @@
  */
 
 import { TOOL_TYPES, PRICE_MODELS, TOOL_STATUS } from '../utils/tool-schema.js';
+import { getI18nManager } from '../managers/i18n-manager.js';
+
+// 获取国际化管理器
+const i18nManager = getI18nManager();
+
+// 获取多语言URL
+function getUrls() {
+    const urlMappings = i18nManager.urlMappings[i18nManager.getCurrentLanguage()] || {};
+    return urlMappings.cursor || {
+        website: 'https://cursor.sh',
+        documentation: 'https://docs.cursor.com',
+        github: 'https://github.com/getcursor/cursor',
+        changelog: 'https://docs.cursor.com/changelog'
+    };
+}
 
 export const cursorTool = {
     id: 'cursor',
@@ -30,10 +45,19 @@ export const cursorTool = {
     users: '500K+',
     updated: '2024-12-25',
     
-    website: 'https://cursor.sh',
-    documentation: 'https://docs.cursor.sh',
-    github: 'https://github.com/getcursor/cursor',
-    changelog: 'https://docs.cursor.sh/changelog',
+    // 动态获取URL
+    get website() {
+        return getUrls().website;
+    },
+    get documentation() {
+        return getUrls().documentation;
+    },
+    get github() {
+        return getUrls().github;
+    },
+    get changelog() {
+        return getUrls().changelog;
+    },
     
     supported_languages: [
         'JavaScript',
@@ -102,7 +126,7 @@ export const cursorTool = {
                         
                         <h3>下载安装</h3>
                         <ol>
-                            <li>访问 <a href="https://cursor.sh" target="_blank">cursor.sh</a></li>
+                            <li>访问 <a href="${getUrls().website}" target="_blank">官方网站</a></li>
                             <li>选择适合你操作系统的版本下载</li>
                             <li>运行安装程序，按提示完成安装</li>
                         </ol>
@@ -199,18 +223,13 @@ export const cursorTool = {
                         <h3>活动栏布局</h3>
                         <p>Cursor中的活动栏默认是水平的，以节省聊天空间。</p>
                         
-                        <h4>如果您更喜欢垂直活动栏：</h4>
-                        <ol>
-                            <li>打开VS Code设置 (<code>Ctrl/⌘ + Shift + P</code>)</li>
-                            <li>输入 <code>VS Code Settings</code></li>
-                            <li>将 <code>workbench.activityBar.orientation</code> 设置为 <code>vertical</code></li>
-                            <li>重启Cursor</li>
-                        </ol>
-                        
-                        <h3>设置面板说明</h3>
+                        <h4>主要功能区域：</h4>
                         <ul>
-                            <li><strong>Cursor特定设置：</strong> 右上角齿轮按钮 或 <code>Ctrl/⌘ + Shift + J</code></li>
-                            <li><strong>VS Code设置：</strong> <code>Ctrl/⌘ + Shift + P</code> 然后输入 <code>VS Code Settings</code></li>
+                            <li><strong>Chat</strong> - 与AI对话编程</li>
+                            <li><strong>Composer</strong> - 多文件编辑</li>
+                            <li><strong>Explorer</strong> - 文件浏览器</li>
+                            <li><strong>Search</strong> - 全局搜索</li>
+                            <li><strong>Extensions</strong> - 扩展管理</li>
                         </ul>
                     `
                 }
@@ -221,135 +240,274 @@ export const cursorTool = {
             icon: 'fas fa-star',
             sections: [
                 {
-                    id: 'tab_completion',
-                    title: 'Tab智能补全',
+                    id: 'chat',
+                    title: 'AI聊天功能',
                     content: `
-                        <h3>Tab补全功能</h3>
-                        <p>Cursor的Tab功能提供基于上下文的智能代码补全，比传统的自动补全更加智能和准确。</p>
+                        <h3>与AI对话编程</h3>
+                        <p>Cursor的Chat功能让您可以用自然语言与AI交流，获得编程帮助。</p>
                         
-                        <h4>使用方法：</h4>
-                        <ol>
-                            <li>开始输入代码</li>
-                            <li>当看到灰色的建议代码时，按<code>Tab</code>键接受</li>
-                            <li>按<code>Escape</code>键拒绝建议</li>
-                        </ol>
-                        
-                        <h4>高级用法：</h4>
+                        <h4>主要特性：</h4>
                         <ul>
-                            <li><strong>部分接受：</strong> 按<code>Ctrl/⌘ + →</code>只接受建议的一部分</li>
-                            <li><strong>查看替代方案：</strong> 按<code>Alt + ]</code>查看其他建议</li>
+                            <li><strong>代码解释</strong> - 选中代码后询问AI，获得详细解释</li>
+                            <li><strong>错误诊断</strong> - 遇到错误时，AI可以帮助分析和修复</li>
+                            <li><strong>代码优化</strong> - 请求AI优化您的代码性能和可读性</li>
+                            <li><strong>功能实现</strong> - 描述需求，AI帮您实现具体功能</li>
                         </ul>
+                        
+                        <h4>使用技巧：</h4>
+                        <ol>
+                            <li>选中相关代码后再提问，获得更准确的回答</li>
+                            <li>使用 <code>@</code> 符号引用文件和函数</li>
+                            <li>描述具体的使用场景和需求</li>
+                        </ol>
                     `
                 },
                 {
                     id: 'composer',
                     title: 'Composer多文件编辑',
                     content: `
-                        <h3>什么是Composer？</h3>
-                        <p>Composer是Cursor的杀手级功能，允许AI同时编辑多个文件，理解整个项目的结构和上下文。</p>
+                        <h3>革命性的多文件AI编辑</h3>
+                        <p>Composer是Cursor的杀手级功能，可以同时编辑多个文件，让AI理解整个项目结构。</p>
                         
-                        <h4>启动Composer：</h4>
+                        <h4>使用场景：</h4>
                         <ul>
-                            <li>快捷键：<code>Ctrl/⌘ + I</code></li>
-                            <li>或者点击左侧面板的Composer图标</li>
+                            <li><strong>重构代码</strong> - 跨文件重构，保持代码一致性</li>
+                            <li><strong>添加功能</strong> - 在多个文件中添加相关功能</li>
+                            <li><strong>修复bug</strong> - 修复涉及多个文件的复杂bug</li>
+                            <li><strong>项目初始化</strong> - 快速搭建项目结构</li>
                         </ul>
                         
-                        <h4>使用技巧：</h4>
+                        <h4>操作步骤：</h4>
                         <ol>
-                            <li><strong>添加文件：</strong> 点击"+"按钮添加需要编辑的文件</li>
-                            <li><strong>描述需求：</strong> 用自然语言描述你想要实现的功能</li>
-                            <li><strong>预览更改：</strong> AI会显示将要进行的更改，你可以预览后决定是否应用</li>
-                            <li><strong>应用更改：</strong> 确认无误后点击"Apply"按钮</li>
+                            <li>打开Composer面板（Ctrl+Shift+I）</li>
+                            <li>选择要编辑的文件</li>
+                            <li>描述您的需求</li>
+                            <li>审查AI的修改建议</li>
+                            <li>接受或调整修改</li>
                         </ol>
-                        
-                        <div class="example-box">
-                            <h5>示例：创建一个React组件</h5>
-                            <p><strong>输入：</strong> "创建一个用户卡片组件，包含头像、姓名、邮箱，并添加相应的样式文件"</p>
-                            <p><strong>结果：</strong> AI会同时创建.jsx文件和.css文件，确保两者协调一致</p>
-                        </div>
                     `
                 },
                 {
-                    id: 'chat',
-                    title: 'AI对话功能',
+                    id: 'tab_autocomplete',
+                    title: '智能代码补全',
                     content: `
-                        <h3>Chat功能概述</h3>
-                        <p>Cursor的Chat功能让你可以与AI进行自然语言对话，获得编程帮助、代码解释和问题解答。</p>
+                        <h3>上下文感知的智能补全</h3>
+                        <p>Cursor的Tab补全功能提供了业界领先的智能代码补全体验。</p>
                         
-                        <h4>启动Chat：</h4>
+                        <h4>核心特性：</h4>
                         <ul>
-                            <li>快捷键：<code>Ctrl/⌘ + L</code></li>
-                            <li>或者点击右侧面板的Chat图标</li>
+                            <li><strong>上下文理解</strong> - 理解项目上下文，提供相关建议</li>
+                            <li><strong>多行补全</strong> - 可以补全整个函数或代码块</li>
+                            <li><strong>语言无关</strong> - 支持所有主流编程语言</li>
+                            <li><strong>实时学习</strong> - 根据您的编码习惯调整建议</li>
                         </ul>
                         
-                        <h4>Chat使用技巧：</h4>
+                        <h4>使用技巧：</h4>
                         <ul>
-                            <li><strong>@符号引用：</strong> 使用@可以引用特定文件或代码片段</li>
-                            <li><strong>代码上下文：</strong> 选中代码后开始对话，AI会基于选中内容回答</li>
-                            <li><strong>多轮对话：</strong> 可以进行连续的问答，AI会记住对话历史</li>
+                            <li>按Tab键接受建议</li>
+                            <li>按Esc键拒绝建议</li>
+                            <li>使用Ctrl+→浏览多个建议</li>
                         </ul>
-                        
-                        <div class="chat-examples">
-                            <h5>常用对话示例：</h5>
-                            <ul>
-                                <li>"解释这段代码的作用"</li>
-                                <li>"这个函数有什么性能问题吗？"</li>
-                                <li>"帮我优化这个算法"</li>
-                                <li>"如何测试这个组件？"</li>
-                            </ul>
-                        </div>
                     `
                 }
             ]
         },
-        tips_and_tricks: {
-            title: '使用技巧',
-            icon: 'fas fa-magic',
+        pricing: {
+            title: '价格方案',
+            icon: 'fas fa-dollar-sign',
             sections: [
                 {
-                    id: 'control_ai',
-                    title: '如何让AI更听话',
+                    id: 'free_plan',
+                    title: '免费计划',
                     content: `
-                        <h3>需求分解策略</h3>
-                        <p>不要让AI一次性完成所有工作，而是将复杂需求分解成小步骤。</p>
+                        <h3>免费使用核心功能</h3>
+                        <p>Cursor提供慷慨的免费计划，让您体验AI编程的魅力。</p>
                         
-                        <h4>示例流程：</h4>
-                        <ol>
-                            <li><strong>第一步：</strong> "请帮我设计一个用户注册页面的整体结构"</li>
-                            <li><strong>第二步：</strong> "现在请实现表单验证逻辑"</li>
-                            <li><strong>第三步：</strong> "添加样式，要求简洁现代"</li>
-                            <li><strong>第四步：</strong> "添加提交后的成功/错误处理"</li>
-                        </ol>
+                        <h4>包含功能：</h4>
+                        <ul>
+                            <li>基础的AI聊天功能</li>
+                            <li>有限的代码补全</li>
+                            <li>基本的Composer功能</li>
+                            <li>社区支持</li>
+                        </ul>
                         
-                        <div class="tip-box">
-                            <i class="fas fa-lightbulb"></i>
-                            <strong>关键提示：</strong> 每完成一步后，先检查结果是否符合预期，再进行下一步。
-                        </div>
+                        <h4>使用限制：</h4>
+                        <ul>
+                            <li>每月200次AI请求</li>
+                            <li>基础的AI模型</li>
+                            <li>标准的响应速度</li>
+                        </ul>
                     `
                 },
                 {
-                    id: 'debugging',
-                    title: '代码调试技巧',
+                    id: 'pro_plan',
+                    title: 'Pro计划',
                     content: `
-                        <h3>遇到报错不要慌</h3>
-                        <p>当代码出现错误时，使用这个三步法：</p>
+                        <h3>专业开发者的选择</h3>
+                        <p>Pro计划提供更强大的AI能力和更多的使用配额。</p>
                         
-                        <h4>步骤1：让AI分析问题</h4>
-                        <p>发送报错信息时，在后面加上：</p>
-                        <blockquote>
-                        "先检查研究我的代码文件，试图找出报错的原因。然后概述你要做的事情，不要写任何代码，直到我说继续"
-                        </blockquote>
+                        <h4>价格：$20/月</h4>
                         
-                        <h4>步骤2：添加调试日志</h4>
-                        <p>让AI在关键节点添加console.log或其他日志，帮助定位问题。</p>
+                        <h4>包含功能：</h4>
+                        <ul>
+                            <li>无限制的AI聊天</li>
+                            <li>高级AI模型（GPT-4）</li>
+                            <li>完整的Composer功能</li>
+                            <li>优先支持</li>
+                            <li>快速响应速度</li>
+                        </ul>
                         
-                        <h4>步骤3：版本回滚</h4>
-                        <p>如果问题无法解决，使用git回滚到工作版本，重新实现功能。</p>
+                        <h4>适合人群：</h4>
+                        <ul>
+                            <li>专业开发者</li>
+                            <li>中小型团队</li>
+                            <li>个人项目</li>
+                        </ul>
+                    `
+                },
+                {
+                    id: 'business_plan',
+                    title: '商业计划',
+                    content: `
+                        <h3>企业级解决方案</h3>
+                        <p>为企业团队提供定制化的AI编程解决方案。</p>
                         
-                        <div class="warning-box">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <strong>重要：</strong> 建议使用Git管理代码版本，便于出现问题时快速回滚。
-                        </div>
+                        <h4>价格：$40/月/用户</h4>
+                        
+                        <h4>包含功能：</h4>
+                        <ul>
+                            <li>Pro计划的所有功能</li>
+                            <li>团队协作功能</li>
+                            <li>管理员控制台</li>
+                            <li>企业级安全</li>
+                            <li>专门的客户经理</li>
+                            <li>SLA保证</li>
+                        </ul>
+                        
+                        <h4>适合人群：</h4>
+                        <ul>
+                            <li>大型企业</li>
+                            <li>开发团队</li>
+                            <li>有合规要求的组织</li>
+                        </ul>
+                    `
+                }
+            ]
+        },
+        tips: {
+            title: '使用技巧',
+            icon: 'fas fa-lightbulb',
+            sections: [
+                {
+                    id: 'productivity_tips',
+                    title: '提高生产力',
+                    content: `
+                        <h3>最大化您的编程效率</h3>
+                        
+                        <h4>快捷键使用：</h4>
+                        <ul>
+                            <li><strong>Ctrl+K</strong> - 快速编辑选中代码</li>
+                            <li><strong>Ctrl+L</strong> - 打开Chat面板</li>
+                            <li><strong>Ctrl+Shift+L</strong> - 在新窗口中打开Chat</li>
+                            <li><strong>Ctrl+I</strong> - 打开Composer</li>
+                            <li><strong>Tab</strong> - 接受代码补全建议</li>
+                        </ul>
+                        
+                        <h4>提问技巧：</h4>
+                        <ul>
+                            <li>具体描述您的需求和期望结果</li>
+                            <li>提供足够的上下文信息</li>
+                            <li>使用清晰的语言，避免歧义</li>
+                            <li>分步骤提问，逐步细化需求</li>
+                        </ul>
+                    `
+                },
+                {
+                    id: 'best_practices',
+                    title: '最佳实践',
+                    content: `
+                        <h3>充分利用AI助手</h3>
+                        
+                        <h4>代码审查：</h4>
+                        <ul>
+                            <li>使用AI进行代码审查，发现潜在问题</li>
+                            <li>请求AI提供代码改进建议</li>
+                            <li>让AI解释复杂的代码逻辑</li>
+                        </ul>
+                        
+                        <h4>学习新技术：</h4>
+                        <ul>
+                            <li>使用AI学习新的编程语言</li>
+                            <li>了解最新的技术趋势</li>
+                            <li>获得个性化的学习建议</li>
+                        </ul>
+                        
+                        <h4>团队协作：</h4>
+                        <ul>
+                            <li>使用AI统一代码风格</li>
+                            <li>生成代码文档和注释</li>
+                            <li>创建标准化的代码模板</li>
+                        </ul>
+                    `
+                }
+            ]
+        },
+        troubleshooting: {
+            title: '故障排除',
+            icon: 'fas fa-wrench',
+            sections: [
+                {
+                    id: 'common_issues',
+                    title: '常见问题',
+                    content: `
+                        <h3>解决常见使用问题</h3>
+                        
+                        <h4>AI响应缓慢：</h4>
+                        <ul>
+                            <li>检查网络连接状态</li>
+                            <li>减少同时进行的AI请求</li>
+                            <li>重启Cursor应用</li>
+                            <li>检查是否有后台进程占用资源</li>
+                        </ul>
+                        
+                        <h4>代码补全不准确：</h4>
+                        <ul>
+                            <li>确保项目文件结构清晰</li>
+                            <li>添加必要的类型声明</li>
+                            <li>检查语言服务器状态</li>
+                            <li>重新索引项目文件</li>
+                        </ul>
+                        
+                        <h4>Composer功能异常：</h4>
+                        <ul>
+                            <li>检查文件权限</li>
+                            <li>确保没有文件被其他程序锁定</li>
+                            <li>清理临时文件</li>
+                            <li>更新到最新版本</li>
+                        </ul>
+                    `
+                },
+                {
+                    id: 'performance_optimization',
+                    title: '性能优化',
+                    content: `
+                        <h3>优化Cursor性能</h3>
+                        
+                        <h4>系统要求：</h4>
+                        <ul>
+                            <li>至少8GB RAM（推荐16GB）</li>
+                            <li>SSD硬盘（提高文件读写速度）</li>
+                            <li>稳定的网络连接</li>
+                            <li>关闭不必要的后台应用</li>
+                        </ul>
+                        
+                        <h4>优化设置：</h4>
+                        <ul>
+                            <li>调整AI请求频率</li>
+                            <li>限制代码补全的触发频率</li>
+                            <li>关闭不需要的扩展</li>
+                            <li>定期清理缓存文件</li>
+                        </ul>
                     `
                 }
             ]
