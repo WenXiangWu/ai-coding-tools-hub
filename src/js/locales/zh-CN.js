@@ -38,7 +38,8 @@ export default {
         contact: '联系我们',
         about: '关于',
         privacy: '隐私政策',
-        terms: '服务条款'
+        terms: '服务条款',
+        type: '类型'
     },
     
     // 语言
@@ -54,6 +55,7 @@ export default {
             tools: '工具总览',
             compare: '工具对比',
             tutorials: '学习中心',
+            updates: '更新动态',
             devtools: '开发工具',
             language: '语言'
         },
@@ -127,10 +129,15 @@ export default {
             collaboration: '协作工具'
         },
         status: {
-            hot: '热门',
-            new: '新品',
+            hot: '🔥 热门',
+            new: '✨ 新品',
             updated: '已更新',
-            featured: '精选'
+            featured: '精选',
+            stable: '🛡️ 稳定',
+            powerful: '⚡ 强大',
+            local: '🏠 本土',
+            professional: '👑 专业',
+            educational: '🎓 教育'
         },
         pricing: {
             free: '免费',
@@ -151,7 +158,8 @@ export default {
             website: '官方网站',
             documentation: '文档',
             github: 'GitHub',
-            changelog: '更新日志'
+            changelog: '更新日志',
+            status: '工具状态'
         },
         actions: {
             viewDetails: '查看详情',
@@ -161,7 +169,8 @@ export default {
             visitWebsite: '访问官网',
             viewDocs: '查看文档',
             download: '下载'
-        }
+        },
+        moreFeatures: '还有{{count}}个功能'
     },
     
     // 工具对比
@@ -179,6 +188,76 @@ export default {
             support: '支持情况',
             community: '社区活跃度'
         }
+    },
+    
+    // 筛选和排序
+    filters: {
+        typeLabel: '类型筛选：',
+        priceLabel: '价格筛选：',
+        sortLabel: '排序方式：',
+        typeOptions: {
+            all: '全部类型',
+            ide: 'IDE插件',
+            standalone: '独立应用',
+            web: 'Web应用',
+            api: 'API服务'
+        },
+        priceOptions: {
+            all: '全部价格',
+            free: '免费',
+            freemium: '免费+付费',
+            paid: '付费'
+        },
+        sortOptions: {
+            popularity: '热门程度',
+            name: '名称排序',
+            rating: '评分排序',
+            updated: '更新时间',
+            users: '用户数量'
+        }
+    },
+    
+    // 界面文本
+    ui: {
+        loading: '正在加载工具数据...',
+        compareButton: '对比选中的工具',
+        compareCount: '0',
+        viewAll: '查看全部',
+        compareAnalysis: '工具对比分析',
+        learningCenter: '学习中心',
+        learningSubtitle: '从入门到精通的完整学习路径',
+        updateNews: '更新动态',
+        updateSubtitle: '及时了解AI工具的最新发展',
+        tutorialCategories: {
+            beginner: '入门指南',
+            intermediate: '进阶技巧',
+            advanced: '专家级应用',
+            bestPractices: '最佳实践'
+        }
+    },
+    
+    // 页脚
+    footer: {
+        description: '专业的AI工具箱平台，为开发者提供全面的智能开发解决方案。',
+        sections: {
+            product: '产品',
+            developer: '开发者',
+            support: '支持'
+        },
+        links: {
+            toolsOverview: '工具总览',
+            compareTools: '工具对比',
+            learningCenter: '学习中心',
+            apiDocs: 'API 文档',
+            integrationGuide: '集成指南',
+            developerCommunity: '开发者社区',
+            github: 'GitHub',
+            helpCenter: '帮助中心',
+            contactUs: '联系我们',
+            statusPage: '状态页面',
+            rssSubscribe: 'RSS订阅'
+        },
+        copyright: '© 2024 AITOOLBOX. 智能无限，协作无间。'
     },
     
     // 搜索和筛选
@@ -227,16 +306,41 @@ export default {
     
     // 主题切换
     theme: {
-        title: '主题设置',
-        light: '浅色主题',
-        dark: '深色主题',
-        auto: '跟随系统',
+        title: '主题',
+        switchTheme: '切换主题',
+        selectTheme: '选择主题',
+        personalizeExperience: '个性化您的体验',
+        preferencesAutoSaved: '主题偏好会自动保存',
+        notifications: {
+            switched: '主题已更换',
+            switchFailed: '主题切换失败',
+            switchError: '主题切换出错'
+        },
         themes: {
-            default: '默认',
-            dark: '深色',
-            blue: '蓝色',
-            green: '绿色',
-            purple: '紫色'
+            default: {
+                name: '默认',
+                description: '清新简洁的默认主题'
+            },
+            dark: {
+                name: '深色',
+                description: '护眼的深色主题'
+            },
+            blue: {
+                name: '海洋蓝',
+                description: '清新的蓝色主题'
+            },
+            green: {
+                name: '森林绿',
+                description: '自然的绿色主题'
+            },
+            purple: {
+                name: '紫罗兰',
+                description: '优雅的紫色主题'
+            },
+            auto: {
+                name: '跟随系统',
+                description: '自动跟随系统主题偏好'
+            }
         }
     },
     

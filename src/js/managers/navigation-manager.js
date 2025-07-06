@@ -52,6 +52,9 @@ export class NavigationManager {
             // 设置配置管理器监听
             this.setupConfigListener();
             
+            // 设置i18n监听器
+            this.setupI18nListener();
+            
             // 渲染导航
             await this.renderNavigation();
             
@@ -101,6 +104,48 @@ export class NavigationManager {
     }
 
     /**
+     * 设置i18n监听器
+     */
+    setupI18nListener() {
+        // 监听语言切换事件
+        this.i18nListener = (eventData) => {
+            console.log('🌍 语言切换事件，重新翻译导航:', eventData);
+            // 延迟一点时间，确保i18n系统已经完全切换
+            setTimeout(() => {
+                this.translateNavigationElements();
+                // 通知主题切换器刷新
+                this.refreshThemeSwitcher();
+            }, 50);
+        };
+        
+        // 监听语言切换事件
+        if (window.__i18nManager) {
+            window.__i18nManager.onLanguageChange(this.i18nListener);
+        } else {
+            // 如果i18n管理器还没有初始化，等待一下再设置监听
+            setTimeout(() => {
+                if (window.__i18nManager) {
+                    window.__i18nManager.onLanguageChange(this.i18nListener);
+                }
+            }, 100);
+        }
+    }
+
+    /**
+     * 刷新主题切换器
+     */
+    refreshThemeSwitcher() {
+        try {
+            if (window.themeSwitcher && typeof window.themeSwitcher.refresh === 'function') {
+                window.themeSwitcher.refresh();
+                console.log('✅ 主题切换器已刷新');
+            }
+        } catch (error) {
+            console.warn('⚠️ 刷新主题切换器失败:', error);
+        }
+    }
+
+    /**
      * 渲染导航
      */
     async renderNavigation() {
@@ -126,11 +171,7 @@ export class NavigationManager {
             this.mainNavElement.appendChild(navElement);
         }
         
-        // 添加搜索框
-        if (SEARCH_CONFIG.enabled) {
-            const searchElement = this.createSearchElement();
-            this.mainNavElement.appendChild(searchElement);
-        }
+        // 搜索功能已移除
         
         // 恢复或创建语言切换器容器
         if (languageSwitcherContainer) {
@@ -160,6 +201,9 @@ export class NavigationManager {
         // 通知语言切换器容器已恢复，需要重新初始化
         this.notifyLanguageSwitcherContainerRestored();
         
+        // 渲染完成后，触发翻译
+        this.translateNavigationElements();
+        
         console.log('📱 导航渲染完成');
     }
 
@@ -182,6 +226,13 @@ export class NavigationManager {
         link.href = item.href;
         link.className = 'nav-link';
         link.setAttribute('data-nav-id', item.id);
+        
+        // 添加i18n属性
+        const i18nKey = this.getI18nKeyForNavItem(item.id);
+        if (i18nKey) {
+            link.setAttribute('data-i18n', i18nKey);
+        }
+        
         link.innerHTML = `
             ${item.icon ? `<i class="${item.icon}"></i>` : ''}
             <span>${item.name}</span>
@@ -206,11 +257,20 @@ export class NavigationManager {
         const button = document.createElement('button');
         button.className = 'nav-link dropdown-toggle';
         button.id = `${item.id}DropdownBtn`;
+        
+        // 为按钮内的span添加i18n属性
+        const buttonI18nKey = this.getI18nKeyForNavItem(item.id);
+        const spanElement = document.createElement('span');
+        spanElement.textContent = item.name;
+        if (buttonI18nKey) {
+            spanElement.setAttribute('data-i18n', buttonI18nKey);
+        }
+        
         button.innerHTML = `
             ${item.icon ? `<i class="${item.icon}"></i>` : ''}
-            <span>${item.name}</span>
-            <i class="fas fa-caret-down"></i>
         `;
+        button.appendChild(spanElement);
+        button.innerHTML += `<i class="fas fa-caret-down"></i>`;
         
         // 下拉菜单
         const menu = document.createElement('div');
@@ -223,6 +283,13 @@ export class NavigationManager {
             toolLink.href = tool.href;
             toolLink.className = 'dropdown-item';
             toolLink.setAttribute('data-tool-id', tool.id);
+            
+            // 添加i18n属性
+            const toolI18nKey = this.getI18nKeyForDevtool(tool.id);
+            if (toolI18nKey) {
+                toolLink.setAttribute('data-i18n', toolI18nKey);
+            }
+            
             toolLink.innerHTML = `
                 ${tool.icon ? `<i class="${tool.icon}"></i>` : ''}
                 <span>${tool.name}</span>
@@ -940,5 +1007,58 @@ export class NavigationManager {
             disabledItems: configStats.disabledItems,
             configValid: navigationConfigManager.validateConfig().valid
         };
+    }
+
+    /**
+     * 获取导航项的i18n键
+     */
+    getI18nKeyForNavItem(navId) {
+        const keyMap = {
+            'tools': 'header.navigation.tools',
+            'compare': 'header.navigation.compare',
+            'tutorials': 'header.navigation.tutorials',
+            'updates': 'header.navigation.updates',
+            'devtools': 'header.navigation.devtools'
+        };
+        return keyMap[navId] || null;
+    }
+
+    /**
+     * 获取开发工具的i18n键
+     */
+    getI18nKeyForDevtool(toolId) {
+        const keyMap = {
+            'json-parser': 'header.devtools.json',
+            'text-diff': 'header.devtools.diff',
+            'cron-expression': 'header.devtools.cron',
+            'timestamp-converter': 'header.devtools.timestamp',
+            'qrcode-generator': 'header.devtools.qrcode',
+            'regex-tool': 'header.devtools.regex'
+        };
+        return keyMap[toolId] || null;
+    }
+
+    /**
+     * 翻译导航元素
+     */
+    translateNavigationElements() {
+        try {
+            // 获取i18n管理器
+            const i18nManager = window.__i18nManager;
+            if (!i18nManager || typeof i18nManager.translateElement !== 'function') {
+                console.warn('⚠️ i18n管理器不可用，跳过导航翻译');
+                return;
+            }
+
+            // 翻译导航栏中的所有元素
+            const navElements = this.mainNavElement.querySelectorAll('[data-i18n]');
+            navElements.forEach(element => {
+                i18nManager.translateElement(element);
+            });
+
+            console.log('✅ 导航元素翻译完成，共翻译', navElements.length, '个元素');
+        } catch (error) {
+            console.error('❌ 导航元素翻译失败:', error);
+        }
     }
 } 

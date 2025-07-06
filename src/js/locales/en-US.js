@@ -38,7 +38,8 @@ export default {
         contact: 'Contact Us',
         about: 'About',
         privacy: 'Privacy Policy',
-        terms: 'Terms of Service'
+        terms: 'Terms of Service',
+        type: 'Type'
     },
     
     // Languages
@@ -54,6 +55,7 @@ export default {
             tools: 'Tools Overview',
             compare: 'Compare Tools',
             tutorials: 'Learning Center',
+            updates: 'Updates',
             devtools: 'Dev Tools',
             language: 'Language'
         },
@@ -127,10 +129,15 @@ export default {
             collaboration: 'Collaboration Tool'
         },
         status: {
-            hot: 'Hot',
-            new: 'New',
+            hot: '🔥 Hot',
+            new: '✨ New',
             updated: 'Updated',
-            featured: 'Featured'
+            featured: 'Featured',
+            stable: '🛡️ Stable',
+            powerful: '⚡ Powerful',
+            local: '🏠 Local',
+            professional: '👑 Professional',
+            educational: '🎓 Educational'
         },
         pricing: {
             free: 'Free',
@@ -151,7 +158,8 @@ export default {
             website: 'Website',
             documentation: 'Documentation',
             github: 'GitHub',
-            changelog: 'Changelog'
+            changelog: 'Changelog',
+            status: 'Tool Status'
         },
         actions: {
             viewDetails: 'View Details',
@@ -161,7 +169,8 @@ export default {
             visitWebsite: 'Visit Website',
             viewDocs: 'View Docs',
             download: 'Download'
-        }
+        },
+        moreFeatures: '{{count}} more features'
     },
     
     // Compare
@@ -179,6 +188,76 @@ export default {
             support: 'Support',
             community: 'Community'
         }
+    },
+    
+    // Filters and Sorting
+    filters: {
+        typeLabel: 'Type Filter:',
+        priceLabel: 'Price Filter:',
+        sortLabel: 'Sort By:',
+        typeOptions: {
+            all: 'All Types',
+            ide: 'IDE Plugin',
+            standalone: 'Standalone App',
+            web: 'Web App',
+            api: 'API Service'
+        },
+        priceOptions: {
+            all: 'All Prices',
+            free: 'Free',
+            freemium: 'Freemium',
+            paid: 'Paid'
+        },
+        sortOptions: {
+            popularity: 'Popularity',
+            name: 'Name',
+            rating: 'Rating',
+            updated: 'Updated',
+            users: 'Users'
+        }
+    },
+    
+    // UI Text
+    ui: {
+        loading: 'Loading tool data...',
+        compareButton: 'Compare Selected Tools',
+        compareCount: '0',
+        viewAll: 'View All',
+        compareAnalysis: 'Tool Comparison Analysis',
+        learningCenter: 'Learning Center',
+        learningSubtitle: 'Complete learning path from beginner to expert',
+        updateNews: 'Update News',
+        updateSubtitle: 'Stay updated with the latest AI tool developments',
+        tutorialCategories: {
+            beginner: 'Beginner Guide',
+            intermediate: 'Advanced Tips',
+            advanced: 'Expert Applications',
+            bestPractices: 'Best Practices'
+        }
+    },
+    
+    // Footer
+    footer: {
+        description: 'Professional AI toolbox platform providing comprehensive intelligent development solutions for developers.',
+        sections: {
+            product: 'Product',
+            developer: 'Developer',
+            support: 'Support'
+        },
+        links: {
+            toolsOverview: 'Tools Overview',
+            compareTools: 'Compare Tools',
+            learningCenter: 'Learning Center',
+            apiDocs: 'API Documentation',
+            integrationGuide: 'Integration Guide',
+            developerCommunity: 'Developer Community',
+            github: 'GitHub',
+            helpCenter: 'Help Center',
+            contactUs: 'Contact Us',
+            statusPage: 'Status Page',
+            rssSubscribe: 'RSS Subscribe'
+        },
+        copyright: '© 2024 AITOOLBOX. Intelligent Unlimited, Seamless Collaboration.'
     },
     
     // Search and Filter
@@ -227,16 +306,41 @@ export default {
     
     // Theme
     theme: {
-        title: 'Theme Settings',
-        light: 'Light Theme',
-        dark: 'Dark Theme',
-        auto: 'Follow System',
+        title: 'Theme',
+        switchTheme: 'Switch Theme',
+        selectTheme: 'Select Theme',
+        personalizeExperience: 'Personalize your experience',
+        preferencesAutoSaved: 'Theme preferences are automatically saved',
+        notifications: {
+            switched: 'Theme switched',
+            switchFailed: 'Theme switch failed',
+            switchError: 'Theme switch error'
+        },
         themes: {
-            default: 'Default',
-            dark: 'Dark',
-            blue: 'Blue',
-            green: 'Green',
-            purple: 'Purple'
+            default: {
+                name: 'Default',
+                description: 'Clean and simple default theme'
+            },
+            dark: {
+                name: 'Dark',
+                description: 'Eye-friendly dark theme'
+            },
+            blue: {
+                name: 'Ocean Blue',
+                description: 'Fresh blue theme'
+            },
+            green: {
+                name: 'Forest Green',
+                description: 'Natural green theme'
+            },
+            purple: {
+                name: 'Violet',
+                description: 'Elegant purple theme'
+            },
+            auto: {
+                name: 'Follow System',
+                description: 'Automatically follow system theme preference'
+            }
         }
     },
     

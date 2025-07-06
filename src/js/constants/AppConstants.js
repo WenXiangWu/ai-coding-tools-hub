@@ -210,10 +210,68 @@ export const STORAGE_KEYS = {
     FILTER_STATE: 'ai_tools_filter_state'
 };
 
-// 工具状态文本映射
+// 获取翻译文本的帮助函数
+export function getTranslatedText(key, fallback = key) {
+    try {
+        // 尝试获取i18n管理器
+        const i18nModule = window.__i18nManager || null;
+        if (i18nModule && typeof i18nModule.t === 'function') {
+            const translated = i18nModule.t(key);
+            return translated !== key ? translated : fallback;
+        }
+    } catch (error) {
+        console.warn('获取翻译文本失败:', key, error);
+    }
+    return fallback;
+}
+
+// 工具状态文本映射 - 使用动态函数获取翻译文本
+export function getStatusTextMap() {
+    return {
+        [UI_CONSTANTS.FILTERS.STATUS.HOT]: getTranslatedText('tools.status.hot', '🔥 热门'),
+        [UI_CONSTANTS.FILTERS.STATUS.NEW]: getTranslatedText('tools.status.new', '✨ 新品'),
+        [UI_CONSTANTS.FILTERS.STATUS.STABLE]: getTranslatedText('tools.status.stable', '🛡️ 稳定'),
+        [UI_CONSTANTS.FILTERS.STATUS.POWERFUL]: getTranslatedText('tools.status.powerful', '⚡ 强大'),
+        [UI_CONSTANTS.FILTERS.STATUS.LOCAL]: getTranslatedText('tools.status.local', '🏠 本土'),
+        [UI_CONSTANTS.FILTERS.STATUS.PROFESSIONAL]: getTranslatedText('tools.status.professional', '👑 专业'),
+        [UI_CONSTANTS.FILTERS.STATUS.EDUCATIONAL]: getTranslatedText('tools.status.educational', '🎓 教育')
+    };
+}
+
+// 工具类型文本映射 - 使用动态函数获取翻译文本
+export function getTypeTextMap() {
+    return {
+        [UI_CONSTANTS.FILTERS.TYPE.STANDALONE]: getTranslatedText('filters.typeOptions.standalone', '独立应用'),
+        [UI_CONSTANTS.FILTERS.TYPE.WEB]: getTranslatedText('filters.typeOptions.web', 'Web应用'),
+        [UI_CONSTANTS.FILTERS.TYPE.IDE]: getTranslatedText('filters.typeOptions.ide', 'IDE插件'),
+        [UI_CONSTANTS.FILTERS.TYPE.API]: getTranslatedText('filters.typeOptions.api', 'API服务')
+    };
+}
+
+// 价格模式文本映射 - 使用动态函数获取翻译文本
+export function getPriceTextMap() {
+    return {
+        [UI_CONSTANTS.FILTERS.PRICE.FREE]: getTranslatedText('filters.priceOptions.free', '免费'),
+        [UI_CONSTANTS.FILTERS.PRICE.FREEMIUM]: getTranslatedText('filters.priceOptions.freemium', '免费+付费'),
+        [UI_CONSTANTS.FILTERS.PRICE.PAID]: getTranslatedText('filters.priceOptions.paid', '付费')
+    };
+}
+
+// 排序选项文本映射 - 使用动态函数获取翻译文本
+export function getSortTextMap() {
+    return {
+        [UI_CONSTANTS.SORT_OPTIONS.POPULARITY]: getTranslatedText('filters.sortOptions.popularity', '热门程度'),
+        [UI_CONSTANTS.SORT_OPTIONS.NAME]: getTranslatedText('filters.sortOptions.name', '名称排序'),
+        [UI_CONSTANTS.SORT_OPTIONS.RATING]: getTranslatedText('filters.sortOptions.rating', '评分排序'),
+        [UI_CONSTANTS.SORT_OPTIONS.USERS]: getTranslatedText('filters.sortOptions.users', '用户数量'),
+        [UI_CONSTANTS.SORT_OPTIONS.UPDATED]: getTranslatedText('filters.sortOptions.updated', '更新时间')
+    };
+}
+
+// 向后兼容的静态映射（当i18n系统不可用时的回退）
 export const STATUS_TEXT_MAP = {
     [UI_CONSTANTS.FILTERS.STATUS.HOT]: '🔥 热门',
-    [UI_CONSTANTS.FILTERS.STATUS.NEW]: '✨ 新品',
+    [UI_CONSTANTS.FILTERS.STATUS.NEW]: '✨ 新品', 
     [UI_CONSTANTS.FILTERS.STATUS.STABLE]: '🛡️ 稳定',
     [UI_CONSTANTS.FILTERS.STATUS.POWERFUL]: '⚡ 强大',
     [UI_CONSTANTS.FILTERS.STATUS.LOCAL]: '🏠 本土',
@@ -221,7 +279,6 @@ export const STATUS_TEXT_MAP = {
     [UI_CONSTANTS.FILTERS.STATUS.EDUCATIONAL]: '🎓 教育'
 };
 
-// 工具类型文本映射
 export const TYPE_TEXT_MAP = {
     [UI_CONSTANTS.FILTERS.TYPE.STANDALONE]: '独立应用',
     [UI_CONSTANTS.FILTERS.TYPE.WEB]: 'Web应用',
@@ -229,14 +286,12 @@ export const TYPE_TEXT_MAP = {
     [UI_CONSTANTS.FILTERS.TYPE.API]: 'API服务'
 };
 
-// 价格模式文本映射
 export const PRICE_TEXT_MAP = {
     [UI_CONSTANTS.FILTERS.PRICE.FREE]: '免费',
     [UI_CONSTANTS.FILTERS.PRICE.FREEMIUM]: '免费+付费',
     [UI_CONSTANTS.FILTERS.PRICE.PAID]: '付费'
 };
 
-// 排序选项文本映射
 export const SORT_TEXT_MAP = {
     [UI_CONSTANTS.SORT_OPTIONS.POPULARITY]: '热门程度',
     [UI_CONSTANTS.SORT_OPTIONS.NAME]: '名称排序',

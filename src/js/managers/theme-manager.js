@@ -471,6 +471,20 @@ class ThemeManager {
     }
 
     /**
+     * 获取指定主题
+     */
+    getTheme(themeId) {
+        const theme = this.themes.get(themeId);
+        if (theme) {
+            return {
+                id: themeId,
+                ...theme
+            };
+        }
+        return null;
+    }
+
+    /**
      * 添加主题切换观察者
      */
     addObserver(callback) {

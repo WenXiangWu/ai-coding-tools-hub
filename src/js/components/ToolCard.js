@@ -4,9 +4,10 @@
  */
 import { Component } from '../core/Component.js';
 import { eventBus } from '../core/EventBus.js';
-import { STATUS_TEXT_MAP, TYPE_TEXT_MAP, PRICE_TEXT_MAP, CSS_CLASSES } from '../constants/AppConstants.js';
+import { CSS_CLASSES, getStatusTextMap, getTypeTextMap, getPriceTextMap } from '../constants/AppConstants.js';
 import { truncateText, formatDate } from '../utils/helpers.js';
 import { getToolIcon } from '../config/icon-config.js';
+import { getI18nManager } from '../managers/i18n-manager.js';
 
 class ToolCard extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class ToolCard extends Component {
         this.onSelect = props.onSelect;
         this.onViewDetails = props.onViewDetails;
         this.showCompareButton = props.showCompareButton !== false;
+        this.i18nManager = getI18nManager();
     }
 
     render() {
@@ -106,7 +108,7 @@ class ToolCard extends Component {
                 
                 <div class="tool-meta">
                     <div class="tool-platforms">
-                        <i class="fas fa-desktop" title="支持平台"></i>
+                        <i class="fas fa-desktop" title="${this.i18nManager.t('tools.details.platforms') || '支持平台'}"></i>
                         <span>${this.renderPlatforms()}</span>
                     </div>
                 </div>
@@ -117,13 +119,13 @@ class ToolCard extends Component {
                     ${this.renderPriceBadge()}
                 </div>
                 <div class="tool-actions">
-                    <button class="btn btn-outline btn-sm" data-action="website" title="访问官网">
+                    <button class="btn btn-outline btn-sm" data-action="website" title="${this.i18nManager.t('tools.actions.visitWebsite') || '访问官网'}">
                         <i class="fas fa-external-link-alt"></i>
-                        <span>官网</span>
+                        <span>${this.i18nManager.t('tools.actions.visitWebsite') || '官网'}</span>
                     </button>
-                    <button class="btn btn-primary btn-sm" data-action="details" title="查看详情">
+                    <button class="btn btn-primary btn-sm" data-action="details" title="${this.i18nManager.t('tools.actions.viewDetails') || '查看详情'}">
                         <i class="fas fa-info-circle"></i>
-                        <span>详情</span>
+                        <span>${this.i18nManager.t('tools.actions.viewDetails') || '详情'}</span>
                     </button>
                 </div>
             </div>
@@ -153,9 +155,10 @@ class ToolCard extends Component {
      * @returns {string} 状态徽章HTML
      */
     renderStatusBadge() {
-        const statusText = STATUS_TEXT_MAP[this.tool.status] || this.tool.status;
+        const statusTextMap = getStatusTextMap();
+        const statusText = statusTextMap[this.tool.status] || this.tool.status;
         return `
-            <span class="badge badge-status badge-${this.tool.status}" title="工具状态">
+            <span class="badge badge-status badge-${this.tool.status}" title="${this.i18nManager.t('tools.details.status') || '工具状态'}">
                 ${statusText}
             </span>
         `;
@@ -166,9 +169,10 @@ class ToolCard extends Component {
      * @returns {string} 类型徽章HTML
      */
     renderTypeBadge() {
-        const typeText = TYPE_TEXT_MAP[this.tool.type] || this.tool.type;
+        const typeTextMap = getTypeTextMap();
+        const typeText = typeTextMap[this.tool.type] || this.tool.type;
         return `
-            <span class="badge badge-type badge-${this.tool.type}" title="工具类型">
+            <span class="badge badge-type badge-${this.tool.type}" title="${this.i18nManager.t('common.type') || '工具类型'}">
                 ${typeText}
             </span>
         `;
@@ -179,9 +183,10 @@ class ToolCard extends Component {
      * @returns {string} 价格徽章HTML
      */
     renderPriceBadge() {
-        const priceText = PRICE_TEXT_MAP[this.tool.price] || this.tool.price;
+        const priceTextMap = getPriceTextMap();
+        const priceText = priceTextMap[this.tool.price] || this.tool.price;
         return `
-            <span class="badge badge-price badge-${this.tool.price}" title="价格模式">
+            <span class="badge badge-price badge-${this.tool.price}" title="${this.i18nManager.t('tools.details.pricing') || '价格模式'}">
                 <i class="fas fa-tag"></i>
                 ${priceText}
             </span>
@@ -195,7 +200,9 @@ class ToolCard extends Component {
     renderCompareButton() {
         const isSelected = this.isSelected;
         const icon = isSelected ? 'check-square' : 'square';
-        const title = isSelected ? '取消选择' : '选择对比';
+        const title = isSelected ? 
+            (this.i18nManager.t('tools.actions.removeFromCompare') || '取消选择') : 
+            (this.i18nManager.t('tools.actions.addToCompare') || '选择对比');
         
         return `
             <button class="btn-compare ${isSelected ? 'selected' : ''}" 
@@ -251,7 +258,8 @@ class ToolCard extends Component {
         
         if (hasMore) {
             const remaining = this.tool.features.length - maxFeatures;
-            featuresHTML += `<span class="feature-tag more" title="还有${remaining}个功能">+${remaining}</span>`;
+            const moreText = this.i18nManager.t('common.more') || '更多';
+            featuresHTML += `<span class="feature-tag more" title="${this.i18nManager.t('tools.moreFeatures', {count: remaining}) || `还有${remaining}个功能`}">+${remaining}</span>`;
         }
         
         return featuresHTML;

@@ -37,16 +37,16 @@ class App {
      */
     async initialize() {
         try {
-            console.log('🚀 开始初始化AI工具应用...');
+            console.log('🚀 开始初始化应用...');
             
-            // 设置全局错误处理
+            // 初始化设备信息
+            this.deviceInfo = getDeviceInfo();
+            
+            // 设置错误处理
             this.setupErrorHandling();
             
-            // 初始化国际化系统（优先初始化）
+            // 初始化国际化系统
             await this.initializeI18n();
-            
-            // 🔑 关键修复：先初始化UI，确保DOM元素可用
-            this.initializeUI();
             
             // 初始化语言切换器
             this.initializeLanguageSwitcher();
@@ -54,26 +54,47 @@ class App {
             // 初始化导航管理器
             await this.initializeNavigation();
             
-            // 然后设置事件监听，这样事件处理器中可以安全访问DOM元素
+            // 初始化服务
+            await this.initializeServices();
+            
+            // 检查和同步工具数据
+            this.checkAndSyncToolData();
+            
+            // 设置事件监听
             this.setupEventListeners();
             
-            // 最后初始化服务，触发事件
-            await this.initializeServices();
+            // 初始化UI
+            this.initializeUI();
             
             // 加载用户偏好
             this.loadUserPreferences();
             
-            // 标记为已初始化
-            this.initialized = true;
+            // 添加全局调试函数
+            window.forceTranslate = () => {
+                console.log('🔧 强制翻译页面...');
+                if (this.i18nManager && typeof this.i18nManager.translatePage === 'function') {
+                    this.i18nManager.translatePage();
+                    console.log('✅ 强制翻译完成');
+                } else {
+                    console.error('❌ i18n管理器不可用');
+                }
+            };
             
-            // 触发初始化完成事件
-            eventBus.emit('app:initialized');
+            window.checkI18nStatus = () => {
+                console.log('📊 i18n状态检查:', {
+                    'i18n管理器存在': !!this.i18nManager,
+                    '已初始化': this.i18nManager?.isInitialized,
+                    '当前语言': this.i18nManager?.getCurrentLanguage(),
+                    '支持的语言': this.i18nManager?.supportedLanguages,
+                    '翻译数据': Object.keys(this.i18nManager?.translations || {})
+                });
+            };
             
-            console.log('✅ AI工具应用初始化完成');
+            console.log('✅ 应用初始化完成');
             
         } catch (error) {
+            console.error('❌ 应用初始化失败:', error);
             this.handleError('应用初始化失败', error);
-            throw error;
         }
     }
 
@@ -1033,14 +1054,20 @@ class App {
             const { oldLanguage, newLanguage } = event;
             console.log(`🌍 语言已切换: ${oldLanguage} → ${newLanguage}`);
             
-            // 翻译页面中的所有元素
-            this.i18nManager.translatePage();
+            // 注意：不需要再次调用translatePage()，因为i18n管理器已经处理了
             
             // 更新页面标题和meta信息
             this.updatePageMeta();
             
             // 重新渲染工具卡片（如果需要）
             this.rerenderToolsForLanguage();
+            
+            // 添加全局调试函数（临时）
+            window.forceTranslate = () => {
+                console.log('🔧 强制翻译页面...');
+                this.i18nManager.translatePage();
+                console.log('✅ 强制翻译完成');
+            };
             
             // 触发语言变化事件
             eventBus.emit('app:languageChanged', { oldLanguage, newLanguage });

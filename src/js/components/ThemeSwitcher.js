@@ -16,14 +16,28 @@ class ThemeSwitcher {
     }
 
     /**
-     * 初始化主题切换器
+     * 初始化组件
      */
     init() {
-        // 只绑定事件和更新主题，不自动创建DOM
-        if (this.container) {
-            this.bindEvents();
-            this.updateCurrentTheme();
+        // 组件初始化逻辑
+        this.updateCurrentTheme();
+    }
+
+    /**
+     * 获取翻译文本
+     */
+    t(key, fallback = key) {
+        try {
+            // 尝试获取i18n管理器
+            const i18nManager = window.__i18nManager;
+            if (i18nManager && typeof i18nManager.t === 'function') {
+                const translated = i18nManager.t(key);
+                return translated !== key ? translated : fallback;
+            }
+        } catch (error) {
+            console.warn('获取翻译文本失败:', key, error);
         }
+        return fallback;
     }
 
     /**
@@ -34,18 +48,18 @@ class ThemeSwitcher {
         const currentTheme = this.themeManager.getCurrentTheme();
         
         return `
-            <div class="theme-switcher-trigger" aria-label="切换主题" role="button" tabindex="0">
+            <div class="theme-switcher-trigger" aria-label="${this.t('theme.switchTheme', '切换主题')}" role="button" tabindex="0">
                 <div class="theme-switcher-current">
                     <span class="theme-icon">${currentTheme.icon || '🎨'}</span>
-                    <span class="theme-text">主题</span>
+                    <span class="theme-text" data-i18n="theme.title">${this.t('theme.title', '主题')}</span>
                     <i class="fas fa-chevron-down theme-arrow"></i>
                 </div>
             </div>
             
             <div class="theme-switcher-dropdown" role="menu">
                 <div class="theme-switcher-header">
-                    <h3>选择主题</h3>
-                    <p>个性化您的体验</p>
+                    <h3 data-i18n="theme.selectTheme">${this.t('theme.selectTheme', '选择主题')}</h3>
+                    <p data-i18n="theme.personalizeExperience">${this.t('theme.personalizeExperience', '个性化您的体验')}</p>
                 </div>
                 
                 <div class="theme-options">
@@ -53,7 +67,7 @@ class ThemeSwitcher {
                 </div>
                 
                 <div class="theme-switcher-footer">
-                    <small>主题偏好会自动保存</small>
+                    <small data-i18n="theme.preferencesAutoSaved">${this.t('theme.preferencesAutoSaved', '主题偏好会自动保存')}</small>
                 </div>
             </div>
         `;
@@ -65,6 +79,10 @@ class ThemeSwitcher {
     getThemeOptionTemplate(theme) {
         const currentTheme = this.themeManager.getCurrentTheme();
         const isActive = theme.id === currentTheme.id;
+        
+        // 获取翻译的主题名称和描述
+        const themeName = this.t(`theme.themes.${theme.id}.name`, theme.name);
+        const themeDescription = this.t(`theme.themes.${theme.id}.description`, theme.description);
         
         return `
             <div class="theme-option ${isActive ? 'active' : ''}" 
@@ -78,8 +96,8 @@ class ThemeSwitcher {
                     </div>
                 </div>
                 <div class="theme-option-info">
-                    <div class="theme-option-name">${theme.name}</div>
-                    <div class="theme-option-description">${theme.description}</div>
+                    <div class="theme-option-name" data-i18n="theme.themes.${theme.id}.name">${themeName}</div>
+                    <div class="theme-option-description" data-i18n="theme.themes.${theme.id}.description">${themeDescription}</div>
                 </div>
                 <div class="theme-option-status">
                     ${isActive ? '<i class="fas fa-check"></i>' : ''}
@@ -301,13 +319,13 @@ class ThemeSwitcher {
                 this.updateCurrentTheme();
                 
                 // 显示成功提示
-                this.showNotification('主题已更换', 'success');
+                this.showNotification(this.t('theme.notifications.switched', '主题已更换'), 'success');
             } else {
-                this.showNotification('主题切换失败', 'error');
+                this.showNotification(this.t('theme.notifications.switchFailed', '主题切换失败'), 'error');
             }
         } catch (error) {
             console.error('主题切换错误:', error);
-            this.showNotification('主题切换出错', 'error');
+            this.showNotification(this.t('theme.notifications.switchError', '主题切换出错'), 'error');
         } finally {
             // 延迟很短时间再移除loading状态，确保用户感知到操作已完成
             setTimeout(() => {
@@ -342,11 +360,17 @@ class ThemeSwitcher {
 
         const currentTheme = this.themeManager.getCurrentTheme();
         const icon = this.container.querySelector('.theme-icon');
+        const themeText = this.container.querySelector('.theme-text');
         const options = this.container.querySelectorAll('.theme-option');
 
         // 更新触发器图标
         if (icon) {
             icon.textContent = currentTheme.icon || '🎨';
+        }
+
+        // 更新主题文本
+        if (themeText) {
+            themeText.textContent = this.t('theme.title', '主题');
         }
 
         // 更新活动状态
@@ -358,6 +382,51 @@ class ThemeSwitcher {
             const status = option.querySelector('.theme-option-status');
             if (status) {
                 status.innerHTML = isActive ? '<i class="fas fa-check"></i>' : '';
+            }
+        });
+
+        // 更新下拉菜单中的文本
+        this.updateDropdownTexts();
+    }
+
+    /**
+     * 更新下拉菜单中的文本
+     */
+    updateDropdownTexts() {
+        if (!this.container) return;
+
+        const header = this.container.querySelector('.theme-switcher-header h3');
+        const subtitle = this.container.querySelector('.theme-switcher-header p');
+        const footer = this.container.querySelector('.theme-switcher-footer small');
+
+        if (header) {
+            header.textContent = this.t('theme.selectTheme', '选择主题');
+        }
+        if (subtitle) {
+            subtitle.textContent = this.t('theme.personalizeExperience', '个性化您的体验');
+        }
+        if (footer) {
+            footer.textContent = this.t('theme.preferencesAutoSaved', '主题偏好会自动保存');
+        }
+
+        // 更新主题选项的名称和描述
+        const options = this.container.querySelectorAll('.theme-option');
+        options.forEach(option => {
+            const themeId = option.dataset.themeId;
+            const nameElement = option.querySelector('.theme-option-name');
+            const descElement = option.querySelector('.theme-option-description');
+            
+            if (nameElement) {
+                const theme = this.themeManager.getTheme(themeId);
+                if (theme) {
+                    nameElement.textContent = this.t(`theme.themes.${themeId}.name`, theme.name);
+                }
+            }
+            if (descElement) {
+                const theme = this.themeManager.getTheme(themeId);
+                if (theme) {
+                    descElement.textContent = this.t(`theme.themes.${themeId}.description`, theme.description);
+                }
             }
         });
     }
@@ -443,11 +512,13 @@ class ThemeSwitcher {
     }
 
     /**
-     * 刷新组件
+     * 刷新组件（用于语言切换后重新渲染）
      */
     refresh() {
-        this.updateCurrentTheme();
-        this.updateOptions();
+        if (!this.container || !this.container.parentNode) return;
+        
+        const parentContainer = this.container.parentNode;
+        this.render(parentContainer);
     }
 }
 

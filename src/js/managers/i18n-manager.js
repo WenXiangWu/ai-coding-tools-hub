@@ -43,6 +43,12 @@ export class I18nManager {
             // 初始化完成
             this.isInitialized = true;
             
+            // 将i18n管理器暴露到全局window对象，供其他模块使用
+            window.__i18nManager = this;
+            
+            // 翻译页面上的所有文本
+            this.translatePage();
+            
             // 触发初始化完成事件
             this.eventBus.emit('i18n:initialized', {
                 language: this.currentLanguage,
@@ -116,6 +122,9 @@ export class I18nManager {
         // 更新HTML lang属性
         this.updateHTMLLang();
         
+        // 翻译页面上的所有文本
+        this.translatePage();
+        
         // 触发语言切换事件
         this.eventBus.emit('i18n:languageChanged', {
             oldLanguage,
@@ -187,11 +196,36 @@ export class I18nManager {
      * 获取支持的语言列表
      */
     getSupportedLanguages() {
-        return this.supportedLanguages.map(lang => ({
-            code: lang,
-            name: this.t(`languages.${lang}`),
-            nativeName: this.translations[lang]?.meta?.nativeName || lang
-        }));
+        return this.supportedLanguages.map(lang => {
+            let name = lang;
+            let nativeName = lang;
+            
+            // 如果i18n系统已初始化，尝试获取翻译的名称
+            if (this.isInitialized && this.translations[this.currentLanguage]) {
+                const translatedName = this.t(`languages.${lang}`);
+                if (translatedName !== `languages.${lang}`) {
+                    name = translatedName;
+                }
+            }
+            
+            // 尝试从语言文件的meta中获取原生名称
+            if (this.translations[lang] && this.translations[lang].meta && this.translations[lang].meta.nativeName) {
+                nativeName = this.translations[lang].meta.nativeName;
+            } else {
+                // 回退到硬编码的语言名称
+                const fallbackNames = {
+                    'zh-CN': '简体中文',
+                    'en-US': 'English'
+                };
+                nativeName = fallbackNames[lang] || lang;
+            }
+            
+            return {
+                code: lang,
+                name: name,
+                nativeName: nativeName
+            };
+        });
     }
 
     /**
@@ -231,6 +265,26 @@ export class I18nManager {
     translatePage() {
         const elements = document.querySelectorAll('[data-i18n], [data-i18n-title], [data-i18n-placeholder], [data-i18n-alt]');
         elements.forEach(element => this.translateElement(element));
+        
+        // 特别处理select选项
+        this.translateSelectOptions();
+    }
+
+    /**
+     * 翻译select选项
+     */
+    translateSelectOptions() {
+        const selectElements = document.querySelectorAll('select');
+        selectElements.forEach(select => {
+            const options = select.querySelectorAll('option[data-i18n]');
+            options.forEach(option => {
+                const key = option.getAttribute('data-i18n');
+                if (key) {
+                    const translatedText = this.t(key);
+                    option.textContent = translatedText;
+                }
+            });
+        });
     }
 
     /**
