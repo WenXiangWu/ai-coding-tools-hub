@@ -1,5 +1,9 @@
 import { toolsManager } from '../js/managers/tools-manager.js';
 import { getToolIcon } from '../js/config/icon-config.js';
+import { LanguageSwitcher } from '../js/components/LanguageSwitcher.js';
+import ThemeSwitcher from '../js/components/ThemeSwitcher.js';
+import { getI18nManager } from '../js/managers/i18n-manager.js';
+import ThemeManager from '../js/managers/theme-manager.js';
 
 // 获取URL参数
 function getQueryParam(name) {
@@ -1106,5 +1110,33 @@ function initParticleBackground() {
     }
 }
 
+// 渲染详情页右上角的语言切换器和主题切换器
+function renderDetailHeaderActions() {
+    // 语言切换器
+    const langContainer = document.getElementById('detailLanguageSwitcher');
+    if (langContainer) {
+        langContainer.innerHTML = '';
+        const langSwitcher = new LanguageSwitcher();
+        langSwitcher.render(langContainer);
+        // 监听语言切换，刷新页面内容
+        const i18nManager = getI18nManager();
+        i18nManager.onLanguageChange(() => {
+            i18nManager.translatePage();
+            // 可选：可根据需要刷新详情内容
+        });
+    }
+    // 主题切换器
+    const themeContainer = document.getElementById('detailThemeSwitcher');
+    if (themeContainer) {
+        themeContainer.innerHTML = '';
+        // 复用全局 themeManager
+        const themeSwitcher = new ThemeSwitcher(window.themeManager || new ThemeManager());
+        themeSwitcher.render(themeContainer);
+    }
+}
+
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', renderToolDetail); 
+document.addEventListener('DOMContentLoaded', () => {
+    renderDetailHeaderActions();
+    renderToolDetail();
+}); 

@@ -1,26 +1,83 @@
-/* 海洋蓝主题入口文件 */
+/* 默认主题入口文件 */
 @import 'colors.css';
 
-.theme-blue {
+/* 默认主题特定的组件覆盖 */
+.theme-default {
+    /* 确保主题正确应用 */
     color-scheme: light;
 }
 
-.theme-blue .tool-card {
+/* 工具卡片特殊样式 */
+.theme-default .tool-card {
     background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+.theme-default .tool-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* 头部导航样式 */
+.theme-default .header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* 按钮样式增强 */
+.theme-default .btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.theme-default .btn-primary:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+}
+
+/* 输入框样式 */
+.theme-default .search-box input {
+    background: var(--bg-secondary);
     border: 1px solid var(--border-color);
 }
 
-.theme-blue .tool-card:hover {
-    background: var(--gradient-ocean);
+.theme-default .search-box input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 10px 25px rgba(var(--primary-rgb), 0.15);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
 }
 
-.theme-blue .header {
-    background: rgba(240, 249, 255, 0.95);
-    backdrop-filter: blur(20px);
+/* 侧边栏样式 */
+.theme-default .tool-sidebar {
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border-light);
 }
 
-.theme-blue .btn-primary {
-    background: var(--gradient-primary);
+/* 选项卡样式 */
+.theme-default .tutorial-tab.active {
+    background: var(--primary-color);
+    color: var(--text-inverse);
+}
+
+/* 徽章样式 */
+.theme-default .badge {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 默认主题下的特性卡片样式 */
+.theme-default .matrix-item {
+    background: var(--bg-tertiary) !important;
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+    color: var(--text-primary);
+}
+
+.theme-default .matrix-item h3 {
+    color: var(--text-primary) !important;
+}
+
+.theme-default .matrix-item p {
+    color: var(--text-secondary) !important;
 } 

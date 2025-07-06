@@ -179,11 +179,11 @@ class ThemeManager {
         const isInDemos = currentPath.includes('/demos/');
         const isInPages = currentPath.includes('/pages/');
         
-        let basePath = './src/themes';
+        let basePath = './themes';
         if (isInDemos) {
-            basePath = '../src/themes';
+            basePath = '../themes';
         } else if (isInPages) {
-            basePath = '../src/themes';
+            basePath = '../themes';
         }
         
         return `${basePath}/${themeFile}`;

@@ -33,7 +33,7 @@
                     const themeLink = document.createElement('link');
                     themeLink.id = 'theme-css-preload';
                     themeLink.rel = 'stylesheet';
-                    themeLink.href = '../src/themes/' + savedTheme + '/theme.css';
+                    themeLink.href = '../themes/' + savedTheme + '/theme.css';
                     document.head.appendChild(themeLink);
                 }
             } catch (e) {
@@ -42,6 +42,22 @@
             }
         })();
     </script>
+    <style>
+        .detail-header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-right: 2.5rem;
+            z-index: 10;
+        }
+        #detailLanguageSwitcher, #detailThemeSwitcher {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body class="tool-detail-page">
     <!-- 移除顶部区域，内容向上占满 -->
@@ -121,15 +137,18 @@
 
         <!-- 主内容区域 -->
         <main class="tool-detail-content">
-            <!-- 区域三：右上角主题按钮 -->
-            <div class="theme-switcher-container">
+            <!-- 新增：详情页右上角操作区 -->
+            <div class="detail-header-actions">
+                <div id="detailLanguageSwitcher"></div>
+                <div id="detailThemeSwitcher"></div>
+            </div>
+            <!-- 区域三：右上角主题按钮（旧） -->
+            <div class="theme-switcher-container" style="display:none;">
                 <div id="themeSwitcher"></div>
             </div>
-            
             <div class="tool-content-header" id="toolContentHeader">
                 <!-- 工具基本信息将通过JavaScript渲染 -->
             </div>
-            
             <div class="tool-content-body" id="toolContentBody">
                 <!-- 详细内容将通过JavaScript渲染 -->
             </div>
