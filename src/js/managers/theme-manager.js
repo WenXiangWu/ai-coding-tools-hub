@@ -174,16 +174,23 @@ class ThemeManager {
      * @returns {string} 完整的URL路径
      */
     getThemeUrl(themeFile) {
-        // 检测当前页面位置来确定正确的相对路径
         const currentPath = window.location.pathname;
-        const isInDemos = currentPath.includes('/demos/');
-        const isInPages = currentPath.includes('/pages/');
+        const pathSegments = currentPath.split('/');
+        const lastSegment = pathSegments[pathSegments.length - 1];
         
-        let basePath = './themes';
-        if (isInDemos) {
-            basePath = '../themes';
-        } else if (isInPages) {
-            basePath = '../themes';
+        let basePath = './src/themes';
+        
+        // 如果是在根目录
+        if (lastSegment === '' || lastSegment === 'index.html') {
+            basePath = 'src/themes';
+        }
+        // 如果是在demos目录
+        else if (currentPath.includes('/demos/')) {
+            basePath = '../src/themes';
+        }
+        // 如果是在pages目录
+        else if (currentPath.includes('/pages/')) {
+            basePath = '../src/themes';
         }
         
         return `${basePath}/${themeFile}`;
@@ -514,7 +521,7 @@ class ThemeManager {
             if (theme && theme.file) {
                 const link = document.createElement('link');
                 link.rel = 'prefetch';
-                link.href = `src/themes/${theme.file}`;
+                link.href = this.getThemeUrl(theme.file);
                 document.head.appendChild(link);
             }
         });

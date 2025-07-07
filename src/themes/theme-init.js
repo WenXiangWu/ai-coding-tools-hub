@@ -79,15 +79,8 @@ function loadThemeSystemFallback() {
             }
             
             if (themeId !== 'default') {
-                // 检测当前页面路径来确定正确的相对路径
-                const isInDemos = window.location.pathname.includes('/demos/');
-                const isInPages = window.location.pathname.includes('/pages/');
-                let basePath = './src/themes';
-                if (isInDemos) {
-                    basePath = '../src/themes';
-                } else if (isInPages) {
-                    basePath = '../src/themes';
-                }
+                // 获取正确的主题文件路径
+                const basePath = getThemeBasePath();
                 themeLink.href = `${basePath}/${themeId}/theme.css`;
                 
                 // 清理预加载的主题CSS
@@ -150,6 +143,33 @@ function loadThemeSystemFallback() {
     }
     
     console.log('🎨 降级模式主题管理器已初始化（仅管理器）');
+}
+
+/**
+ * 获取主题文件的基础路径
+ */
+function getThemeBasePath() {
+    const currentPath = window.location.pathname;
+    const pathSegments = currentPath.split('/');
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    
+    // 如果是在根目录
+    if (lastSegment === '' || lastSegment === 'index.html') {
+        return 'src/themes';
+    }
+    
+    // 如果是在demos目录
+    if (currentPath.includes('/demos/')) {
+        return '../src/themes';
+    }
+    
+    // 如果是在pages目录
+    if (currentPath.includes('/pages/')) {
+        return '../src/themes';
+    }
+    
+    // 默认返回相对于根目录的路径
+    return 'src/themes';
 }
 
 /**
