@@ -47,7 +47,7 @@ export default class ThemeSwitcher {
             console.log('✅ 主题切换器初始化完成');
         } catch (error) {
             console.error('❌ 主题切换器初始化失败:', error);
-            this.showError();
+            throw error;
         }
     }
     
@@ -55,29 +55,23 @@ export default class ThemeSwitcher {
      * 渲染切换器
      */
     render() {
-        try {
-            const currentTheme = this.themeManager.getCurrentTheme();
-            const themes = this.themeManager.getAvailableThemes();
-            
-            const select = document.createElement('select');
-            select.className = 'theme-select';
-            
-            themes.forEach(theme => {
-                const option = document.createElement('option');
-                option.value = theme.id;
-                option.textContent = `${theme.icon} ${theme.name}`;
-                option.selected = theme.id === currentTheme.id;
-                select.appendChild(option);
-            });
-            
-            this.container.appendChild(select);
-            this.select = select;
-            
-            console.log('✅ 主题切换器渲染完成');
-        } catch (error) {
-            console.error('❌ 主题切换器渲染失败:', error);
-            this.showError();
-        }
+        const currentTheme = this.themeManager.getCurrentTheme();
+        const themes = this.themeManager.getAvailableThemes();
+        
+        const select = document.createElement('select');
+        select.className = 'theme-select';
+        select.setAttribute('aria-label', '选择主题');
+        
+        themes.forEach(theme => {
+            const option = document.createElement('option');
+            option.value = theme.id;
+            option.textContent = `${theme.icon} ${theme.name}`;
+            option.selected = theme.id === currentTheme.id;
+            select.appendChild(option);
+        });
+        
+        this.container.appendChild(select);
+        this.select = select;
     }
     
     /**
@@ -87,11 +81,11 @@ export default class ThemeSwitcher {
         if (!this.select) return;
         
         this.select.addEventListener('change', (e) => {
-            const newTheme = e.target.value;
-            console.log('🔄 切换主题:', newTheme);
+            const newThemeId = e.target.value;
+            console.log('🔄 切换主题:', newThemeId);
             
             try {
-                this.themeManager.switchTheme(newTheme);
+                this.themeManager.switchTheme(newThemeId);
                 console.log('✅ 主题切换成功');
             } catch (error) {
                 console.error('❌ 主题切换失败:', error);
@@ -103,15 +97,14 @@ export default class ThemeSwitcher {
     }
     
     /**
-     * 显示错误状态
+     * 销毁组件
      */
-    showError() {
-        if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <div class="theme-switcher-error">
-                <span>主题切换器加载失败</span>
-            </div>
-        `;
+    destroy() {
+        if (this.select) {
+            this.select.removeEventListener('change', this.handleThemeChange);
+        }
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 } 

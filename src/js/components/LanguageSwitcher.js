@@ -54,7 +54,7 @@ export class LanguageSwitcher extends Component {
             console.log('✅ 语言切换器初始化完成');
         } catch (error) {
             console.error('❌ 语言切换器初始化失败:', error);
-            this.showError();
+            throw error;
         }
     }
 
@@ -62,29 +62,23 @@ export class LanguageSwitcher extends Component {
      * 渲染切换器
      */
     render() {
-        try {
-            const currentLang = this.i18nManager.getCurrentLanguage();
-            const languages = this.i18nManager.getSupportedLanguages();
-            
-            const select = document.createElement('select');
-            select.className = 'language-select';
-            
-            languages.forEach(lang => {
-                const option = document.createElement('option');
-                option.value = lang.code;
-                option.textContent = lang.name;
-                option.selected = lang.code === currentLang;
-                select.appendChild(option);
-            });
-            
-            this.container.appendChild(select);
-            this.select = select;
-            
-            console.log('✅ 语言切换器渲染完成');
-        } catch (error) {
-            console.error('❌ 语言切换器渲染失败:', error);
-            this.showError();
-        }
+        const currentLang = this.i18nManager.getCurrentLanguage();
+        const languages = this.i18nManager.getSupportedLanguages();
+        
+        const select = document.createElement('select');
+        select.className = 'language-select';
+        select.setAttribute('aria-label', '选择语言');
+        
+        languages.forEach(lang => {
+            const option = document.createElement('option');
+            option.value = lang.code;
+            option.textContent = lang.name;
+            option.selected = lang.code === currentLang;
+            select.appendChild(option);
+        });
+        
+        this.container.appendChild(select);
+        this.select = select;
     }
 
     /**
@@ -99,6 +93,8 @@ export class LanguageSwitcher extends Component {
             
             try {
                 this.i18nManager.switchLanguage(newLang);
+                // 刷新页面内容
+                this.i18nManager.translatePage();
                 console.log('✅ 语言切换成功');
             } catch (error) {
                 console.error('❌ 语言切换失败:', error);
@@ -109,16 +105,15 @@ export class LanguageSwitcher extends Component {
     }
 
     /**
-     * 显示错误状态
+     * 销毁组件
      */
-    showError() {
-        if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <div class="language-switcher-error">
-                <span>语言切换器加载失败</span>
-            </div>
-        `;
+    destroy() {
+        if (this.select) {
+            this.select.removeEventListener('change', this.handleLanguageChange);
+        }
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 }
 

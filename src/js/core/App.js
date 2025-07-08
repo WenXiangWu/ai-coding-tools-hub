@@ -12,6 +12,8 @@ import { NavigationManager } from '../managers/navigation-manager.js';
 import { getI18nManager } from '../managers/i18n-manager.js';
 import { APP_CONFIG, UI_CONSTANTS, CSS_CLASSES } from '../constants/AppConstants.js';
 import { debounce, storage, getDeviceInfo } from '../utils/helpers.js';
+import ThemeManager from '../managers/theme-manager.js';
+import ThemeSwitcher from '../components/ThemeSwitcher.js';
 
 class App {
     constructor() {
@@ -21,6 +23,7 @@ class App {
         this.navigationManager = null;
         this.i18nManager = null;
         this.languageSwitcher = null;
+        this.themeSwitcher = null;
         this.components = {
             toolCards: new Map(),
             modals: new Map()
@@ -50,6 +53,9 @@ class App {
             
             // 初始化语言切换器
             this.initializeLanguageSwitcher();
+            
+            // 初始化主题切换器
+            this.initializeThemeSwitcher();
             
             // 初始化导航管理器
             await this.initializeNavigation();
@@ -142,6 +148,32 @@ class App {
         } catch (error) {
             console.error('❌ 语言切换器初始化失败:', error);
             // 语言切换器初始化失败不应该阻止应用启动
+        }
+    }
+
+    /**
+     * 初始化主题切换器
+     */
+    initializeThemeSwitcher() {
+        try {
+            const container = document.getElementById('themeSwitcherContainer');
+            if (container) {
+                // 获取或创建主题管理器
+                if (!window.themeManager) {
+                    window.themeManager = new ThemeManager();
+                }
+                
+                this.themeSwitcher = new ThemeSwitcher({
+                    container: container,
+                    themeManager: window.themeManager
+                });
+                console.log('✅ 主题切换器初始化完成');
+            } else {
+                console.warn('⚠️ 找不到主题切换器容器');
+            }
+        } catch (error) {
+            console.error('❌ 主题切换器初始化失败:', error);
+            // 主题切换器初始化失败不应该阻止应用启动
         }
     }
 
@@ -1251,6 +1283,7 @@ class App {
         // 清理国际化系统
         this.i18nManager?.destroy();
         this.languageSwitcher?.destroy();
+        this.themeSwitcher?.destroy();
         
         // 清理事件监听
         window.removeEventListener('resize', this.handleResize);

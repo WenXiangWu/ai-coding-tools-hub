@@ -149,6 +149,12 @@ body {
     position: relative;
 }
 
+/* 深色主题的body背景适配 */
+:root.theme-dark body,
+body.theme-dark {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
 body::before {
     content: '';
     position: fixed;
@@ -162,6 +168,14 @@ body::before {
     animation: bodyPulse 8s ease-in-out infinite;
     pointer-events: none;
     z-index: -1;
+}
+
+/* 深色主题的body overlay适配 */
+:root.theme-dark body::before,
+body.theme-dark::before {
+    background: radial-gradient(circle at 50% 50%, 
+        rgba(99, 102, 241, 0.08) 0%, 
+        transparent 50%);
 }
 
 /* 容器和布局 */
@@ -206,6 +220,13 @@ body::before {
     top: 0;
     z-index: 1000;
     box-shadow: var(--shadow-sm);
+}
+
+/* 深色主题的导航栏适配 */
+:root.theme-dark .header,
+body.theme-dark .header {
+    background: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid #334155;
 }
 
 .header-content {
@@ -6928,11 +6949,11 @@ select:focus {
 :root.theme-dark .hero-section,
 body.theme-dark .hero-section {
     background: linear-gradient(135deg, 
-        rgba(99, 102, 241, 0.15) 0%, 
-        rgba(139, 92, 246, 0.12) 25%, 
-        rgba(236, 72, 153, 0.08) 50%, 
-        rgba(59, 130, 246, 0.12) 75%, 
-        rgba(16, 185, 129, 0.08) 100%);
+        rgba(30, 30, 35, 0.95) 0%, 
+        rgba(20, 20, 25, 0.98) 25%, 
+        rgba(15, 15, 20, 1) 50%, 
+        rgba(25, 25, 30, 0.98) 75%, 
+        rgba(35, 35, 40, 0.95) 100%);
 }
 
 :root.theme-dark .hero-title,
@@ -7801,35 +7822,35 @@ body.theme-purple .hero-section {
 @keyframes heroBackgroundShiftDark {
     0%, 100% {
         background: linear-gradient(135deg, 
-            rgba(99, 102, 241, 0.15) 0%, 
-            rgba(139, 92, 246, 0.12) 25%, 
-            rgba(236, 72, 153, 0.08) 50%, 
-            rgba(59, 130, 246, 0.12) 75%, 
-            rgba(16, 185, 129, 0.08) 100%);
+            rgba(30, 30, 35, 0.95) 0%, 
+            rgba(20, 20, 25, 0.98) 25%, 
+            rgba(15, 15, 20, 1) 50%, 
+            rgba(25, 25, 30, 0.98) 75%, 
+            rgba(35, 35, 40, 0.95) 100%);
     }
     25% {
         background: linear-gradient(135deg, 
-            rgba(139, 92, 246, 0.15) 0%, 
-            rgba(168, 85, 247, 0.12) 25%, 
-            rgba(99, 102, 241, 0.08) 50%, 
-            rgba(236, 72, 153, 0.12) 75%, 
-            rgba(59, 130, 246, 0.08) 100%);
+            rgba(25, 25, 30, 0.95) 0%, 
+            rgba(30, 30, 35, 0.98) 25%, 
+            rgba(20, 20, 25, 1) 50%, 
+            rgba(15, 15, 20, 0.98) 75%, 
+            rgba(35, 35, 40, 0.95) 100%);
     }
     50% {
         background: linear-gradient(135deg, 
-            rgba(168, 85, 247, 0.15) 0%, 
-            rgba(236, 72, 153, 0.12) 25%, 
-            rgba(139, 92, 246, 0.08) 50%, 
-            rgba(99, 102, 241, 0.12) 75%, 
-            rgba(59, 130, 246, 0.08) 100%);
+            rgba(35, 35, 40, 0.95) 0%, 
+            rgba(25, 25, 30, 0.98) 25%, 
+            rgba(30, 30, 35, 1) 50%, 
+            rgba(20, 20, 25, 0.98) 75%, 
+            rgba(15, 15, 20, 0.95) 100%);
     }
     75% {
         background: linear-gradient(135deg, 
-            rgba(236, 72, 153, 0.15) 0%, 
-            rgba(59, 130, 246, 0.12) 25%, 
-            rgba(168, 85, 247, 0.08) 50%, 
-            rgba(139, 92, 246, 0.12) 75%, 
-            rgba(99, 102, 241, 0.08) 100%);
+            rgba(20, 20, 25, 0.95) 0%, 
+            rgba(35, 35, 40, 0.98) 25%, 
+            rgba(25, 25, 30, 1) 50%, 
+            rgba(30, 30, 35, 0.98) 75%, 
+            rgba(15, 15, 20, 0.95) 100%);
     }
 }
 
@@ -8339,4 +8360,108 @@ body.theme-purple .tools-count {
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
+}
+
+/* ==================== 导航切换器统一样式 ==================== */
+
+/* 切换器容器 - 简单直接的解决方案 */
+.nav-switchers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* 重置子容器样式 - 覆盖旧的样式 */
+.nav-switchers .language-switcher-container,
+.nav-switchers .theme-switcher-container {
+    position: relative !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    order: unset !important;
+    display: inline-block !important;
+}
+
+/* 简化的select样式 */
+.nav-switchers .language-select,
+.nav-switchers .theme-select {
+    appearance: none;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 6px 20px 6px 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+    min-width: 80px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 12px;
+}
+
+/* 简化的悬停和焦点效果 */
+.nav-switchers .language-select:hover,
+.nav-switchers .theme-select:hover {
+    border-color: var(--primary-color);
+}
+
+.nav-switchers .language-select:focus,
+.nav-switchers .theme-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .nav-switchers {
+        gap: 4px;
+    }
+    
+    .nav-switchers .language-select,
+    .nav-switchers .theme-select {
+        min-width: 70px;
+        padding: 4px 16px 4px 6px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 640px) {
+    .nav-switchers {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-end;
+    }
+    
+    .nav-switchers .language-select,
+    .nav-switchers .theme-select {
+        min-width: 60px;
+        padding: 4px 16px 4px 6px;
+        font-size: 12px;
+    }
+}
+
+/* 主题适配 */
+:root.theme-dark .nav-switchers .language-select,
+:root.theme-dark .nav-switchers .theme-select {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* 下拉选项样式 */
+.nav-switchers .language-select option,
+.nav-switchers .theme-select option {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border: none;
+}
+
+:root.theme-dark .nav-switchers .language-select option,
+:root.theme-dark .nav-switchers .theme-select option {
+    background: var(--bg-dark);
+    color: var(--text-white);
 }

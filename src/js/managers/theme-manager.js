@@ -147,6 +147,16 @@ class ThemeManager {
      * 创建主题样式链接元素
      */
     createThemeLink() {
+        // 检查是否已经有预加载的主题链接
+        const preloadedLink = document.getElementById('theme-css-preload');
+        if (preloadedLink) {
+            // 如果有预加载链接，直接使用它
+            preloadedLink.id = 'theme-css';
+            this.themeLink = preloadedLink;
+            console.log('🔄 复用预加载的主题链接');
+            return;
+        }
+
         // 移除已存在的主题链接
         const existingLink = document.getElementById('theme-css');
         if (existingLink) {
@@ -272,8 +282,17 @@ class ThemeManager {
             // 延迟移除，确保新的主题CSS已经加载完成
             setTimeout(() => {
                 preloadedTheme.remove();
+                console.log('🗑️ 预加载的主题CSS已清理');
             }, 100);
         }
+        
+        // 同时清理可能存在的其他预加载主题链接
+        const allPreloadedThemes = document.querySelectorAll('link[id^="theme-css-preload"]');
+        allPreloadedThemes.forEach(link => {
+            setTimeout(() => {
+                link.remove();
+            }, 100);
+        });
     }
 
     /**
@@ -297,6 +316,16 @@ class ThemeManager {
                 link.removeEventListener('load', onLoad);
                 link.removeEventListener('error', onError);
                 console.log(`✅ 主题文件加载成功: ${url}`);
+                
+                // 主题文件加载完成后，确保主题变量生效
+                const currentThemeId = this.currentTheme;
+                if (currentThemeId) {
+                    // 小延迟确保CSS已经生效
+                    setTimeout(() => {
+                        this.applyThemeVariables(currentThemeId);
+                    }, 50);
+                }
+                
                 resolve();
             };
             
@@ -384,16 +413,30 @@ class ThemeManager {
      */
     applyThemeVariables(themeId) {
         const theme = this.themes.get(themeId);
-        if (!theme || !theme.colors) return;
+        if (!theme || !theme.colors) {
+            console.log(`⚠️ 主题 ${themeId} 没有颜色配置，跳过变量应用`);
+            return;
+        }
         
         const html = document.documentElement;
+        
+        // 首先清除所有可能的主题变量
+        const allThemeVariables = [
+            '--bg-primary', '--bg-secondary', '--bg-card', 
+            '--text-primary', '--text-secondary', 
+            '--primary-color', '--border-color'
+        ];
+        
+        allThemeVariables.forEach(property => {
+            html.style.removeProperty(property);
+        });
         
         // 立即应用CSS变量到:root元素
         Object.entries(theme.colors).forEach(([property, value]) => {
             html.style.setProperty(property, value);
         });
         
-        console.log(`⚡ 立即应用主题变量到:root: ${theme.name}`);
+        console.log(`⚡ 立即应用主题变量到:root: ${theme.name}`, theme.colors);
     }
 
     /**
@@ -403,10 +446,17 @@ class ThemeManager {
         const html = document.documentElement;
         const body = document.body;
         
-        // 移除所有主题类（从html和body元素）
-        const themeClasses = ['theme-default', 'theme-dark', 'theme-blue', 'theme-green', 'theme-purple', 'theme-light', 'theme-dark-mode'];
-        html.classList.remove(...themeClasses);
-        body.classList.remove(...themeClasses);
+        // 移除所有主题类（从html和body元素）- 使用更彻底的清理方式
+        const existingClasses = Array.from(html.classList).filter(cls => cls.startsWith('theme-'));
+        html.classList.remove(...existingClasses);
+        
+        const existingBodyClasses = Array.from(body.classList).filter(cls => cls.startsWith('theme-'));
+        body.classList.remove(...existingBodyClasses);
+        
+        // 清除之前设置的 className（处理预加载脚本的情况）
+        if (html.className) {
+            html.className = html.className.replace(/theme-[\w-]+/g, '').trim();
+        }
         
         // 添加新主题类到html和body元素
         html.classList.add(`theme-${themeId}`);
@@ -422,6 +472,86 @@ class ThemeManager {
         
         // 立即应用主题变量到:root
         this.applyThemeVariables(themeId);
+        
+        // 强制刷新Hero区域动画
+        this.refreshHeroAnimation(themeId);
+        
+        console.log(`🎨 主题类已更新到: theme-${themeId}, 类别: ${category}`);
+    }
+
+    /**
+     * 强制刷新Hero区域样式和动画
+     * @param {string} themeId - 主题ID
+     */
+    refreshHeroAnimation(themeId) {
+        const heroSection = document.querySelector('.hero-section');
+        if (!heroSection) {
+            return;
+        }
+        
+        try {
+            // 临时禁用所有动画和过渡
+            heroSection.style.cssText += `
+                animation: none !important;
+                transition: none !important;
+            `;
+            
+            // 清除内联样式背景（如果有的话）
+            heroSection.style.background = '';
+            
+            // 强制重绘
+            heroSection.offsetHeight;
+            
+            // 根据主题应用对应的动画
+            let animationName = 'heroBackgroundShift';
+            
+            switch (themeId) {
+                case 'dark':
+                    animationName = 'heroBackgroundShiftDark';
+                    break;
+                case 'blue':
+                    animationName = 'heroBackgroundShiftBlue';
+                    break;
+                case 'green':
+                    animationName = 'heroBackgroundShiftGreen';
+                    break;
+                case 'purple':
+                    animationName = 'heroBackgroundShiftPurple';
+                    break;
+                default:
+                    animationName = 'heroBackgroundShift';
+            }
+            
+            // 重新启用动画和样式
+            setTimeout(() => {
+                // 移除禁用样式
+                heroSection.style.animation = '';
+                heroSection.style.transition = '';
+                
+                // 强制重新应用CSS类
+                const html = document.documentElement;
+                const currentClass = `theme-${themeId}`;
+                
+                if (html.classList.contains(currentClass)) {
+                    html.classList.remove(currentClass);
+                    html.offsetHeight; // 强制重绘
+                    html.classList.add(currentClass);
+                }
+                
+                console.log(`🎭 Hero区域样式已强制刷新: theme-${themeId}`);
+            }, 10);
+            
+            // 额外的后备处理，确保动画正确启动
+            setTimeout(() => {
+                if (heroSection.style.animation === 'none' || !heroSection.style.animation) {
+                    heroSection.style.animation = `${animationName} 25s ease-in-out infinite`;
+                    console.log(`🔄 后备动画启动: ${animationName}`);
+                }
+            }, 100);
+            
+        } catch (error) {
+            console.warn('⚠️ 刷新Hero样式失败:', error);
+        }
     }
 
     /**
@@ -452,7 +582,22 @@ class ThemeManager {
         try {
             const savedTheme = localStorage.getItem(this.storageKey);
             if (savedTheme && this.themes.has(savedTheme)) {
-                await this.switchTheme(savedTheme);
+                // 检查是否已经有预加载的主题，如果有，直接使用
+                const preloadedTheme = document.getElementById('theme-css-preload');
+                if (preloadedTheme && preloadedTheme.href.includes(savedTheme)) {
+                    console.log('🔄 使用预加载的主题:', savedTheme);
+                    // 直接更新状态，不重新加载CSS
+                    this.currentTheme = savedTheme;
+                    const theme = this.themes.get(savedTheme);
+                    this.updateBodyClass(savedTheme, theme.category);
+                    this.notifyObservers(savedTheme, theme);
+                    
+                    // 将预加载的link改为正式的主题link
+                    preloadedTheme.id = 'theme-css';
+                    this.themeLink = preloadedTheme;
+                } else {
+                    await this.switchTheme(savedTheme);
+                }
             } else {
                 // 默认使用系统主题偏好
                 const systemTheme = this.getSystemTheme();

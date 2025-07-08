@@ -37,12 +37,24 @@
             try {
                 const savedTheme = localStorage.getItem('ai-tools-theme');
                 if (savedTheme && savedTheme !== 'default') {
-                    document.documentElement.className = 'theme-' + savedTheme;
+                    // 使用 classList 而不是直接设置 className
+                    document.documentElement.classList.add('theme-' + savedTheme);
+                    
+                    // 根据主题类别添加相应的类
+                    const darkThemes = ['dark'];
+                    if (darkThemes.includes(savedTheme)) {
+                        document.documentElement.classList.add('theme-dark-mode');
+                    } else {
+                        document.documentElement.classList.add('theme-light');
+                    }
+                    
                     const themeLink = document.createElement('link');
                     themeLink.id = 'theme-css-preload';
                     themeLink.rel = 'stylesheet';
                     themeLink.href = './src/themes/' + savedTheme + '/theme.css';
                     document.head.appendChild(themeLink);
+                    
+                    console.log('🎨 主题预加载完成:', savedTheme);
                 }
             } catch (e) {
                 console.warn('主题预加载失败:', e);
@@ -89,8 +101,13 @@
                             <a href="devtools/regex.html" class="dropdown-item" data-i18n="header.devtools.regex">正则表达式</a>
                         </div>
                     </div>
-                    <div class="language-switcher-container" id="languageSwitcherContainer">
-                        <!-- 语言切换器将在这里渲染 -->
+                    <div class="nav-switchers">
+                        <div class="language-switcher-container" id="languageSwitcherContainer">
+                            <!-- 语言切换器将在这里渲染 -->
+                        </div>
+                        <div class="theme-switcher-container" id="themeSwitcherContainer">
+                            <!-- 主题切换器将在这里渲染 -->
+                        </div>
                     </div>
                 </nav>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
