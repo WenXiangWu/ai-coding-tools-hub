@@ -12,6 +12,8 @@ import {
     THEME_CONFIG
 } from '../config/navigation-config.js';
 import { navigationConfigManager } from '../utils/navigation-config-manager.js';
+import ThemeSwitcher from '../components/ThemeSwitcher.js';
+import ThemeManager from './theme-manager.js';
 
 export class NavigationManager {
     constructor() {
@@ -355,7 +357,7 @@ export class NavigationManager {
                     ThemeManagerModule,
                     ThemeSwitcherModule
             ] = await Promise.all([
-                import('../managers/theme-manager.js'),
+                import('./theme-manager.js'),
                 import('../components/ThemeSwitcher.js')
             ]);
             
@@ -371,25 +373,27 @@ export class NavigationManager {
             // 初始化主题管理器（如果还没有初始化）
             if (!window.themeManager) {
                 window.themeManager = new ThemeManager();
-                    // ThemeManager的构造函数中已经调用了init()，所以不需要再次调用
+                // ThemeManager的构造函数中已经调用了init()，所以不需要再次调用
             }
             
             // 创建主题切换器
-            const themeSwitcher = new ThemeSwitcher(window.themeManager);
-            await themeSwitcher.render(themeSwitcherContainer);
+            const themeSwitcher = new ThemeSwitcher({
+                container: themeSwitcherContainer,
+                themeManager: window.themeManager
+            });
             
-                // 保存到window对象以便全局访问
-                window.themeSwitcher = themeSwitcher;
-                
-                // 找到语言切换器容器，在其后插入主题切换器
-                const languageSwitcherContainer = this.mainNavElement.querySelector('#languageSwitcherContainer');
-                if (languageSwitcherContainer && languageSwitcherContainer.nextSibling) {
-                    // 在语言切换器容器之后插入
-                    this.mainNavElement.insertBefore(themeSwitcherContainer, languageSwitcherContainer.nextSibling);
-                } else {
-                    // 如果找不到语言切换器或它是最后一个元素，就添加到末尾
+            // 保存到window对象以便全局访问
+            window.themeSwitcher = themeSwitcher;
+            
+            // 找到语言切换器容器，在其后插入主题切换器
+            const languageSwitcherContainer = this.mainNavElement.querySelector('#languageSwitcherContainer');
+            if (languageSwitcherContainer && languageSwitcherContainer.nextSibling) {
+                // 在语言切换器容器之后插入
+                this.mainNavElement.insertBefore(themeSwitcherContainer, languageSwitcherContainer.nextSibling);
+            } else {
+                // 如果找不到语言切换器或它是最后一个元素，就添加到末尾
             this.mainNavElement.appendChild(themeSwitcherContainer);
-                }
+            }
             }
             
             console.log('✅ 主题切换器添加成功');

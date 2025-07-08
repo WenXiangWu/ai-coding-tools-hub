@@ -125,8 +125,17 @@ class App {
         try {
             const container = document.getElementById('languageSwitcherContainer');
             if (container) {
-                this.languageSwitcher = new LanguageSwitcher(container);
-                console.log('✅ 语言切换器初始化完成');
+                // 获取i18n管理器
+                const i18nManager = this.i18nManager || window.__i18nManager;
+                if (i18nManager) {
+                    this.languageSwitcher = new LanguageSwitcher({
+                        container: container,
+                        i18nManager: i18nManager
+                    });
+                    console.log('✅ 语言切换器初始化完成');
+                } else {
+                    console.error('❌ i18n管理器不可用');
+                }
             } else {
                 console.warn('⚠️ 找不到语言切换器容器');
             }
@@ -615,11 +624,12 @@ class App {
                 tool,
                 isSelected,
                 showCompareButton: state.compareMode,
-                onSelect: (selected) => this.handleToolSelect(tool.id, selected),
-                onViewDetails: () => this.handleViewDetails(tool)
+                onSelect: (toolId, toolData) => this.handleToolSelect(toolId, toolData),
+                onViewDetails: (eventData) => this.handleToolDetails(eventData)
             };
             
             const card = new ToolCard(cardProps);
+            this.components.toolCards.set(tool.id, card);
             console.log('✅ 工具卡片渲染成功:', tool.id);
             return card.render();
         } catch (error) {
@@ -837,18 +847,27 @@ class App {
 
     /**
      * 处理工具详情
+     * @param {Object} eventData - 事件数据
      */
     handleToolDetails(eventData) {
-        const { toolId, tool } = eventData;
+        console.log('🔍 处理工具详情:', eventData);
         
-        // 跳转到独立的工具详情页面
-        console.log('跳转到工具详情页面:', tool);
-        
-        // 构建详情页面URL
-        const detailUrl = `src/pages/tool.html?id=${encodeURIComponent(toolId)}`;
-        
-        // 跳转到详情页面
-        window.location.href = detailUrl;
+        try {
+            const { toolId, tool } = eventData;
+            if (!toolId || !tool) {
+                console.error('❌ 工具详情数据无效:', eventData);
+                return;
+            }
+            
+            // 跳转到详情页面
+            const detailUrl = `src/pages/tool.html?id=${encodeURIComponent(toolId)}`;
+            window.location.href = detailUrl;
+            
+            console.log('✅ 工具详情处理成功:', toolId);
+        } catch (error) {
+            console.error('❌ 处理工具详情失败:', error);
+            this.handleError('处理工具详情失败', error);
+        }
     }
 
     /**

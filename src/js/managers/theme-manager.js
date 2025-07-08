@@ -178,7 +178,7 @@ class ThemeManager {
         const pathSegments = currentPath.split('/');
         const lastSegment = pathSegments[pathSegments.length - 1];
         
-        let basePath = './src/themes';
+        let basePath = '../themes';
         
         // 如果是在根目录
         if (lastSegment === '' || lastSegment === 'index.html') {
@@ -190,8 +190,16 @@ class ThemeManager {
         }
         // 如果是在pages目录
         else if (currentPath.includes('/pages/')) {
-            basePath = '../src/themes';
+            basePath = '../themes';
         }
+        
+        console.log('🔍 主题文件路径:', {
+            currentPath,
+            lastSegment,
+            basePath,
+            themeFile,
+            finalUrl: `${basePath}/${themeFile}`
+        });
         
         return `${basePath}/${themeFile}`;
     }

@@ -1112,26 +1112,53 @@ function initParticleBackground() {
 
 // 渲染详情页右上角的语言切换器和主题切换器
 function renderDetailHeaderActions() {
-    // 语言切换器
-    const langContainer = document.getElementById('detailLanguageSwitcher');
-    if (langContainer) {
-        langContainer.innerHTML = '';
-        const langSwitcher = new LanguageSwitcher();
-        langSwitcher.render(langContainer);
-        // 监听语言切换，刷新页面内容
-        const i18nManager = getI18nManager();
-        i18nManager.onLanguageChange(() => {
-            i18nManager.translatePage();
-            // 可选：可根据需要刷新详情内容
-        });
-    }
-    // 主题切换器
-    const themeContainer = document.getElementById('detailThemeSwitcher');
-    if (themeContainer) {
-        themeContainer.innerHTML = '';
-        // 复用全局 themeManager
-        const themeSwitcher = new ThemeSwitcher(window.themeManager || new ThemeManager());
-        themeSwitcher.render(themeContainer);
+    console.log('🎯 开始渲染详情页头部操作区');
+    
+    try {
+        // 获取容器
+        const languageSwitcherContainer = document.getElementById('detailLanguageSwitcher');
+        const themeSwitcherContainer = document.getElementById('detailThemeSwitcher');
+        
+        if (!languageSwitcherContainer || !themeSwitcherContainer) {
+            console.error('❌ 找不到语言切换器或主题切换器容器');
+            return;
+        }
+        
+        // 初始化语言切换器
+        try {
+            const i18nManager = getI18nManager();
+            if (i18nManager) {
+                const languageSwitcher = new LanguageSwitcher({
+                    container: languageSwitcherContainer,
+                    i18nManager: i18nManager
+                });
+                console.log('✅ 语言切换器初始化成功');
+            } else {
+                console.error('❌ i18n管理器不可用');
+            }
+        } catch (error) {
+            console.error('❌ 语言切换器初始化失败:', error);
+        }
+        
+        // 初始化主题切换器
+        try {
+            const themeManager = new ThemeManager();
+            if (themeManager) {
+                const themeSwitcher = new ThemeSwitcher({
+                    container: themeSwitcherContainer,
+                    themeManager: themeManager
+                });
+                console.log('✅ 主题切换器初始化成功');
+            } else {
+                console.error('❌ 主题管理器不可用');
+            }
+        } catch (error) {
+            console.error('❌ 主题切换器初始化失败:', error);
+        }
+        
+        console.log('✅ 详情页头部操作区渲染完成');
+    } catch (error) {
+        console.error('❌ 渲染详情页头部操作区失败:', error);
     }
 }
 
@@ -1139,4 +1166,33 @@ function renderDetailHeaderActions() {
 document.addEventListener('DOMContentLoaded', () => {
     renderDetailHeaderActions();
     renderToolDetail();
-}); 
+});
+
+/**
+ * 更新语言显示
+ */
+function updateLanguageDisplay() {
+    try {
+        console.log('🔄 LanguageSwitcher: 更新语言显示');
+        
+        const i18nManager = getI18nManager();
+        if (!i18nManager) {
+            console.warn('⚠️ LanguageSwitcher: i18n管理器不存在');
+            return;
+        }
+        
+        const supportedLanguages = i18nManager.getSupportedLanguages();
+        const currentLang = supportedLanguages.find(lang => lang && lang.code === i18nManager.getCurrentLanguage());
+        
+        // 更新选项状态
+        const select = document.querySelector('#detailLanguageSwitcher .language-select');
+        if (select) {
+            select.value = currentLang?.code || i18nManager.getCurrentLanguage();
+        }
+        
+        console.log('✅ LanguageSwitcher: 语言显示已更新');
+        
+    } catch (error) {
+        console.error('❌ LanguageSwitcher: 更新语言显示失败:', error);
+    }
+} 

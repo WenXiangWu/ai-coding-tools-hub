@@ -55,6 +55,12 @@ class ToolCard extends Component {
 
         card.innerHTML = this.getCardHTML();
         
+        // 保存元素引用
+        this.element = card;
+        
+        // 绑定事件
+        this.bindEvents();
+        
         console.log('✅ 工具卡片渲染完成:', this.tool.id);
         return card;
     }
@@ -344,67 +350,38 @@ class ToolCard extends Component {
     }
 
     /**
-     * 处理卡片点击（已废弃 - 现在只有按钮点击才会触发操作）
-     * @param {Event} e - 事件对象
-     * @deprecated 该方法不再被自动调用，保留仅供兼容性
-     */
-    handleCardClick(e) {
-        // Ctrl/Cmd + 点击 = 选择比较
-        if ((e.ctrlKey || e.metaKey) && this.showCompareButton) {
-            this.handleCompareToggle();
-        } else {
-            // 普通点击 = 查看详情
-            this.handleViewDetails();
-        }
-    }
-
-    /**
      * 处理按钮点击
      * @param {string} action - 动作类型
      * @param {Event} e - 事件对象
      */
     handleActionClick(action, e) {
-        switch (action) {
-            case 'details':
-                this.handleViewDetails();
-                break;
-            case 'website':
-                this.handleVisitWebsite();
-                break;
-            case 'compare':
-                this.handleCompareToggle();
-                break;
-            default:
-                console.warn(`未知的动作: ${action}`);
-        }
-    }
-
-    /**
-     * 处理键盘事件
-     * @param {KeyboardEvent} e - 键盘事件
-     */
-    handleKeyDown(e) {
-        // 只有在按钮获得焦点时才处理键盘事件
-        const activeElement = document.activeElement;
-        if (!activeElement || !this.element.contains(activeElement)) {
-            return;
-        }
-
-        switch (e.key) {
-            case 'c':
-            case 'C':
-                if (this.showCompareButton && !e.target.closest('button')) {
-                    e.preventDefault();
-                    this.handleCompareToggle();
-                }
-                break;
-            case 'w':
-            case 'W':
-                if (!e.target.closest('button')) {
-                    e.preventDefault();
+        console.log('🎯 处理按钮点击:', {
+            action,
+            toolId: this.tool.id,
+            hasWebsite: !!this.tool.website,
+            hasViewDetails: !!this.onViewDetails
+        });
+        
+        try {
+            switch (action) {
+                case 'details':
+                    this.handleViewDetails();
+                    break;
+                case 'website':
                     this.handleVisitWebsite();
-                }
-                break;
+                    break;
+                case 'compare':
+                    this.handleCompareToggle();
+                    break;
+                default:
+                    console.warn(`⚠️ 未知的动作: ${action}`);
+            }
+        } catch (error) {
+            console.error('❌ 处理按钮点击失败:', {
+                action,
+                toolId: this.tool.id,
+                error: error.message
+            });
         }
     }
 
@@ -412,6 +389,11 @@ class ToolCard extends Component {
      * 处理查看详情
      */
     handleViewDetails() {
+        console.log('🔍 处理查看详情:', {
+            toolId: this.tool.id,
+            hasCallback: !!this.onViewDetails
+        });
+        
         // 验证工具数据
         if (!this.tool) {
             console.error('❌ ToolCard: 工具数据为空，无法查看详情');
@@ -428,29 +410,57 @@ class ToolCard extends Component {
             tool: this.tool
         };
         
-        if (this.onViewDetails) {
-            this.onViewDetails(eventData);
+        try {
+            if (this.onViewDetails) {
+                this.onViewDetails(eventData);
+                console.log('✅ 详情回调执行成功');
+            } else {
+                // 如果没有提供回调，直接跳转到详情页面
+                const detailUrl = `src/pages/tool.html?id=${encodeURIComponent(this.tool.id)}`;
+                window.location.href = detailUrl;
+                console.log('✅ 直接跳转到详情页面');
+            }
+            
+            eventBus.emit('toolCard:detailsClicked', eventData);
+            console.log('✅ 详情事件发送成功');
+        } catch (error) {
+            console.error('❌ 处理查看详情失败:', error);
         }
-        
-        eventBus.emit('toolCard:detailsClicked', eventData);
     }
 
     /**
      * 处理访问网站
      */
     handleVisitWebsite() {
+        console.log('🌐 处理访问网站:', {
+            toolId: this.tool.id,
+            hasWebsite: !!this.tool?.website
+        });
+        
         if (!this.tool) {
             console.error('❌ ToolCard: 工具数据为空，无法访问网站');
             return;
         }
         
         if (this.tool.website) {
-            window.open(this.tool.website, '_blank', 'noopener,noreferrer');
-            
-            eventBus.emit('toolCard:websiteClicked', {
-                toolId: this.tool.id,
-                url: this.tool.website
-            });
+            try {
+                // 使用 window.open 打开新标签页
+                const newWindow = window.open(this.tool.website, '_blank');
+                if (newWindow) {
+                    newWindow.opener = null; // 安全措施：断开与父窗口的联系
+                    console.log('✅ 网站链接打开成功:', this.tool.website);
+                } else {
+                    console.warn('⚠️ 弹出窗口被阻止，尝试直接跳转');
+                    window.location.href = this.tool.website;
+                }
+                
+                eventBus.emit('toolCard:websiteClicked', {
+                    toolId: this.tool.id,
+                    url: this.tool.website
+                });
+            } catch (error) {
+                console.error('❌ 打开网站链接失败:', error);
+            }
         } else {
             console.warn('⚠️ 工具没有网站链接:', this.tool.name);
         }
