@@ -4,6 +4,7 @@
  */
 import { Component } from '../core/Component.js';
 import { eventBus } from '../core/EventBus.js';
+import { Store } from '../core/Store.js';
 import { CSS_CLASSES, getStatusTextMap, getTypeTextMap, getPriceTextMap } from '../constants/AppConstants.js';
 import { truncateText, formatDate } from '../utils/helpers.js';
 import { getToolIcon } from '../config/icon-config.js';
@@ -37,11 +38,15 @@ class ToolCard extends Component {
         this.showCompareButton = props.showCompareButton !== false;
         this.i18nManager = getI18nManager();
         
+        // 初始化store实例
+        this.store = props.store || Store.getInstance();
+        
         console.log('✅ 工具卡片组件创建完成:', {
             id: this.tool.id,
             name: this.tool.name,
             isSelected: this.isSelected,
-            showCompareButton: this.showCompareButton
+            showCompareButton: this.showCompareButton,
+            hasStore: !!this.store
         });
     }
 
@@ -224,27 +229,17 @@ class ToolCard extends Component {
             isSelected: this.isSelected
         });
         
-        const state = this.store.getState();
-        const selectedTools = state.selectedTools || new Set();
-        
-        // 确保 selectedTools 是 Set 类型
-        const isSelected = selectedTools instanceof Set ? 
-            selectedTools.has(this.tool.id) : 
-            Array.isArray(selectedTools) ? 
-                selectedTools.includes(this.tool.id) : 
-                false;
-        
-        const buttonClass = isSelected ? 'selected' : '';
-        const buttonText = isSelected ? 
-            (this.i18nManager.t('tools.actions.removeFromComparison') || '移出对比') : 
-            (this.i18nManager.t('tools.actions.addToComparison') || '加入对比');
+        const buttonClass = this.isSelected ? 'selected' : '';
+        const buttonText = this.isSelected ? 
+            (this.i18nManager.t('tools.actions.removeFromCompare') || '移出对比') : 
+            (this.i18nManager.t('tools.actions.addToCompare') || '加入对比');
         
         return `
             <button class="btn-compare ${buttonClass}" 
                     data-action="compare" 
                     title="${buttonText}"
                     aria-label="${buttonText}">
-                <i class="fas fa-${isSelected ? 'check' : 'plus'}"></i>
+                <i class="fas fa-${this.isSelected ? 'check' : 'plus'}"></i>
             </button>
         `;
     }
@@ -334,7 +329,7 @@ class ToolCard extends Component {
             });
         });
 
-        // 移除键盘事件中的自动跳转详情，只保留必要的键盘交互
+        // 键盘交互支持
         this.addEventListener(this.element, 'keydown', (e) => {
             this.handleKeyDown(e);
         });
@@ -470,6 +465,11 @@ class ToolCard extends Component {
      * 处理比较切换
      */
     handleCompareToggle() {
+        console.log('🔄 处理比较切换:', { 
+            toolId: this.tool.id,
+            currentSelected: this.isSelected
+        });
+        
         if (!this.tool) {
             console.error('❌ ToolCard: 工具数据为空，无法切换比较状态');
             return;
@@ -481,14 +481,44 @@ class ToolCard extends Component {
         }
         
         if (this.onSelect) {
+            console.log('🎯 调用选择回调:', { toolId: this.tool.id });
             const newState = this.onSelect(this.tool.id, this.tool);
+            console.log('✅ 选择回调返回新状态:', newState);
+            
+            // 更新本地状态和UI
+            this.isSelected = newState;
             this.updateCompareButton(newState);
+            
+            // 触发事件
+            eventBus.emit('toolCard:compareToggled', {
+                toolId: this.tool.id,
+                selected: newState
+            });
+        } else {
+            console.warn('⚠️ 没有提供选择回调函数');
         }
-        
-        eventBus.emit('toolCard:compareToggled', {
-            toolId: this.tool.id,
-            selected: !this.isSelected
-        });
+    }
+
+    /**
+     * 处理键盘事件
+     * @param {KeyboardEvent} e - 键盘事件
+     */
+    handleKeyDown(e) {
+        // 支持基本的键盘导航
+        switch (e.key) {
+            case 'Enter':
+            case ' ':
+                e.preventDefault();
+                this.handleViewDetails();
+                break;
+            case 'c':
+            case 'C':
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    this.handleCompareToggle();
+                }
+                break;
+        }
     }
 
     /**
@@ -496,23 +526,44 @@ class ToolCard extends Component {
      * @param {boolean} selected - 是否选中
      */
     updateCompareButton(selected) {
+        console.log('🔄 更新比较按钮状态:', {
+            toolId: this.tool.id,
+            oldSelected: this.isSelected,
+            newSelected: selected
+        });
+        
         this.isSelected = selected;
         
         const compareBtn = this.element.querySelector('.btn-compare');
         if (compareBtn) {
             const icon = compareBtn.querySelector('i');
-            const isSelected = selected;
             
-            compareBtn.classList.toggle('selected', isSelected);
-            compareBtn.title = isSelected ? '取消选择' : '选择对比';
+            // 更新按钮类和图标
+            compareBtn.classList.toggle('selected', selected);
+            compareBtn.title = selected ? 
+                (this.i18nManager.t('tools.actions.removeFromCompare') || '移出对比') : 
+                (this.i18nManager.t('tools.actions.addToCompare') || '加入对比');
             
             if (icon) {
-                icon.className = `fas fa-${isSelected ? 'check' : 'plus'}`;
+                icon.className = `fas fa-${selected ? 'check' : 'plus'}`;
             }
+            
+            console.log('✅ 比较按钮已更新:', {
+                hasIcon: !!icon,
+                newClass: selected ? 'selected' : '',
+                newIcon: selected ? 'check' : 'plus'
+            });
+        } else {
+            console.warn('⚠️ 未找到比较按钮元素');
         }
         
         // 更新卡片样式
-        this.element.classList.toggle(CSS_CLASSES.SELECTED, selected);
+        if (this.element) {
+            this.element.classList.toggle(CSS_CLASSES.SELECTED, selected);
+            console.log('✅ 卡片样式已更新:', {
+                hasSelectedClass: this.element.classList.contains(CSS_CLASSES.SELECTED)
+            });
+        }
     }
 
     /**

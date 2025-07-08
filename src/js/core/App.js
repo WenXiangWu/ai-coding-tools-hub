@@ -269,7 +269,8 @@ class App {
                 action,
                 updates: Object.keys(updates),
                 hasTools: newState.tools?.length > 0,
-                hasFilteredTools: newState.filteredTools?.length > 0
+                hasFilteredTools: newState.filteredTools?.length > 0,
+                selectedToolsCount: newState.selectedTools?.size || 0
             });
             this.handleStateChange(newState, updates, prevState, action);
         });
@@ -286,6 +287,26 @@ class App {
         
         // 比较相关事件
         eventBus.on('compare:maxItemsReached', this.handleMaxCompareItems.bind(this));
+        eventBus.on('compare:itemAdded', (eventData) => {
+            console.log('📡 收到工具添加到对比事件:', eventData);
+            this.updateToolCardSelection(eventData.toolId, true);
+            // 强制更新比较状态
+            const state = this.store.getState();
+            this.updateCompareState(state);
+        });
+        eventBus.on('compare:itemRemoved', (eventData) => {
+            console.log('📡 收到工具移出对比事件:', eventData);
+            this.updateToolCardSelection(eventData.toolId, false);
+            // 强制更新比较状态
+            const state = this.store.getState();
+            this.updateCompareState(state);
+        });
+        eventBus.on('compare:modeEntered', () => {
+            console.log('📡 进入对比模式');
+        });
+        eventBus.on('compare:modeExited', () => {
+            console.log('📡 退出对比模式');
+        });
         
         // UI 事件
         eventBus.on('ui:filterChanged', this.handleFilterChange.bind(this));
@@ -394,9 +415,17 @@ class App {
      * 设置比较按钮
      */
     setupCompareButton() {
-        if (!this.elements.compareButton) return;
+        console.log('🔄 设置比较按钮事件监听');
+        
+        if (!this.elements.compareButton) {
+            console.warn('⚠️ 比较按钮元素未找到');
+            return;
+        }
 
-        this.elements.compareButton.addEventListener('click', () => {
+        console.log('✅ 比较按钮元素已找到，绑定点击事件');
+        this.elements.compareButton.addEventListener('click', (e) => {
+            console.log('🖱️ 比较按钮被点击', e);
+            e.preventDefault();
             this.toggleCompareMode();
         });
     }
@@ -655,7 +684,8 @@ class App {
             const cardProps = {
                 tool,
                 isSelected,
-                showCompareButton: state.compareMode,
+                showCompareButton: true, // 始终显示对比按钮
+                store: this.store, // 传递 store 实例
                 onSelect: (toolId, toolData) => this.handleToolSelect(toolId, toolData),
                 onViewDetails: (eventData) => this.handleToolDetails(eventData)
             };
@@ -874,7 +904,17 @@ class App {
      * 处理工具选择
      */
     handleToolSelect(toolId, tool) {
-        return this.compareService.toggleCompare(toolId);
+        console.log('🎯 处理工具选择:', { toolId, tool: tool?.name });
+        
+        if (!this.compareService) {
+            console.error('❌ CompareService 未初始化');
+            return false;
+        }
+        
+        const newState = this.compareService.toggleCompare(toolId);
+        console.log('✅ 工具对比状态切换完成:', { toolId, newState });
+        
+        return newState;
     }
 
     /**
@@ -924,15 +964,32 @@ class App {
      * 切换比较模式
      */
     toggleCompareMode() {
+        console.log('🔄 切换比较模式被调用');
         const state = this.store.getState();
         
+        console.log('📊 当前状态:', {
+            compareMode: state.compareMode,
+            selectedToolsSize: state.selectedTools.size,
+            selectedTools: Array.from(state.selectedTools),
+            hasCompareService: !!this.compareService
+        });
+        
+        if (!this.compareService) {
+            console.error('❌ CompareService 未初始化');
+            this.showNotification('比较服务未初始化', 'error');
+            return;
+        }
+        
         if (state.compareMode) {
+            console.log('🔄 退出比较模式');
             this.compareService.exitCompareMode();
         } else {
             if (state.selectedTools.size >= 2) {
+                console.log('🔄 进入比较模式');
                 this.compareService.enterCompareMode();
                 this.showComparePanel();
             } else {
+                console.log('⚠️ 选中工具数量不足:', state.selectedTools.size);
                 this.showNotification(UI_CONSTANTS.MESSAGES.COMPARE_MIN_REQUIRED, 'warning');
             }
         }
@@ -997,11 +1054,42 @@ class App {
      */
     updateCompareState(state) {
         const selectedCount = state.selectedTools.size;
+        console.log('📊 更新比较状态:', { 
+            selectedCount, 
+            hasCompareButton: !!this.elements.compareButton,
+            selectedTools: Array.from(state.selectedTools)
+        });
         
         // 更新比较按钮
         if (this.elements.compareButton) {
-            this.elements.compareButton.textContent = `对比 (${selectedCount})`;
             this.elements.compareButton.disabled = selectedCount < 2;
+            console.log('✅ 对比按钮禁用状态已更新:', selectedCount < 2);
+        } else {
+            console.warn('⚠️ 对比按钮元素未找到，尝试查找...');
+            // 尝试重新获取对比按钮
+            const compareBtn = document.getElementById('compareButton');
+            if (compareBtn) {
+                this.elements.compareButton = compareBtn;
+                compareBtn.disabled = selectedCount < 2;
+                console.log('✅ 重新找到并更新对比按钮');
+            }
+        }
+
+        // 更新比较数量显示
+        const compareCountElement = document.getElementById('compareCount');
+        if (compareCountElement) {
+            compareCountElement.textContent = selectedCount.toString();
+            console.log('✅ 对比数量已更新:', selectedCount);
+        } else {
+            console.warn('⚠️ 对比数量元素未找到 (compareCount)');
+        }
+
+        // 更新工具卡片选择状态
+        if (state.selectedTools && state.selectedTools.size > 0) {
+            console.log('🔄 更新工具卡片选择状态');
+            state.selectedTools.forEach(toolId => {
+                this.updateToolCardSelection(toolId, true);
+            });
         }
 
         // 更新比较面板显示
@@ -1014,9 +1102,24 @@ class App {
      * 更新工具卡片选择状态
      */
     updateToolCardSelection(toolId, selected) {
+        console.log('🔄 更新工具卡片选择状态:', { toolId, selected });
+        
         const toolCard = this.components.toolCards.get(toolId);
         if (toolCard) {
+            // 更新组件的选中状态
+            toolCard.isSelected = selected;
+            // 更新按钮UI
             toolCard.updateCompareButton(selected);
+            // 强制重新渲染整个卡片
+            toolCard.update();
+            
+            console.log('✅ 工具卡片状态已更新:', { 
+                toolId, 
+                selected, 
+                cardFound: true 
+            });
+        } else {
+            console.warn('⚠️ 未找到工具卡片:', toolId);
         }
     }
 
