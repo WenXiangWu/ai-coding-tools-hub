@@ -49,18 +49,11 @@
 
 /* 基础图标样式（作为回退） */
 .tool-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 48px;
     height: 48px;
-    border-radius: 8px;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
-    position: relative;
-    flex-shrink: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .tool-icon.large {
@@ -79,8 +72,7 @@
 
 /* Cursor 图标 */
 .tool-icon-cursor {
-    background: linear-gradient(135deg, #000000, #333333);
-    color: #ffffff;
+    background-image: url('../../design/icon/cursor.svg');
 }
 
 .tool-icon-cursor::before {
@@ -91,8 +83,7 @@
 
 /* Windsurf 图标 */
 .tool-icon-windsurf {
-    background: linear-gradient(135deg, #0EA5E9, #0284C7);
-    color: #ffffff;
+    background-image: url('../../design/icon/windsurf.svg');
 }
 
 .tool-icon-windsurf::before {
@@ -102,8 +93,7 @@
 
 /* Claude 图标 */
 .tool-icon-claude {
-    background: linear-gradient(135deg, #FF6B35, #F7931E);
-    color: #ffffff;
+    background-image: url('../../design/icon/claude-color.svg');
 }
 
 .tool-icon-claude::before {
@@ -114,8 +104,7 @@
 
 /* GitHub Copilot 图标 */
 .tool-icon-copilot {
-    background: linear-gradient(135deg, #24292e, #586069);
-    color: #ffffff;
+    background-image: url('../../design/icon/githubcopilot.svg');
 }
 
 .tool-icon-copilot::before {
@@ -125,8 +114,7 @@
 
 /* Gemini 图标 */
 .tool-icon-gemini {
-    background: linear-gradient(135deg, #4285F4, #1A73E8);
-    color: #ffffff;
+    background-image: url('../../design/icon/gemini-color.svg');
 }
 
 .tool-icon-gemini::before {
@@ -137,8 +125,7 @@
 
 /* 通义千问 图标 */
 .tool-icon-tongyi {
-    background: linear-gradient(135deg, #FF6A00, #FF8500);
-    color: #ffffff;
+    background-image: url('../../design/icon/tongyi.png');
 }
 
 .tool-icon-tongyi::before {
@@ -150,8 +137,7 @@
 
 /* Codeium 图标 */
 .tool-icon-codeium {
-    background: linear-gradient(135deg, #09B6A2, #00A693);
-    color: #ffffff;
+    background-image: url('../../design/icon/codeium.svg');
 }
 
 .tool-icon-codeium::before {
@@ -335,4 +321,8 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
+}
+
+.tool-icon-trae {
+    background-image: url('../../design/icon/trae.svg');
 } 

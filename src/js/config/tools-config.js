@@ -51,6 +51,13 @@ export const TOOLS_CONFIG = [
         priority: 7,
         module: '../tools/codeium.js',
         featured: false
+    },
+    {
+        id: 'trae',
+        enabled: true,
+        priority: 8,
+        module: '../tools/trae.js',
+        featured: false
     }
 ];
 
