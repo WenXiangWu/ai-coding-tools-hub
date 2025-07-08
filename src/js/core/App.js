@@ -220,35 +220,23 @@ class App {
      * 设置事件监听
      */
     setupEventListeners() {
+        console.log('🎯 开始设置事件监听...');
+        
         // 状态变化监听
         this.store.subscribe((newState, updates, prevState, action) => {
+            console.log('📡 收到状态变化事件:', {
+                action,
+                updates: Object.keys(updates),
+                hasTools: newState.tools?.length > 0,
+                hasFilteredTools: newState.filteredTools?.length > 0
+            });
             this.handleStateChange(newState, updates, prevState, action);
         });
 
         // 服务初始化事件
         eventBus.on('toolService:initialized', (tools) => {
-            console.log('📡 App收到toolService:initialized事件，工具数量:', tools?.length || 0);
-            console.log('🔍 事件接收时机检查:', {
-                appInitialized: this.initialized,
-                hasToolService: !!this.toolService,
-                hasElements: !!this.elements,
-                hasContainer: !!this.elements?.toolsContainer
-            });
-            
-            try {
-                this.handleToolServiceInitialized(tools);
-            } catch (error) {
-                console.error('❌ 处理toolService:initialized事件失败:', error);
-                // 延迟重试
-                setTimeout(() => {
-                    console.log('🔄 延迟重试处理工具初始化事件...');
-                    try {
-                        this.handleToolServiceInitialized(tools);
-                    } catch (retryError) {
-                        console.error('❌ 延迟重试仍然失败:', retryError);
-                    }
-                }, 100);
-            }
+            console.log('📡 收到工具服务初始化事件，工具数量:', tools?.length || 0);
+            this.handleToolServiceInitialized(tools);
         });
         
         // 工具相关事件
@@ -276,30 +264,58 @@ class App {
      * 初始化UI
      */
     initializeUI() {
-        // 获取主要DOM元素
-        this.elements = {
-            toolsContainer: document.getElementById('toolsContainer'),
-            loadingIndicator: document.getElementById('loadingIndicator'),
-            errorMessage: document.getElementById('errorMessage'),
-            typeFilter: document.getElementById('typeFilter'),
-            priceFilter: document.getElementById('priceFilter'),
-            sortSelect: document.getElementById('sortSelect'),
-            compareButton: document.getElementById('compareButton'),
-            comparePanel: document.getElementById('comparePanel')
-        };
+        console.log('🎨 开始初始化UI...');
+        
+        try {
+            // 获取主要DOM元素
+            this.elements = {
+                toolsContainer: document.getElementById('toolsContainer'),
+                loadingIndicator: document.getElementById('loadingIndicator'),
+                errorMessage: document.getElementById('errorMessage'),
+                typeFilter: document.getElementById('typeFilter'),
+                priceFilter: document.getElementById('priceFilter'),
+                sortSelect: document.getElementById('sortSelect'),
+                compareButton: document.getElementById('compareButton'),
+                comparePanel: document.getElementById('comparePanel')
+            };
 
-        // 设置筛选控件
-        this.setupFilterControls();
-        
-        // 设置排序选择器
-        this.setupSortSelect();
-        
-        // 设置比较按钮
-        this.setupCompareButton();
-        
-        console.log('✅ UI初始化完成');
-        
-        // UI初始化完成，工具数据将在ToolService初始化完成后自动渲染
+            console.log('📦 DOM元素状态:', {
+                hasToolsContainer: !!this.elements.toolsContainer,
+                hasLoadingIndicator: !!this.elements.loadingIndicator,
+                hasErrorMessage: !!this.elements.errorMessage,
+                hasTypeFilter: !!this.elements.typeFilter,
+                hasPriceFilter: !!this.elements.priceFilter,
+                hasSortSelect: !!this.elements.sortSelect
+            });
+
+            if (!this.elements.toolsContainer) {
+                throw new Error('找不到工具容器元素 #toolsContainer');
+            }
+
+            // 设置筛选控件
+            this.setupFilterControls();
+            
+            // 设置排序选择器
+            this.setupSortSelect();
+            
+            // 设置比较按钮
+            this.setupCompareButton();
+            
+            // 检查是否已有工具数据，如果有则渲染
+            const state = this.store.getState();
+            if (state.tools && state.tools.length > 0) {
+                console.log('🔄 检测到已有工具数据，开始渲染...');
+                this.renderTools();
+            } else {
+                console.log('⏳ 等待工具数据加载...');
+            }
+            
+            console.log('✅ UI初始化完成');
+            
+        } catch (error) {
+            console.error('❌ UI初始化失败:', error);
+            this.handleError('UI初始化失败', error);
+        }
     }
 
     /**
@@ -348,7 +364,11 @@ class App {
      * 处理状态变化
      */
     handleStateChange(newState, updates, prevState, action) {
-        console.log(`🔄 状态变化 [${action}]:`, Object.keys(updates));
+        console.log(`🔄 状态变化 [${action}]:`, {
+            updatedFields: Object.keys(updates),
+            toolsCount: newState.tools?.length || 0,
+            filteredToolsCount: newState.filteredTools?.length || 0
+        });
         
         // 更新加载状态
         if ('loading' in updates) {
@@ -360,16 +380,32 @@ class App {
             this.updateErrorState(newState.error);
         }
 
-        // 更新工具列表
-        if ('filteredTools' in updates) {
-            console.log(`🎨 检测到filteredTools更新，数量: ${newState.filteredTools.length}`);
-            this.renderTools();
+        // 如果tools更新了，需要重新应用筛选并渲染
+        if ('tools' in updates) {
+            console.log('📦 工具数据更新，准备重新渲染');
+            // 确保有工具数据
+            if (newState.tools && newState.tools.length > 0) {
+                // 如果没有筛选过的工具，先设置为所有工具
+                if (!newState.filteredTools || newState.filteredTools.length === 0) {
+                    console.log('🔄 初始化筛选后的工具列表');
+                    this.store.setState({ filteredTools: newState.tools }, 'INIT_FILTERED_TOOLS');
+                } else {
+                    // 否则重新应用筛选
+                    console.log('🔍 重新应用筛选条件');
+                    this.applyFilters();
+                }
+            }
         }
 
-        // 如果tools更新了但filteredTools没有，主动应用筛选
-        if ('tools' in updates && !('filteredTools' in updates)) {
-            console.log(`📋 检测到tools更新，主动应用筛选，数量: ${newState.tools.length}`);
-            this.applyFilters();
+        // 更新工具列表显示
+        if ('filteredTools' in updates) {
+            console.log(`🎨 准备渲染工具列表，数量: ${newState.filteredTools?.length || 0}`);
+            // 确保DOM已经准备好
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.renderTools());
+            } else {
+                this.renderTools();
+            }
         }
 
         // 更新比较状态
@@ -404,209 +440,214 @@ class App {
     }
 
     /**
-     * 应用筛选和排序
+     * 应用筛选条件
      */
     applyFilters() {
+        console.log('🔍 开始应用筛选条件...');
+        
         const state = this.store.getState();
+        let tools = state.tools || [];
         
-        // 优先使用store中的工具数据
-        let tools = state.tools;
+        console.log('📊 筛选前工具数量:', tools.length);
+        console.log('🏷️ 当前筛选条件:', state.filters);
         
-        // 如果store中没有数据，尝试从toolService获取并保存到store
+        // 如果没有工具数据，直接返回
         if (!tools || tools.length === 0) {
-            if (this.toolService) {
-                tools = this.toolService.getAllTools();
-                console.log('🔄 从ToolService获取工具数据:', tools.length);
-                
-                // 如果成功获取到数据，保存到store
-                if (tools && tools.length > 0) {
-                    this.store.setState({ tools }, 'TOOLS_SYNC');
-                }
-            } else {
-                console.log('⚠️ applyFilters - ToolService尚未初始化且store中无数据');
-                return;
-            }
-        }
-        
-        console.log('🔍 applyFilters - 开始筛选工具:', tools?.length || 0);
-        
-        // 如果仍然没有工具数据，设置空状态
-        if (!tools || tools.length === 0) {
-            console.log('⚠️ applyFilters - 没有工具数据');
-            this.store.setState({ filteredTools: [] }, 'APPLY_FILTERS_EMPTY');
-            this.updateToolsCount(0);
+            console.warn('⚠️ 没有可用的工具数据');
+            this.store.setState({ filteredTools: [] }, 'FILTER_NO_TOOLS');
             return;
         }
         
-        // 应用筛选和排序
-        let filteredTools = tools;
-        
-        if (this.toolService) {
-            // 应用筛选（不包含搜索）
-            filteredTools = this.toolService.filterTools(state.filters);
-
-            // 应用排序
-            filteredTools = this.toolService.sortTools(filteredTools, state.sort);
+        // 应用类型筛选
+        if (state.filters.type && state.filters.type !== 'all') {
+            tools = tools.filter(tool => tool.type === state.filters.type);
         }
-
-        console.log('✅ applyFilters - 筛选结果:', filteredTools.length);
         
-        this.store.setState({ filteredTools }, 'APPLY_FILTERS');
+        // 应用价格筛选
+        if (state.filters.price && state.filters.price !== 'all') {
+            tools = tools.filter(tool => tool.price === state.filters.price);
+        }
         
-        // 更新工具数量显示
-        this.updateToolsCount(filteredTools.length);
+        // 应用分类筛选
+        if (state.filters.category && state.filters.category !== 'all') {
+            tools = tools.filter(tool => tool.category === state.filters.category);
+        }
+        
+        // 应用排序
+        if (state.sort) {
+            tools = this.sortTools(tools, state.sort);
+        }
+        
+        console.log('📊 筛选后工具数量:', tools.length);
+        
+        // 更新过滤后的工具列表
+        this.store.setState({ 
+            filteredTools: tools,
+            loading: false,
+            error: null
+        }, 'FILTER_APPLIED');
+        
+        // 触发重新渲染
+        this.renderTools();
+    }
+    
+    /**
+     * 对工具进行排序
+     * @param {Array} tools - 要排序的工具数组
+     * @param {string} sortBy - 排序方式
+     * @returns {Array} 排序后的工具数组
+     */
+    sortTools(tools, sortBy) {
+        switch (sortBy) {
+            case 'popularity':
+                return [...tools].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            case 'name':
+                return [...tools].sort((a, b) => a.name.localeCompare(b.name));
+            case 'newest':
+                return [...tools].sort((a, b) => new Date(b.releaseDate || 0) - new Date(a.releaseDate || 0));
+            default:
+                return tools;
+        }
     }
 
     /**
      * 渲染工具列表
      */
     renderTools() {
+        console.log('🎨 开始渲染工具列表...');
+        
         try {
+            // 获取工具数据
             const state = this.store.getState();
-            const tools = state.filteredTools;
-
-            console.log('🎨 renderTools开始 - 状态检查:', {
-                hasState: !!state,
-                toolsArray: !!tools,
-                toolsLength: tools?.length || 0,
-                hasElements: !!this.elements,
-                hasContainer: !!this.elements?.toolsContainer,
-                containerInDOM: !!document.getElementById('toolsContainer')
+            const tools = state.filteredTools || state.tools || [];
+            
+            console.log('📦 渲染前状态检查:', {
+                hasToolsContainer: !!document.getElementById('toolsContainer'),
+                totalTools: state.tools?.length || 0,
+                filteredTools: state.filteredTools?.length || 0,
+                actualTools: tools.length,
+                filters: state.filters,
+                loading: state.loading
             });
-
-            // 检查DOM元素是否可用
-            if (!this.elements || !this.elements.toolsContainer) {
-                console.warn('⚠️ renderTools: DOM元素不可用，尝试重新获取...');
-                
-                // 尝试直接从DOM获取元素
-                const container = document.getElementById('toolsContainer');
-                if (container) {
-                    console.log('✅ 从DOM直接获取到容器元素，重新初始化UI...');
-                    this.initializeUI();
-                    
-                    // 验证是否成功
-                    if (!this.elements || !this.elements.toolsContainer) {
-                        console.error('❌ UI重新初始化失败，无法渲染工具');
-                        return;
-                    }
-                } else {
-                    console.error('❌ DOM容器元素不存在，无法渲染工具');
-                    return;
-                }
-            }
-
-            // 清空现有组件
-            console.log('🧹 清空现有工具卡片...');
-            this.clearToolCards();
-
-            // 检查是否有工具
-            if (!tools || tools.length === 0) {
-                console.log('📋 没有工具数据，渲染空状态');
-                this.renderEmptyState();
-                this.updateToolsCount(0);
+            
+            // 获取工具容器
+            const container = document.getElementById('toolsContainer');
+            if (!container) {
+                console.error('❌ 找不到工具容器元素 #toolsContainer');
                 return;
             }
-
+            
+            // 清理现有卡片
+            this.clearToolCards();
+            console.log('🧹 已清理现有卡片');
+            
+            // 检查是否有工具数据
+            if (!tools || tools.length === 0) {
+                console.log('⚠️ 没有可用的工具数据，显示空状态');
+                this.renderEmptyState();
+                return;
+            }
+            
             // 渲染工具卡片
-            console.log(`🎨 开始渲染 ${tools.length} 个工具卡片`);
+            console.log(`🔄 开始渲染 ${tools.length} 个工具卡片`);
             let successCount = 0;
             let errorCount = 0;
             
-            tools.forEach((tool, index) => {
+            tools.forEach(tool => {
                 try {
-                    console.log(`🔧 渲染第 ${index + 1}/${tools.length} 个工具: ${tool?.name || 'unnamed'}`);
-                    this.renderToolCard(tool);
-                    successCount++;
+                    console.log(`🎯 渲染工具卡片: ${tool.id}`);
+                    const card = this.renderToolCard(tool);
+                    if (card) {
+                        container.appendChild(card);
+                        successCount++;
+                    }
                 } catch (error) {
-                    console.error(`❌ 渲染第 ${index + 1} 个工具失败:`, error);
+                    console.error(`❌ 渲染工具卡片失败 [${tool.id}]:`, error);
                     errorCount++;
+                    // 尝试使用简化版卡片作为后备
+                    try {
+                        const simpleCard = this.renderSimpleToolCard(tool, error);
+                        if (simpleCard) {
+                            container.appendChild(simpleCard);
+                            successCount++;
+                        }
+                    } catch (fallbackError) {
+                        console.error(`❌ 简化版卡片渲染也失败 [${tool.id}]:`, fallbackError);
+                    }
                 }
             });
-
-            // 更新计数显示
+            
+            console.log('✅ 工具列表渲染完成:', {
+                total: tools.length,
+                success: successCount,
+                error: errorCount
+            });
+            
+            // 更新工具计数
             this.updateToolsCount(tools.length);
             
-            console.log(`✅ 工具渲染完成 - 成功: ${successCount}, 失败: ${errorCount}`);
-            console.log(`📊 DOM状态 - 容器子元素数: ${this.elements.toolsContainer.children.length}`);
-            
         } catch (error) {
-            console.error('❌ renderTools执行失败:', error);
-            console.error('错误堆栈:', error.stack);
-            
-            // 显示错误信息
-            if (this.elements.toolsContainer) {
-                this.elements.toolsContainer.innerHTML = `
-                    <div class="error-state">
-                        <h3>⚠️ 渲染错误</h3>
-                        <p>工具列表渲染失败: ${error.message}</p>
-                        <button onclick="window.debug?.forceRender()" class="btn btn-primary">重试</button>
-                    </div>
-                `;
-            }
+            console.error('❌ 渲染工具列表时发生错误:', error);
+            this.handleError('渲染工具列表失败', error);
         }
     }
 
     /**
-     * 渲染单个工具卡片
+     * 渲染工具卡片
+     * @param {Object} tool - 工具数据
+     * @returns {HTMLElement} 工具卡片元素
      */
     renderToolCard(tool) {
+        console.log('🎯 渲染工具卡片:', tool.id);
+        
         try {
             const state = this.store.getState();
+            const selectedTools = state.selectedTools || new Set();
             
-            // 验证必要数据
-            if (!tool) {
-                console.error('❌ renderToolCard: tool为空');
-                return;
-            }
+            // 确保 selectedTools 是 Set 类型
+            const isSelected = selectedTools instanceof Set ? 
+                selectedTools.has(tool.id) : 
+                Array.isArray(selectedTools) ? 
+                    selectedTools.includes(tool.id) : 
+                    false;
             
-            if (!tool.id) {
-                console.error('❌ renderToolCard: tool.id缺失', tool);
-                return;
-            }
-            
-            if (!this.elements.toolsContainer) {
-                console.error('❌ renderToolCard: toolsContainer元素不存在');
-                return;
-            }
-
-            const isSelected = state.selectedTools.has(tool.id);
-            console.log(`🔧 渲染工具卡片: ${tool.name} (ID: ${tool.id}, 选中: ${isSelected})`);
-            console.log('🔍 工具数据详情:', {
-                id: tool.id,
-                name: tool.name,
-                description: tool.description?.substring(0, 50) + '...',
-                type: tool.type,
-                price: tool.price,
-                rating: tool.rating
-            });
-
-            // 临时使用简化卡片进行测试
-            if (window.debug && window.debug.useSimpleCards) {
-                this.renderSimpleToolCard(tool);
-                return;
-            }
-
-            const toolCard = new ToolCard({
+            const cardProps = {
                 tool,
                 isSelected,
-                onSelect: this.handleToolSelect.bind(this),
-                onViewDetails: this.handleToolDetails.bind(this),
-                showCompareButton: APP_CONFIG.FEATURES.ENABLE_COMPARISON
-            });
-
-            toolCard.mount(this.elements.toolsContainer);
-            this.components.toolCards.set(tool.id, toolCard);
+                showCompareButton: state.compareMode,
+                onSelect: (selected) => this.handleToolSelect(tool.id, selected),
+                onViewDetails: () => this.handleViewDetails(tool)
+            };
             
-            console.log(`✅ 工具卡片渲染成功: ${tool.name}`);
-            
+            const card = new ToolCard(cardProps);
+            console.log('✅ 工具卡片渲染成功:', tool.id);
+            return card.render();
         } catch (error) {
-            console.error(`❌ 渲染工具卡片失败 (${tool?.name || 'unknown'}):`, error);
-            console.error('工具数据:', tool);
-            console.error('错误堆栈:', error.stack);
-            
-            // 回退到简化卡片
-            this.renderSimpleToolCard(tool, error);
+            console.error('❌ 渲染工具卡片失败:', {
+                toolId: tool.id,
+                error: error.message
+            });
+            return this.renderErrorCard(tool, error);
         }
+    }
+
+    /**
+     * 渲染错误卡片
+     * @param {Object} tool - 工具数据
+     * @param {Error} error - 错误对象
+     * @returns {HTMLElement} 错误卡片元素
+     */
+    renderErrorCard(tool, error) {
+        const errorCard = document.createElement('div');
+        errorCard.className = 'tool-card error';
+        errorCard.innerHTML = `
+            <div class="error-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>渲染失败: ${tool.name || tool.id}</h3>
+                <p class="error-message">${error.message}</p>
+            </div>
+        `;
+        return errorCard;
     }
 
     /**
@@ -746,105 +787,45 @@ class App {
     }
 
     /**
-     * 处理工具服务初始化完成
+     * 处理工具服务初始化完成事件
      */
     handleToolServiceInitialized(tools) {
-        console.log('🎉 开始处理工具服务初始化完成事件，工具数量:', tools?.length || 0);
-        
-        // 验证输入数据
-        if (!Array.isArray(tools)) {
-            console.error('❌ 收到的工具数据不是数组:', typeof tools, tools);
-            return;
-        }
-        
-        if (tools.length === 0) {
-            console.warn('⚠️ 收到的工具数据为空数组');
-        }
-        
-        try {
-            // 确保工具数据正确同步到store中
-            console.log('📊 同步工具数据到Store...');
-            this.store.setState({ 
-                tools: tools,
-                filteredTools: tools, // 强制同步filteredTools
-                loading: false,
-                error: null 
-            }, 'TOOLS_LOADED_AND_FILTERED');
-            
-            console.log('✅ 工具数据已同步到Store');
-            
-            // 检查DOM元素是否准备就绪
-            const elementsReady = this.elements && this.elements.toolsContainer;
-            console.log('🔍 DOM元素检查:', {
-                hasElements: !!this.elements,
-                hasContainer: !!this.elements?.toolsContainer,
-                containerInDOM: !!document.getElementById('toolsContainer')
-            });
-            
-            if (!elementsReady) {
-                console.warn('⚠️ DOM元素尚未准备就绪，缓存数据并等待...');
-                // 缓存工具数据，等待DOM准备好
-                this._pendingTools = tools;
-                
-                // 尝试重新初始化UI元素
-                this.retryUIInitialization(tools);
-                return;
-            }
-            
-            // 更新UI显示的工具数量
-            this.updateToolsCount(tools.length);
-            
-            // 应用初始筛选并渲染
-            console.log('🎨 应用筛选并渲染工具...');
-            this.applyFilters();
-            
-            console.log('✅ 工具数据处理完成，filteredTools数量:', tools.length);
-            
-        } catch (error) {
-            console.error('❌ 处理工具服务初始化事件时出错:', error);
-            console.error('错误堆栈:', error.stack);
-            
-            // 设置错误状态
-            this.store.setState({
-                loading: false,
-                error: { message: '工具数据同步失败: ' + error.message }
-            }, 'TOOL_SYNC_ERROR');
-        }
-    }
+        console.log('🎯 处理工具服务初始化事件...');
+        console.log('📦 工具数据状态:', {
+            toolsCount: tools?.length || 0,
+            hasToolService: !!this.toolService,
+            hasStore: !!this.store,
+            uiInitialized: !!this.elements?.toolsContainer
+        });
 
-    /**
-     * 重试UI初始化（当DOM元素不可用时）
-     */
-    retryUIInitialization(tools, attempt = 1, maxAttempts = 5) {
-        console.log(`🔄 重试UI初始化 (尝试 ${attempt}/${maxAttempts})...`);
-        
-        if (attempt > maxAttempts) {
-            console.error('❌ UI初始化重试失败，已达到最大尝试次数');
+        if (!tools || !Array.isArray(tools)) {
+            console.error('❌ 无效的工具数据:', tools);
             return;
         }
-        
-        // 重新检查DOM
-        const container = document.getElementById('toolsContainer');
-        if (container) {
-            console.log('✅ DOM容器已找到，重新初始化UI...');
-            
-            // 重新初始化UI元素
-            this.initializeUI();
-            
-            // 检查是否成功
-            if (this.elements && this.elements.toolsContainer) {
-                console.log('✅ UI重新初始化成功，处理缓存的工具数据...');
-                this.updateToolsCount(tools.length);
-                this.applyFilters();
-                return;
+
+        try {
+            // 更新状态
+            this.store.setState({
+                tools,
+                filteredTools: tools, // 初始时显示所有工具
+                loading: false,
+                error: null
+            }, 'TOOLS_INITIALIZED');
+
+            // 确保UI已初始化
+            if (!this.elements?.toolsContainer) {
+                console.log('⚠️ UI尚未初始化，初始化UI...');
+                this.initializeUI();
             }
+
+            // 主动触发渲染
+            console.log('🔄 主动触发工具列表渲染...');
+            this.renderTools();
+
+        } catch (error) {
+            console.error('❌ 处理工具初始化事件失败:', error);
+            this.handleError('处理工具初始化事件失败', error);
         }
-        
-        // 继续等待和重试
-        const delay = 100 * attempt; // 递增延迟
-        setTimeout(() => {
-            this.retryUIInitialization(tools, attempt + 1, maxAttempts);
-        }, delay);
     }
 
     /**

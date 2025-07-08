@@ -82,10 +82,13 @@ class Store {
             return obj;
         }
         
+        // 处理 Set 类型
         if (obj instanceof Set) {
+            console.log('🔄 克隆 Set 类型:', Array.from(obj));
             return new Set(Array.from(obj).map(item => this.deepClone(item)));
         }
         
+        // 处理 Map 类型
         if (obj instanceof Map) {
             const clonedMap = new Map();
             obj.forEach((value, key) => {
@@ -94,14 +97,17 @@ class Store {
             return clonedMap;
         }
         
+        // 处理 Date 类型
         if (obj instanceof Date) {
             return new Date(obj.getTime());
         }
         
+        // 处理数组
         if (Array.isArray(obj)) {
             return obj.map(item => this.deepClone(item));
         }
         
+        // 处理普通对象
         const cloned = {};
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
@@ -148,14 +154,33 @@ class Store {
         
         for (const key in source) {
             if (source.hasOwnProperty(key)) {
-                if (source[key] instanceof Set) {
-                    result[key] = new Set(source[key]);
-                } else if (Array.isArray(source[key])) {
-                    result[key] = [...source[key]];
-                } else if (typeof source[key] === 'object' && source[key] !== null) {
-                    result[key] = this.deepMerge(result[key] || {}, source[key]);
-                } else {
-                    result[key] = source[key];
+                const sourceValue = source[key];
+                const targetValue = target[key];
+                
+                // 处理 Set 类型
+                if (sourceValue instanceof Set) {
+                    console.log('🔄 合并 Set 类型:', {
+                        key,
+                        sourceItems: Array.from(sourceValue)
+                    });
+                    result[key] = new Set(sourceValue);
+                }
+                // 处理数组
+                else if (Array.isArray(sourceValue)) {
+                    result[key] = [...sourceValue];
+                }
+                // 处理对象（但不是 Set/Map/Date/Array）
+                else if (
+                    typeof sourceValue === 'object' && 
+                    sourceValue !== null &&
+                    !(sourceValue instanceof Date) &&
+                    !(sourceValue instanceof Map)
+                ) {
+                    result[key] = this.deepMerge(result[key] || {}, sourceValue);
+                }
+                // 处理其他类型
+                else {
+                    result[key] = this.deepClone(sourceValue);
                 }
             }
         }

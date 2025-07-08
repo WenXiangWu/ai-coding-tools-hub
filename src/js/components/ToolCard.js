@@ -13,12 +13,16 @@ class ToolCard extends Component {
     constructor(props) {
         super(props);
         
+        console.log('🎯 创建工具卡片组件，工具ID:', props.tool?.id);
+        
         // 验证必要的工具数据
         if (!props.tool) {
+            console.error('❌ ToolCard: 缺少必要的工具数据');
             throw new Error('ToolCard: 缺少必要的工具数据');
         }
         
         if (!props.tool.id) {
+            console.error('❌ ToolCard: 工具ID缺失');
             throw new Error('ToolCard: 工具ID缺失');
         }
         
@@ -32,15 +36,26 @@ class ToolCard extends Component {
         this.onViewDetails = props.onViewDetails;
         this.showCompareButton = props.showCompareButton !== false;
         this.i18nManager = getI18nManager();
+        
+        console.log('✅ 工具卡片组件创建完成:', {
+            id: this.tool.id,
+            name: this.tool.name,
+            isSelected: this.isSelected,
+            showCompareButton: this.showCompareButton
+        });
     }
 
     render() {
+        console.log('🎨 开始渲染工具卡片:', this.tool.id);
+        
         const card = this.createElement('div', {
             className: this.getCardClasses(),
             'data-tool-id': this.tool.id
         });
 
         card.innerHTML = this.getCardHTML();
+        
+        console.log('✅ 工具卡片渲染完成:', this.tool.id);
         return card;
     }
 
@@ -198,17 +213,32 @@ class ToolCard extends Component {
      * @returns {string} 比较按钮HTML
      */
     renderCompareButton() {
-        const isSelected = this.isSelected;
-        const icon = isSelected ? 'check-square' : 'square';
-        const title = isSelected ? 
-            (this.i18nManager.t('tools.actions.removeFromCompare') || '取消选择') : 
-            (this.i18nManager.t('tools.actions.addToCompare') || '选择对比');
+        console.log('🔄 渲染比较按钮:', {
+            toolId: this.tool.id,
+            isSelected: this.isSelected
+        });
+        
+        const state = this.store.getState();
+        const selectedTools = state.selectedTools || new Set();
+        
+        // 确保 selectedTools 是 Set 类型
+        const isSelected = selectedTools instanceof Set ? 
+            selectedTools.has(this.tool.id) : 
+            Array.isArray(selectedTools) ? 
+                selectedTools.includes(this.tool.id) : 
+                false;
+        
+        const buttonClass = isSelected ? 'selected' : '';
+        const buttonText = isSelected ? 
+            (this.i18nManager.t('tools.actions.removeFromComparison') || '移出对比') : 
+            (this.i18nManager.t('tools.actions.addToComparison') || '加入对比');
         
         return `
-            <button class="btn-compare ${isSelected ? 'selected' : ''}" 
+            <button class="btn-compare ${buttonClass}" 
                     data-action="compare" 
-                    title="${title}">
-                <i class="fas fa-${icon}"></i>
+                    title="${buttonText}"
+                    aria-label="${buttonText}">
+                <i class="fas fa-${isSelected ? 'check' : 'plus'}"></i>
             </button>
         `;
     }
@@ -467,7 +497,7 @@ class ToolCard extends Component {
             compareBtn.title = isSelected ? '取消选择' : '选择对比';
             
             if (icon) {
-                icon.className = `fas fa-${isSelected ? 'check-square' : 'square'}`;
+                icon.className = `fas fa-${isSelected ? 'check' : 'plus'}`;
             }
         }
         

@@ -19,15 +19,18 @@ class ToolsManager {
      */
     async initialize() {
         if (this.initialized) {
+            console.log('🔄 工具管理器已经初始化过，跳过初始化');
             return;
         }
 
         console.log('🚀 初始化AI工具管理器...');
+        console.log('📦 当前已加载工具数量:', this.tools.size);
         
         try {
             await this.loadAllTools();
             this.initialized = true;
-            console.log(`✅ 工具管理器初始化完成，加载了 ${this.tools.size} 个工具`);
+            console.log(`✅ 工具管理器初始化完成，成功加载了 ${this.tools.size} 个工具`);
+            console.log('📋 已加载的工具列表:', Array.from(this.tools.keys()));
         } catch (error) {
             console.error('❌ 工具管理器初始化失败:', error);
             throw error;
@@ -39,6 +42,9 @@ class ToolsManager {
      */
     async loadAllTools() {
         const enabledConfigs = getEnabledTools();
+        console.log('🔍 准备加载已启用的工具，数量:', enabledConfigs.length);
+        console.log('📝 启用的工具配置:', enabledConfigs.map(c => c.id));
+        
         const loadPromises = enabledConfigs.map(config => this.loadTool(config.id));
         
         const results = await Promise.allSettled(loadPromises);
@@ -49,7 +55,7 @@ class ToolsManager {
             if (result.status === 'rejected') {
                 console.error(`❌ 加载工具失败: ${config.id}`, result.reason);
             } else {
-                console.log(`✅ 工具加载成功: ${config.id}`);
+                console.log(`✅ 工具加载成功: ${config.id}，数据:`, result.value);
             }
         });
     }
@@ -135,7 +141,12 @@ class ToolsManager {
      * @returns {Array} 工具数据数组
      */
     getAllTools() {
-        return Array.from(this.tools.values());
+        const tools = Array.from(this.tools.values());
+        console.log('📊 获取所有工具数据，当前工具数量:', tools.length);
+        if (tools.length === 0) {
+            console.warn('⚠️ 警告：当前没有加载任何工具数据');
+        }
+        return tools;
     }
 
     /**
