@@ -1,5 +1,5 @@
 // 自动化CSS映射表生成工具（升级版）
-// 用法：node tools/css-mapping.js
+// 用法：node tools/css-mapping.js [--unused]
 
 const fs = require('fs');
 const path = require('path');
@@ -126,6 +126,14 @@ async function exportUnusedCss(cssSelectors, usedCssSelectors, outFile) {
   await writer.writeRecords(unused);
 }
 
+// 新增：输出未被引用的CSS选择器JSON数组
+function outputUnusedJson(cssSelectors, usedCssSelectors) {
+  const unused = Object.entries(cssSelectors)
+    .filter(([cssSel]) => !usedCssSelectors.has(cssSel))
+    .map(([cssSel]) => cssSel);
+  console.log(JSON.stringify(unused, null, 2));
+}
+
 // 主流程
 (async () => {
   const files = getAllFiles();
@@ -133,9 +141,16 @@ async function exportUnusedCss(cssSelectors, usedCssSelectors, outFile) {
   files.forEach(f => pages[f] = extractSelectorsFromFile(f));
   const cssSelectors = extractCssSelectors('src/styles/main.css');
   const mapping = generateMapping(pages, cssSelectors);
-  await exportToCsv(mapping, 'css_mapping_full.csv');
   // 统计所有被引用的css选择器
   const usedCssSelectors = new Set(mapping.map(m => m.cssSelector).filter(Boolean));
+
+  if (process.argv.includes('--unused')) {
+    // 只输出未被引用的选择器JSON数组
+    outputUnusedJson(cssSelectors, usedCssSelectors);
+    return;
+  }
+
+  await exportToCsv(mapping, 'css_mapping_full.csv');
   await exportUnusedCss(cssSelectors, usedCssSelectors, 'unused_css_selectors.csv');
   console.log('全量CSS映射表已导出到 css_mapping_full.csv');
   console.log('未被引用的CSS选择器已导出到 unused_css_selectors.csv');

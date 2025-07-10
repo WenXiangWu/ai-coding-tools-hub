@@ -453,3 +453,154 @@ body.theme-green .hero-section {
 body.theme-purple .hero-section {
   animation: heroBackgroundShiftPurple 25s ease-in-out infinite;
 }
+
+/* 迁移自main.css 行号: 1385-1419
+ * 描述: 首页-学习中心区块相关样式
+ */
+
+.tutorials-section {
+  padding: var(--spacing-2xl) 0;
+}
+
+.tutorials-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.tutorial-categories {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.tutorial-tab {
+  background: none;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* 迁移自main.css 行号: 956-1024
+ * 描述: 首页-工具总览区域相关样式
+ */
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.filter-group label {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  padding-left: var(--spacing-xs);
+  position: relative;
+}
+
+.filter-group label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 12px;
+  background: linear-gradient(135deg, var(--primary-color), rgba(139, 92, 246, 0.8));
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.filter-group select {
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--bg-primary);
+  backdrop-filter: blur(15px);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 16px;
+  padding-right: 50px;
+}
+
+.filter-group select:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.15),
+        var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* 迁移自main.css 行号: 962-1006
+ * 描述: 首页-工具卡片相关样式
+ */
+
+.tool-logo-name {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.875rem;
+  /* 增加与第二行的间距 */
+  justify-content: center;
+}
+
+.tool-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 3rem;
+  /* 确保评分和徽章行有固定的最小高度 */
+}
+
+.tool-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  align-items: center;
+  min-height: 2.5rem;
+  /* 确保徽章区域有固定的最小高度 */
+}
+
+.tool-logo {
+  flex-shrink: 0;
+  /* 确保图标尺寸统一 */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
