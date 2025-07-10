@@ -253,16 +253,16 @@ function showToast(message) {
 async function renderToolDetail() {
     try {
         // 获取工具ID
-        const toolId = getQueryParam('id');
-        if (!toolId) {
+    const toolId = getQueryParam('id');
+    if (!toolId) {
             showErrorPage('未指定工具ID');
-            return;
-        }
-        
+        return;
+    }
+
         // 确保工具管理器已初始化
         if (!toolsManager.isInitialized()) {
             console.log('🚀 初始化工具管理器...');
-            await toolsManager.initialize();
+        await toolsManager.initialize();
         }
         
         // 获取工具信息
@@ -271,7 +271,7 @@ async function renderToolDetail() {
             showErrorPage(`未找到ID为 ${toolId} 的工具`);
             return;
         }
-        
+
         // 设置页面标题
         document.title = `${tool.name} - AI编程工具箱`;
         
@@ -463,7 +463,7 @@ function setupNavigationInteraction(toolDetail, contentArea) {
             console.log(`✅ 找到导航项，模拟点击: ${navItem}`);
             // 模拟点击
             item.click();
-        } else {
+    } else {
             // 查找对应的标签页
             const tab = document.querySelector(`[data-tab-toggle="${navItem}"]`);
             if (tab) {

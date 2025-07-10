@@ -1,0 +1,207 @@
+/**
+ * 欢迎页样式
+ * 应用main.css中的欢迎页相关样式
+ */
+
+/* 欢迎页容器 */
+.tool-welcome-page {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 欢迎页头部 */
+.welcome-header {
+    text-align: center;
+    margin-bottom: 60px;
+    max-width: 800px;
+}
+
+.welcome-header h1 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    color: var(--heading-color);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-header h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.welcome-header p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 特性矩阵 */
+.welcome-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* 特性卡片 */
+.feature-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.1"><circle cx="50" cy="50" r="40"/></svg>');
+    background-size: 100px 100px;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    margin-bottom: var(--spacing-md);
+    backdrop-filter: blur(10px);
+}
+
+.feature-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    color: white;
+}
+
+.feature-card p {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+    font-size: 1rem;
+    position: relative;
+}
+
+/* 粒子背景 */
+.tech-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(var(--primary-rgb), 0.6);
+    border-radius: 50%;
+    animation: particleFloat linear infinite;
+    box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.4);
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .welcome-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .welcome-header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .welcome-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .feature-icon i {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-header h1 {
+        font-size: 2rem;
+        flex-direction: column;
+    }
+    
+    .welcome-header h1 img {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .welcome-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .welcome-header p {
+        font-size: 1rem;
+    }
+} 

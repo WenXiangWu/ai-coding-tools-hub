@@ -2,138 +2,287 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <title>欢迎页测试</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢迎页特性卡片测试</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="../src/styles/main.css">
     <link rel="stylesheet" href="../src/styles/components/tool-detail-nav.css">
+    
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
         }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .debug-info {
-            background-color: #f0f0f0;
-            padding: 10px;
+        
+        .test-controls {
             margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .test-controls button {
+            padding: 8px 16px;
+            margin-right: 10px;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
             border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
+            cursor: pointer;
+        }
+        
+        .test-controls button:hover {
+            background-color: #4338ca;
+        }
+        
+        /* 变量覆盖 */
+        :root {
+            --primary-rgb: 79, 70, 229;
+            --primary-color: rgb(79, 70, 229);
+            --primary-dark: rgb(67, 56, 202);
+            --primary-transparent: rgba(79, 70, 229, 0.1);
+            --heading-color: #f8fafc;
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+        }
+        
+        /* 自定义样式 - 更接近图片中的效果 */
+        .tool-welcome-page {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .welcome-header {
+            text-align: left;
+            margin-bottom: 60px;
+            max-width: 800px;
+        }
+        
+        .welcome-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .welcome-header h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #6366f1;
+        }
+        
+        .welcome-header p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #94a3b8;
+            text-align: right;
+            max-width: 600px;
+            margin-left: auto;
+        }
+        
+        .welcome-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .feature-card {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.15);
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon i {
+            font-size: 28px;
+            color: #818cf8;
+        }
+        
+        .feature-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+        }
+        
+        .feature-content p {
+            color: #94a3b8;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+        
+        /* 粒子背景调整 */
+        .particle {
+            background: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>欢迎页特性卡片测试</h1>
-        <div class="debug-info" id="debugInfo"></div>
+        <div class="test-controls">
+            <h2>欢迎页测试</h2>
+            <button id="toggleAnimation">切换动画</button>
+            <button id="toggleLayout">切换布局</button>
+        </div>
         
-        <div class="tool-welcome-page" id="welcomePage">
-            <div class="tech-particles" id="particles"></div>
-            
-            <div class="welcome-header">
-                <h1>Cursor 学习中心</h1>
-                <h2>革命性的AI代码编辑器</h2>
-                <p>基于GPT-4构建，提供智能代码补全、自然语言编程和实时代码解释。完美融合传统编程体验与AI创新。</p>
-            </div>
-            
-            <div class="welcome-features matrix-features" id="features">
-                <!-- 特性卡片将在这里动态生成 -->
+        <div id="welcomeContainer">
+            <div class="tool-welcome-page">
+                <div class="tech-particles" id="particles"></div>
+                
+                <div class="welcome-header">
+                    <h1>Cursor 学习中心</h1>
+                    <h2>革命性的AI代码编辑器</h2>
+                    <p>基于GPT-4构建，提供智能代码补全、自然语言编程和实时代码解释。完美融合传统编程体验与AI创新。</p>
+                </div>
+                
+                <div class="welcome-features matrix-features">
+                    <div class="feature-card matrix-item" data-delay="0">
+                        <div class="feature-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>智能代码补全</h3>
+                            <p>基于上下文的智能代码补全，提高编码效率</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card matrix-item" data-delay="100">
+                        <div class="feature-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>自然语言编程</h3>
+                            <p>使用自然语言描述需求，AI自动生成代码</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card matrix-item" data-delay="200">
+                        <div class="feature-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>实时代码解释</h3>
+                            <p>一键解释复杂代码，快速理解功能逻辑</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card matrix-item" data-delay="300">
+                        <div class="feature-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>多文件编辑</h3>
+                            <p>强大的Composer功能，同时处理多个文件</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
-        // 测试数据
-        const testFeatures = [
-            {
-                title: "智能代码补全",
-                description: "基于上下文的智能代码补全，提高编码效率",
-                icon: "fas fa-code"
-            },
-            {
-                title: "自然语言编程",
-                description: "使用自然语言描述需求，AI自动生成代码",
-                icon: "fas fa-comment-alt"
-            },
-            {
-                title: "实时代码解释",
-                description: "一键解释复杂代码，快速理解功能逻辑",
-                icon: "fas fa-lightbulb"
-            },
-            {
-                title: "多文件编辑",
-                description: "强大的Composer功能，同时处理多个文件",
-                icon: "fas fa-layer-group"
+        // 粒子背景
+        function initParticleBackground() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            // 清空容器
+            container.innerHTML = '';
+            
+            // 创建粒子
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 随机位置
+                const x = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = 15 + Math.random() * 15;
+                const size = 1 + Math.random() * 3;
+                
+                particle.style.left = `${x}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                container.appendChild(particle);
             }
-        ];
-        
-        // 显示调试信息
-        document.getElementById('debugInfo').textContent = JSON.stringify(testFeatures, null, 2);
-        
-        // 渲染特性卡片
-        const featuresContainer = document.getElementById('features');
-        
-        testFeatures.forEach((feature, index) => {
-            const featureElement = document.createElement('div');
-            featureElement.className = 'feature-card matrix-item';
-            featureElement.setAttribute('data-delay', index * 100);
-            
-            if (feature.icon) {
-                const iconElement = document.createElement('div');
-                iconElement.className = 'feature-icon';
-                iconElement.innerHTML = `<i class="${feature.icon}"></i>`;
-                featureElement.appendChild(iconElement);
-            }
-            
-            const featureContent = document.createElement('div');
-            featureContent.className = 'feature-content';
-            
-            const featureTitle = document.createElement('h3');
-            featureTitle.textContent = feature.title;
-            featureContent.appendChild(featureTitle);
-            
-            if (feature.description) {
-                const featureDesc = document.createElement('p');
-                featureDesc.textContent = feature.description;
-                featureContent.appendChild(featureDesc);
-            }
-            
-            featureElement.appendChild(featureContent);
-            featuresContainer.appendChild(featureElement);
-        });
-        
-        // 初始化粒子背景
-        const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 10 + 's';
-            particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
-            particlesContainer.appendChild(particle);
         }
         
-        // 初始化矩阵特性动画
-        setTimeout(() => {
-            const matrixItems = document.querySelectorAll('.matrix-item');
-            matrixItems.forEach((item, index) => {
-                const delay = item.getAttribute('data-delay') || index * 200;
+        // 矩阵动画
+        function initMatrixAnimation() {
+            const items = document.querySelectorAll('.matrix-item');
+            
+            items.forEach(item => {
+                const delay = parseInt(item.getAttribute('data-delay') || 0);
+                
                 setTimeout(() => {
                     item.classList.add('animate-in');
                 }, delay);
             });
-        }, 500);
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticleBackground();
+            initMatrixAnimation();
+            
+            // 切换动画按钮
+            document.getElementById('toggleAnimation').addEventListener('click', () => {
+                const items = document.querySelectorAll('.matrix-item');
+                items.forEach(item => {
+                    if (item.classList.contains('animate-in')) {
+                        item.classList.remove('animate-in');
+                    } else {
+                        item.classList.add('animate-in');
+                    }
+                });
+            });
+            
+            // 切换布局按钮
+            document.getElementById('toggleLayout').addEventListener('click', () => {
+                const features = document.querySelector('.welcome-features');
+                if (features.style.gridTemplateColumns === '1fr') {
+                    features.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                } else {
+                    features.style.gridTemplateColumns = '1fr';
+                }
+            });
+        });
     </script>
 </body>
 </html> 

@@ -1,0 +1,264 @@
+/**
+ * 网页转换器样式
+ */
+
+/* 转换后的网页容器 */
+.converted-webpage {
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+/* 欢迎页样式 */
+.converted-webpage .tool-welcome-page {
+    position: relative;
+    padding: 3rem 2rem;
+    background: var(--color-background-gradient);
+    overflow: hidden;
+    border-radius: 0;
+}
+
+/* 粒子背景 */
+.converted-webpage .tech-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.3;
+}
+
+/* 欢迎页头部 */
+.converted-webpage .welcome-header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+}
+
+.converted-webpage .welcome-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    line-height: 1.2;
+}
+
+.converted-webpage .welcome-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-secondary);
+}
+
+.converted-webpage .welcome-header p {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* 特性卡片 */
+.converted-webpage .welcome-features {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.converted-webpage .feature-card {
+    background-color: var(--color-background-card);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid var(--color-border);
+}
+
+.converted-webpage .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.converted-webpage .feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-primary-transparent);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.converted-webpage .feature-icon i {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+
+.converted-webpage .feature-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+}
+
+.converted-webpage .feature-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* 内容部分 */
+.converted-webpage .converted-content {
+    padding: 2rem;
+}
+
+.converted-webpage .content-section {
+    margin-bottom: 3rem;
+}
+
+.converted-webpage .content-section:last-child {
+    margin-bottom: 0;
+}
+
+.converted-webpage .content-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.converted-webpage .section-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+}
+
+.converted-webpage .section-content h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--color-text);
+}
+
+.converted-webpage .section-content p {
+    margin-bottom: 1rem;
+}
+
+.converted-webpage .section-content ul,
+.converted-webpage .section-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.converted-webpage .section-content li {
+    margin-bottom: 0.5rem;
+}
+
+.converted-webpage .section-content a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.converted-webpage .section-content a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+.converted-webpage .section-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.converted-webpage .section-content pre,
+.converted-webpage .section-content code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--color-background-code);
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.9rem;
+    color: var(--color-code);
+}
+
+.converted-webpage .section-content pre {
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.converted-webpage .section-content pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.converted-webpage .section-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.converted-webpage .section-content th,
+.converted-webpage .section-content td {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    text-align: left;
+}
+
+.converted-webpage .section-content th {
+    background-color: var(--color-background-secondary);
+    font-weight: 600;
+}
+
+/* 元数据部分 */
+.converted-webpage .converted-metadata {
+    padding: 1rem;
+    background-color: var(--color-background-secondary);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.converted-webpage .metadata-item {
+    margin-bottom: 0.5rem;
+}
+
+.converted-webpage .metadata-item:last-child {
+    margin-bottom: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .converted-webpage .tool-welcome-page {
+        padding: 2rem 1rem;
+    }
+    
+    .converted-webpage .welcome-header h1 {
+        font-size: 2rem;
+    }
+    
+    .converted-webpage .welcome-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .converted-webpage .welcome-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .converted-webpage .converted-content {
+        padding: 1.5rem 1rem;
+    }
+    
+    .converted-webpage .content-section h2 {
+        font-size: 1.5rem;
+    }
+} 

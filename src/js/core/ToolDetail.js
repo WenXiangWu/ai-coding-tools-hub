@@ -114,7 +114,34 @@ class ToolDetail {
             
             // 使用工具信息填充欢迎页
             const titleElement = document.createElement('h1');
-            titleElement.textContent = welcomeConfig.title || toolInfo?.name || this.toolId;
+            
+            // 如果有工具信息，获取工具图标
+            if (toolInfo) {
+                try {
+                    // 动态导入图标配置
+                    const { getToolIcon } = await import('../config/icon-config.js');
+                    const iconPath = getToolIcon(this.toolId);
+                    
+                    if (iconPath) {
+                        // 创建图标元素
+                        const iconElement = document.createElement('img');
+                        iconElement.src = iconPath;
+                        iconElement.alt = toolInfo.name || this.toolId;
+                        iconElement.width = 48;
+                        iconElement.height = 48;
+                        iconElement.style.marginRight = '15px';
+                        
+                        // 添加图标到标题前
+                        titleElement.appendChild(iconElement);
+                    }
+                } catch (error) {
+                    console.warn('获取工具图标失败:', error);
+                }
+            }
+            
+            // 添加标题文本
+            const titleText = document.createTextNode(welcomeConfig.title || toolInfo?.name || this.toolId);
+            titleElement.appendChild(titleText);
             headerElement.appendChild(titleElement);
             
             if (welcomeConfig.subtitle || toolInfo?.category) {
@@ -131,14 +158,14 @@ class ToolDetail {
             
             welcomeElement.appendChild(headerElement);
             
-            // 特性列表
+            // 特性列表 - 使用老版本的欢迎卡片样式
             if ((welcomeConfig.features && welcomeConfig.features.length > 0) || (toolInfo?.features && toolInfo.features.length > 0)) {
                 console.log('🔍 开始渲染特性列表...');
                 console.log('🔍 welcomeConfig.features:', welcomeConfig.features);
                 console.log('🔍 toolInfo?.features:', toolInfo?.features);
                 
                 const featuresElement = document.createElement('div');
-                featuresElement.className = 'welcome-features matrix-features';
+                featuresElement.className = 'welcome-features';
                 
                 // 使用配置的特性或工具的特性
                 const features = welcomeConfig.features || toolInfo?.features?.map(text => ({
@@ -151,8 +178,7 @@ class ToolDetail {
                 
                 features.forEach((feature, index) => {
                     const featureElement = document.createElement('div');
-                    featureElement.className = 'feature-card matrix-item';
-                    featureElement.setAttribute('data-delay', index * 100);
+                    featureElement.className = 'feature-card';
                     
                     if (feature.icon) {
                         const iconElement = document.createElement('div');
@@ -161,20 +187,16 @@ class ToolDetail {
                         featureElement.appendChild(iconElement);
                     }
                     
-                    const featureContent = document.createElement('div');
-                    featureContent.className = 'feature-content';
-                    
                     const featureTitle = document.createElement('h3');
                     featureTitle.textContent = feature.title;
-                    featureContent.appendChild(featureTitle);
+                    featureElement.appendChild(featureTitle);
                     
                     if (feature.description) {
                         const featureDesc = document.createElement('p');
                         featureDesc.textContent = feature.description;
-                        featureContent.appendChild(featureDesc);
+                        featureElement.appendChild(featureDesc);
                     }
                     
-                    featureElement.appendChild(featureContent);
                     featuresElement.appendChild(featureElement);
                 });
                 
@@ -208,12 +230,11 @@ class ToolDetail {
                 console.log('🔍 使用默认特性列表:', defaultFeatures);
                 
                 const featuresElement = document.createElement('div');
-                featuresElement.className = 'welcome-features matrix-features';
+                featuresElement.className = 'welcome-features';
                 
                 defaultFeatures.forEach((feature, index) => {
                     const featureElement = document.createElement('div');
-                    featureElement.className = 'feature-card matrix-item';
-                    featureElement.setAttribute('data-delay', index * 100);
+                    featureElement.className = 'feature-card';
                     
                     if (feature.icon) {
                         const iconElement = document.createElement('div');
@@ -222,20 +243,16 @@ class ToolDetail {
                         featureElement.appendChild(iconElement);
                     }
                     
-                    const featureContent = document.createElement('div');
-                    featureContent.className = 'feature-content';
-                    
                     const featureTitle = document.createElement('h3');
                     featureTitle.textContent = feature.title;
-                    featureContent.appendChild(featureTitle);
+                    featureElement.appendChild(featureTitle);
                     
                     if (feature.description) {
                         const featureDesc = document.createElement('p');
                         featureDesc.textContent = feature.description;
-                        featureContent.appendChild(featureDesc);
+                        featureElement.appendChild(featureDesc);
                     }
                     
-                    featureElement.appendChild(featureContent);
                     featuresElement.appendChild(featureElement);
                 });
                 
@@ -294,8 +311,8 @@ class ToolDetail {
         try {
             // 使用导航管理器加载内容
             const content = await this.navigationManager.loadContent(id);
-            this.contentCache.set(id, content);
-            return content;
+        this.contentCache.set(id, content);
+        return content;
         } catch (error) {
             console.error(`加载内容失败: ${id}`, error);
             throw error;
@@ -426,16 +443,19 @@ class ToolDetail {
     initMatrixAnimation() {
         // 延迟一点时间，确保DOM已经渲染
         setTimeout(() => {
-            // 初始化矩阵特性动画
-            const matrixItems = document.querySelectorAll('.matrix-item');
-            console.log('🎬 初始化矩阵特性动画，找到特性卡片:', matrixItems.length);
+            // 初始化特性卡片动画
+            const featureCards = document.querySelectorAll('.feature-card');
+            console.log('🎬 初始化特性卡片动画，找到特性卡片:', featureCards.length);
             
-            matrixItems.forEach((item, index) => {
-                const delay = parseInt(item.getAttribute('data-delay') || index * 200);
+            featureCards.forEach((card, index) => {
+                const delay = index * 200;
                 setTimeout(() => {
-                    item.classList.add('animate-in');
+                    // 添加淡入动画
+                    card.style.animation = `fadeIn 0.6s ease-in-out forwards`;
+                    card.style.animationDelay = `${delay}ms`;
+                    card.style.opacity = '0';
                     console.log(`✨ 特性卡片 #${index+1} 动画开始`);
-                }, delay);
+                }, 100);
             });
         }, 500);
     }
