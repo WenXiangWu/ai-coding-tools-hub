@@ -1,147 +1,163 @@
 /**
- * 什么是Cursor - 内容文件
+ * 什么是Cursor内容模块
  */
+
 export default {
-    id: 'what_is_cursor',
-    title: '什么是Cursor',
-    description: 'Cursor编辑器简介',
-    content: `
-        <article class="tool-content">
-            <section class="introduction">
-                <h2>什么是Cursor？</h2>
-                <p>
-                    Cursor是一款革命性的AI代码编辑器，它基于Visual Studio Code构建，并集成了强大的AI编程助手功能。
-                    它的目标是通过AI技术提升开发者的编程效率，让编程体验更加智能和流畅。
-                </p>
-            </section>
-
-            <section class="key-features">
-                <h3>核心特点</h3>
-                <div class="feature-grid">
-                    <div class="feature-item">
-                        <i class="fas fa-robot"></i>
-                        <h4>AI驱动</h4>
-                        <p>基于GPT-4的AI模型，提供智能代码补全和生成功能</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-code"></i>
-                        <h4>原生编辑器体验</h4>
-                        <p>继承VS Code的强大功能，提供熟悉的编程体验</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-comments"></i>
-                        <h4>自然语言交互</h4>
-                        <p>使用自然语言描述需求，AI助手帮你实现代码</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-project-diagram"></i>
-                        <h4>多文件编辑</h4>
-                        <p>通过Composer功能，轻松处理跨文件的代码改动</p>
-                    </div>
+    title: "什么是Cursor",
+    
+    // HTML内容
+    html: `
+        <div class="content-section">
+            <h1>什么是Cursor</h1>
+            
+            <p class="lead">
+                Cursor是一款革命性的AI驱动代码编辑器，基于VSCode构建并集成了强大的GPT-4模型，
+                为开发者提供了前所未有的编程体验。
+            </p>
+            
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-info-circle"></i>
                 </div>
-            </section>
+                <div class="info-content">
+                    <p>
+                        Cursor由前Scale AI工程师团队开发，旨在将AI的力量带入日常编程工作流程，
+                        帮助开发者更快速、更高效地编写代码。
+                    </p>
+                </div>
+            </div>
+            
+            <h2>Cursor的定位</h2>
+            
+            <p>
+                Cursor不仅仅是一个代码编辑器，更是一个智能编程助手。它通过深度集成AI能力，
+                实现了代码补全、代码生成、代码解释等功能，让编程变得更加直观和高效。
+            </p>
+            
+            <div class="image-container">
+                <img src="https://cursor.sh/img/cursor-screenshot.png" alt="Cursor编辑器界面" class="responsive-img">
+                <p class="caption">Cursor编辑器界面展示</p>
+            </div>
+            
+            <h2>主要特点</h2>
+            
+            <ul class="feature-list">
+                <li>
+                    <strong>AI驱动</strong>：集成GPT-4模型，提供智能代码补全和生成
+                </li>
+                <li>
+                    <strong>自然语言交互</strong>：使用自然语言描述需求，AI自动生成代码
+                </li>
+                <li>
+                    <strong>代码解释</strong>：一键解释复杂代码，快速理解功能逻辑
+                </li>
+                <li>
+                    <strong>多文件编辑</strong>：强大的Composer功能，同时处理多个文件
+                </li>
+                <li>
+                    <strong>VSCode兼容</strong>：基于VSCode构建，支持大多数VSCode插件
+                </li>
+            </ul>
+            
+            <h2>适用场景</h2>
+            
+            <p>
+                Cursor适用于各种开发场景，包括但不限于：
+            </p>
+            
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Web开发</h3>
+                    <p>前端和后端开发，快速生成HTML、CSS、JavaScript代码</p>
+                </div>
+                
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>移动应用开发</h3>
+                    <p>iOS、Android应用开发，提高代码编写效率</p>
+                </div>
+                
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>后端服务开发</h3>
+                    <p>API设计、数据库操作、服务器端逻辑实现</p>
+                </div>
+                
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>数据分析</h3>
+                    <p>数据处理、可视化和机器学习模型开发</p>
+                </div>
+            </div>
+            
+            <h2>技术架构</h2>
+            
+            <p>
+                Cursor基于Electron框架构建，核心编辑功能继承自VSCode，并通过API与GPT-4模型进行深度集成。
+                这种架构既保留了VSCode的强大功能和生态系统，又增加了AI的智能辅助能力。
+            </p>
+            
+            <div class="code-block">
+                <pre><code>
+// Cursor示例：使用AI生成代码
+// 在编辑器中输入注释描述需求
+// 例如：
 
-            <section class="target-users">
-                <h3>适用人群</h3>
-                <ul class="user-list">
-                    <li>
-                        <strong>专业开发者</strong>
-                        <p>提升日常编码效率，处理复杂的编程任务</p>
-                    </li>
-                    <li>
-                        <strong>初学者</strong>
-                        <p>通过AI助手学习编程，快速理解代码逻辑</p>
-                    </li>
-                    <li>
-                        <strong>团队协作</strong>
-                        <p>改善团队协作效率，提高代码质量</p>
-                    </li>
-                </ul>
-            </section>
+/**
+ * 创建一个函数，接收一个数组，返回数组中的最大值和最小值
+ */
 
-            <section class="technical-details">
-                <h3>技术特性</h3>
-                <ul class="tech-list">
-                    <li>基于Electron框架构建的跨平台应用</li>
-                    <li>集成GPT-4等先进AI模型</li>
-                    <li>支持多种编程语言和框架</li>
-                    <li>实时代码分析和建议</li>
-                    <li>智能代码重构和优化</li>
-                </ul>
-            </section>
-
-            <section class="getting-started">
-                <h3>快速开始</h3>
+// AI会生成如下代码：
+function findMinMax(arr) {
+    if (!arr || arr.length === 0) {
+        return { min: undefined, max: undefined };
+    }
+    
+    let min = arr[0];
+    let max = arr[0];
+    
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < min) min = arr[i];
+        if (arr[i] > max) max = arr[i];
+    }
+    
+    return { min, max };
+}
+                </code></pre>
+            </div>
+            
+            <div class="conclusion">
                 <p>
-                    想要开始使用Cursor？请查看我们的
-                    <a href="#/tutorials/learning-path/env-setup">环境安装指南</a>
-                    和<a href="#/tutorials/basic/interface-intro">界面介绍</a>。
+                    Cursor代表了编程工具的未来发展方向，通过将AI与传统编辑器结合，
+                    创造出更智能、更高效的编程体验。无论是初学者还是专业开发者，
+                    都能从Cursor提供的AI辅助功能中获益，提高编程效率和代码质量。
                 </p>
-            </section>
-        </article>
+            </div>
+        </div>
     `,
-    style: `
-        .tool-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .feature-item {
-            padding: 15px;
-            border-radius: 8px;
-            background: var(--surface-2);
-            text-align: center;
-        }
-
-        .feature-item i {
-            font-size: 24px;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .user-list, .tech-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .user-list li, .tech-list li {
-            margin: 10px 0;
-            padding: 10px;
-            background: var(--surface-1);
-            border-radius: 4px;
-        }
-
-        .getting-started {
-            margin-top: 30px;
-            padding: 20px;
-            background: var(--surface-2);
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        section {
-            margin-bottom: 30px;
-        }
-
-        h2, h3, h4 {
-            color: var(--heading-color);
-        }
-
-        a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    `
+    
+    // 元数据
+    meta: {
+        author: "AI工具箱团队",
+        createTime: "2023-09-15",
+        updateTime: "2023-12-01",
+        readingTime: 5, // 分钟
+        difficulty: "入门" // 入门、进阶、高级
+    },
+    
+    // 相关内容推荐
+    related: [
+        "why_cursor",
+        "core_features",
+        "env_setup"
+    ]
 }; 
