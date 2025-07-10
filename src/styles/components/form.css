@@ -1,0 +1,20 @@
+/*
+ * 迁移自main.css 行号: 2185,2287
+ * 迁移时间: 2025-07-10
+ * 描述: 表单与输入相关
+ */
+
+.btn-compare:hover,
+.btn-compare.selected {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(79, 70, 229, 0.1);
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+}
+
+.tool-card.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #f0f9ff 100%);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}

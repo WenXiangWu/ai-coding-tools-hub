@@ -1,0 +1,111 @@
+/*
+ * 迁移自main.css 行号: 1569,4109,4132,4735,4747,4753,4759,4846,4862,4867,4875,4882,4887
+ * 迁移时间: 2025-07-10
+ * 描述: 全局体验增强与辅助类
+ */
+
+.tab-content .content-section h2 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-primary);
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: var(--spacing-md);
+}
+
+.content-section h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.content-section p {
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  max-width: 80ch;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.reading-time {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.word-count {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.last-updated {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-left: auto;
+}
+
+.floating-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.floating-btn.secondary {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.content-section p {
+  font-size: 1rem;
+  line-height: 1.8;
+  letter-spacing: 0.3px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.content-section h2 {
+  position: relative;
+  padding-left: var(--spacing-md);
+}
+
+.content-section h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  border-radius: 2px;
+}

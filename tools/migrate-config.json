@@ -1,0 +1,190 @@
+[
+  {
+    "type": "variables",
+    "selectors": [":root", "body", "html"],
+    "desc": "基础变量与全局reset，包括全局变量、字体、间距、颜色等",
+    "target": "src/styles/base/variables.css"
+  },
+  {
+    "type": "reset",
+    "selectors": ["*", "body", "html"],
+    "desc": "全局reset/normalize，基础样式清零等",
+    "target": "src/styles/base/reset.css"
+  },
+  {
+    "type": "layout",
+    "selectors": [".container", ".main-content", ".section-header", ".header", ".footer", ".row", ".col"],
+    "desc": "通用布局类",
+    "target": "src/styles/base/layout.css"
+  },
+  {
+    "type": "button",
+    "selectors": [".btn", ".btn-primary", ".btn-secondary", ".btn-large", ".btn-outline", ".btn-sm", ".btn-success", ".btn-danger"],
+    "desc": "按钮组件及其状态",
+    "target": "src/styles/components/button.css"
+  },
+  {
+    "type": "card",
+    "selectors": [".card", ".tool-card", ".feature-card", ".card-header", ".card-body", ".card-footer"],
+    "desc": "卡片组件及其状态",
+    "target": "src/styles/components/card.css"
+  },
+  {
+    "type": "badge",
+    "selectors": [".badge", ".badge-status", ".badge-type", ".badge-price", ".tag", ".feature-tag"],
+    "desc": "徽章/标签/通用小组件",
+    "target": "src/styles/components/badge.css"
+  },
+  {
+    "type": "form",
+    "selectors": [".input", ".form-group", ".select"],
+    "desc": "表单与输入相关",
+    "target": "src/styles/components/form.css"
+  },
+  {
+    "type": "nav",
+    "selectors": [".main-nav", ".nav-link", ".dropdown", ".dropdown-toggle", ".dropdown-menu", ".dropdown-item", ".nav-switchers", ".mobile-menu-btn", ".tool-sidebar", ".tool-nav", ".tool-breadcrumb", ".tool-breadcrumb-sidebar"],
+    "desc": "导航栏、菜单、侧边栏相关",
+    "target": "src/styles/components/nav.css"
+  },
+  {
+    "type": "modal",
+    "selectors": [".modal", ".modal-content", ".modal-header", ".modal-body", ".modal-footer", ".modal-close", ".modal-overlay", ".mobile-overlay"],
+    "desc": "弹窗、对话框、遮罩相关",
+    "target": "src/styles/components/modal.css"
+  },
+  {
+    "type": "table",
+    "selectors": [".table", ".compare-table", ".compare-section", ".compare-btn", ".tools-grid", ".tools-section", ".tools-filter", ".tools-count"],
+    "desc": "表格、数据展示、对比区块",
+    "target": "src/styles/components/table.css"
+  },
+  {
+    "type": "notify",
+    "selectors": [".notification", ".notification-success", ".notification-error", ".notification-info", ".notification-warning", ".reading-progress", ".back-to-top"],
+    "desc": "通知、提示、进度条、返回顶部",
+    "target": "src/styles/components/notify.css"
+  },
+  {
+    "type": "step",
+    "selectors": [".step-number", ".guide-step", ".guide-steps", ".learning-guide", ".learning-path-timeline", ".page-indicator"],
+    "desc": "进度、步骤、引导相关",
+    "target": "src/styles/components/step.css"
+  },
+  {
+    "type": "home-page",
+    "selectors": [".hero-section", ".hero-title", ".hero-subtitle", ".hero-actions", ".featured-tools-section", ".featured-tools-grid", ".welcome-header", ".welcome-content", ".welcome-page"],
+    "desc": "首页、欢迎页专属区块",
+    "target": "src/styles/pages/home.css"
+  },
+  {
+    "type": "detail-page",
+    "selectors": [".tool-detail-page", ".tool-detail-content", ".tool-layout"],
+    "desc": "工具详情页专属区块",
+    "target": "src/styles/pages/detail.css"
+  },
+  {
+    "name": "decorations",
+    "desc": "全局装饰与动画、科技感背景",
+    "selectors": [
+      ".background-elements", ".gradient-orb", ".gradient-orb-1", ".gradient-orb-2", ".gradient-orb-3", ".floating-particles", ".tech-background", ".tech-grid", ".tech-particles", ".particle", "@keyframes float", "@keyframes particleMove", "@keyframes gridMove", "@keyframes heroBackgroundShift", "@keyframes particleFloat"
+    ],
+    "target": "src/styles/base/decorations.css"
+  },
+  {
+    "name": "ux-enhance",
+    "desc": "全局体验增强与辅助类",
+    "selectors": [
+      ".article-meta", ".reading-time", ".word-count", ".last-updated", ".content-section p", ".content-section h2", ".floating-btn", ".floating-btn.secondary"
+    ],
+    "target": "src/styles/base/ux-enhance.css"
+  },
+  {
+    "name": "welcome-page",
+    "desc": "欢迎页/科技感首页专属区块",
+    "selectors": [
+      ".tech-welcome-container", ".feature-matrix", ".matrix-item", ".matrix-icon", ".matrix-item h3", ".welcome-header", ".welcome-features", ".feature-card", ".feature-icon"
+    ],
+    "target": "src/styles/pages/welcome.css"
+  },
+  {
+    "name": "responsive",
+    "desc": "全局响应式/移动端优化",
+    "selectors": [
+      "@media (max-width: 768px)", "@media (max-width: 480px)"
+    ],
+    "target": "src/styles/base/responsive.css"
+  },
+  {
+    "name": "theme-adapt",
+    "desc": "主题适配相关",
+    "selectors": [
+      ".theme-dark .filter-group select", ".theme-dark .filter-group label", ".theme-blue .filter-group select", ".theme-blue .filter-group label", ".theme-green .filter-group select", ".theme-green .filter-group label", ".theme-purple .filter-group select", ".theme-purple .filter-group label"
+    ],
+    "target": "src/styles/base/theme-adapt.css"
+  },
+  {
+    "name": "assist",
+    "desc": "全局功能性辅助类、价格/评分/对比/教程区块",
+    "selectors": [
+      ".price-tag", ".review-summary", ".rating-display", ".rating-score", ".rating-stars", ".rating-count", ".pros-cons", ".tutorial-card", ".tutorial-icon", ".tutorial-level", ".preface-content", ".welcome-card", ".welcome-icon"
+    ],
+    "target": "src/styles/base/assist.css"
+  },
+  {
+    "name": "animation",
+    "desc": "全局动画与动效",
+    "selectors": [
+      ".animate-on-load", ".animate-in", "@keyframes fadeInUp", "@keyframes fadeInScale", "@keyframes slideDownFade", "@keyframes toolCardSlideUp", "@keyframes pulse"
+    ],
+    "target": "src/styles/base/animation.css"
+  },
+  {
+    "name": "theme-detail",
+    "desc": "主题细节适配/流动背景",
+    "selectors": [
+      ".theme-dark .price-tag", ".theme-blue .price-tag", ".theme-green .price-tag", ".theme-purple .price-tag", ".flowing-stream-1", ".flowing-stream-2", ".theme-dark .flowing-stream-1", ".theme-blue .flowing-stream-1", ".theme-green .flowing-stream-1", ".theme-purple .flowing-stream-1", ".theme-dark .flowing-stream-2", ".theme-blue .flowing-stream-2", ".theme-green .flowing-stream-2", ".theme-purple .flowing-stream-2"
+    ],
+    "target": "src/styles/base/theme-detail.css"
+  },
+  {
+    "name": "responsive-extra",
+    "desc": "响应式优化补充",
+    "selectors": [
+      "@media (max-width: 1200px)", "@media (max-width: 640px)"
+    ],
+    "target": "src/styles/base/responsive-extra.css"
+  },
+  {
+    "name": "global-assist",
+    "desc": "全局兜底辅助类、可访问性、打印优化、内容导航增强",
+    "selectors": [
+      ".sr-only", "*:focus", "button:focus", "input:focus", "select:focus", "@media print", ".tool-detail-card", ".tool-detail-card-v2", ".mobile-sidebar-toggle", ".content-nav-sticky", ".content-nav-title", ".nav-quick-links", ".nav-quick-link", ".floating-actions"
+    ],
+    "target": "src/styles/base/global-assist.css"
+  },
+  {
+    "name": "animation-extra",
+    "desc": "全局动画与动效补充",
+    "selectors": [
+      "@keyframes spin", "@keyframes fadeIn", "@keyframes enhancedGlow", "@keyframes techScanlines", "@keyframes techBeam", "@keyframes bodyPulse", "@keyframes flowingParticles"
+    ],
+    "target": "src/styles/base/animation-extra.css"
+  },
+  {
+    "name": "responsive-final",
+    "desc": "细分响应式补充",
+    "selectors": [
+      "@media (max-width: 1024px)", "@media (max-width: 480px)", "@media (max-width: 640px)", "@media (prefers-reduced-motion: reduce)"
+    ],
+    "target": "src/styles/base/responsive-final.css"
+  },
+  {
+    "name": "theme-final",
+    "desc": "主题高亮等补充",
+    "selectors": [
+      ".title-line.highlight", ":root.theme-dark .title-line.highlight", "body.theme-dark .title-line.highlight", ":root.theme-blue .title-line.highlight", "body.theme-blue .title-line.highlight", ":root.theme-green .title-line.highlight", "body.theme-green .title-line.highlight"
+    ],
+    "target": "src/styles/base/theme-final.css"
+  }
+] 

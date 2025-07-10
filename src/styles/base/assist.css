@@ -1,0 +1,215 @@
+/*
+ * 迁移自main.css 行号: 2076,3172,3187,3193,3204,3209,3216,3224,3235,3239,3252,3258,3268,3279,3291,3295,4215,4224,4229,4234,4241,4248,4256,4262,4267,4272,4276,4283
+ * 迁移时间: 2025-07-10
+ * 描述: 全局功能性辅助类、价格/评分/对比/教程区块
+ */
+
+.tutorial-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.tutorial-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.tutorial-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.tutorial-icon i {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.tutorial-card h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.tutorial-card p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  flex-grow: 1;
+  margin-bottom: var(--spacing-md);
+}
+
+.tutorial-card a {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none;
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: color 0.2s ease;
+}
+
+.tutorial-card a:hover {
+  color: var(--primary-hover);
+}
+
+.tutorial-level {
+  background: var(--accent-color);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: 0.25em 0.75em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.preface-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: white;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" opacity="0.1"><circle cx="50" cy="50" r="40"/></svg>');
+  background-size: 100px 100px;
+}
+
+.welcome-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  margin-bottom: var(--spacing-md);
+  backdrop-filter: blur(10px);
+}
+
+.welcome-icon i {
+  font-size: 2rem;
+}
+
+.welcome-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  position: relative;
+}
+
+.price-tag {
+  display: inline-block;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.price-tag.free {
+  background: var(--success-color);
+  color: white;
+}
+
+.price-tag.freemium {
+  background: var(--warning-color);
+  color: white;
+}
+
+.price-tag.paid {
+  background: var(--primary-color);
+  color: white;
+}
+
+.review-summary {
+  background: var(--bg-secondary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  margin: var(--spacing-lg) 0;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.rating-score {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating-stars i {
+  font-size: 1.25rem;
+  color: var(--border-color);
+}
+
+.rating-stars i.active {
+  color: var(--warning-color);
+}
+
+.rating-count {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}

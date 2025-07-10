@@ -1,0 +1,153 @@
+/*
+ * 迁移自main.css 行号: 5,16,24,33,42,65,1724,1733,1755,1764,5379,5388,5397,5406,5706,5710
+ * 迁移时间: 2025-07-10
+ * 描述: 全局装饰与动画、科技感背景
+ */
+
+.background-elements {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.3;
+  animation: float 20s infinite ease-in-out;
+}
+
+.gradient-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  top: -200px;
+  left: -200px;
+  animation-delay: 0s;
+}
+
+.gradient-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  top: 50%;
+  right: -150px;
+  animation-delay: -10s;
+}
+
+.gradient-orb-3 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #10b981 0%, #667eea 100%);
+  bottom: -100px;
+  left: 20%;
+  animation-delay: -5s;
+}
+
+.floating-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(3px 3px at 40px 60px, rgba(102, 126, 234, 0.6), transparent),
+        radial-gradient(2px 2px at 90px 40px, rgba(139, 92, 246, 0.5), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(236, 72, 153, 0.4), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(59, 130, 246, 0.5), transparent),
+        radial-gradient(1px 1px at 200px 120px, rgba(16, 185, 129, 0.4), transparent);
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  animation: particleMove 40s linear infinite;
+  filter: blur(0.5px);
+}
+
+.tech-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.tech-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(var(--primary-rgb), 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+}
+
+.tech-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(var(--primary-rgb), 0.6);
+  border-radius: 50%;
+  animation: particleFloat linear infinite;
+  box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.4);
+}
+
+:root.theme-dark .floating-particles,
+body.theme-dark .floating-particles {
+  background-image: radial-gradient(3px 3px at 40px 60px, rgba(99, 102, 241, 0.8), transparent),
+        radial-gradient(2px 2px at 90px 40px, rgba(139, 92, 246, 0.7), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(168, 85, 247, 0.6), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(99, 102, 241, 0.7), transparent),
+        radial-gradient(1px 1px at 200px 120px, rgba(139, 92, 246, 0.5), transparent);
+}
+
+:root.theme-blue .floating-particles,
+body.theme-blue .floating-particles {
+  background-image: radial-gradient(3px 3px at 40px 60px, rgba(14, 165, 233, 0.7), transparent),
+        radial-gradient(2px 2px at 90px 40px, rgba(6, 182, 212, 0.6), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(59, 130, 246, 0.5), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(14, 165, 233, 0.6), transparent),
+        radial-gradient(1px 1px at 200px 120px, rgba(6, 182, 212, 0.4), transparent);
+}
+
+:root.theme-green .floating-particles,
+body.theme-green .floating-particles {
+  background-image: radial-gradient(3px 3px at 40px 60px, rgba(16, 185, 129, 0.7), transparent),
+        radial-gradient(2px 2px at 90px 40px, rgba(5, 150, 105, 0.6), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(34, 197, 94, 0.5), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(16, 185, 129, 0.6), transparent),
+        radial-gradient(1px 1px at 200px 120px, rgba(5, 150, 105, 0.4), transparent);
+}
+
+:root.theme-purple .floating-particles,
+body.theme-purple .floating-particles {
+  background-image: radial-gradient(3px 3px at 40px 60px, rgba(139, 92, 246, 0.7), transparent),
+        radial-gradient(2px 2px at 90px 40px, rgba(168, 85, 247, 0.6), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(236, 72, 153, 0.5), transparent),
+        radial-gradient(1px 1px at 160px 30px, rgba(139, 92, 246, 0.6), transparent),
+        radial-gradient(1px 1px at 200px 120px, rgba(168, 85, 247, 0.4), transparent);
+}
+
+.background-elements {
+  display: none;
+}
+
+.gradient-orb-1,
+.gradient-orb-2,
+.gradient-orb-3,
+.floating-particles {
+  display: none;
+}

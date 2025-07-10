@@ -1,0 +1,8 @@
+未被引用的main.css选择器,main.css行号
+:root,2
+*,129
+body::before,158
+*:focus,4566
+button:focus,4571
+input:focus,4571
+select:focus,4571

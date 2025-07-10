@@ -1,0 +1,47 @@
+/*
+ * 迁移自main.css 行号: 5903,5910,5917,5922,5929,5934,5941,5946
+ * 迁移时间: 2025-07-10
+ * 描述: 主题适配相关
+ */
+
+:root.theme-dark .filter-group select,
+body.theme-dark .filter-group select {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+:root.theme-dark .filter-group label,
+body.theme-dark .filter-group label {
+  color: var(--text-secondary);
+}
+
+:root.theme-blue .filter-group select,
+body.theme-blue .filter-group select {
+  border-color: var(--border-color);
+}
+
+:root.theme-blue .filter-group label,
+body.theme-blue .filter-group label {
+  color: var(--text-secondary);
+}
+
+:root.theme-green .filter-group select,
+body.theme-green .filter-group select {
+  border-color: var(--border-color);
+}
+
+:root.theme-green .filter-group label,
+body.theme-green .filter-group label {
+  color: var(--text-secondary);
+}
+
+:root.theme-purple .filter-group select,
+body.theme-purple .filter-group select {
+  border-color: var(--border-color);
+}
+
+:root.theme-purple .filter-group label,
+body.theme-purple .filter-group label {
+  color: var(--text-secondary);
+}

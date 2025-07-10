@@ -1,0 +1,51 @@
+/*
+ * 迁移自main.css 行号: 4743,4868,5047,6159,6164,6258
+ * 迁移时间: 2025-07-10
+ * 描述: 工具详情页专属区块
+ */
+
+.tool-detail-page {
+  background-color: var(--bg-secondary);
+  position: relative;
+  overflow-x: hidden;
+  /* 确保页面不会产生横向滚动 */
+}
+
+.tool-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
+  max-width: none;
+  margin: 0;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  /* 确保grid布局正确处理sticky元素 */
+}
+
+.tool-detail-content {
+  background: var(--bg-primary);
+  padding: var(--spacing-xl) calc(var(--spacing-xl) * 1.5);
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+  max-width: none;
+  /* 确保内容不会超出容器边界 */
+}
+
+.tool-detail-page {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.tool-layout {
+  height: 100vh;
+  padding-top: 0;
+}
+
+.tool-detail-content {
+  position: relative;
+  height: 100vh;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}

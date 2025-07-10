@@ -1,0 +1,401 @@
+/*
+ * 迁移自main.css 行号: 1256,1262,1279,1284,1299,1310,1327,1332,1346,1350,1421,1444,1459,1463,1468,1477,1483,1490,1510,1517,1865,1886,1893,1898,1905,1911,6827,6831,6835,6843,7284,7294,7300,7320,7325,7334,7344,7350,7368,7373,7381,7391,7397,7415,7420,7428,7438,7444,7460,7465,7608,7622
+ * 迁移时间: 2025-07-10
+ * 描述: 表格、数据展示、对比区块
+ */
+
+.tools-section {
+  padding: var(--spacing-2xl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.tools-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.02) 0%, 
+        rgba(139, 92, 246, 0.03) 25%, 
+        rgba(236, 72, 153, 0.02) 50%, 
+        rgba(59, 130, 246, 0.03) 75%, 
+        rgba(16, 185, 129, 0.02) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tools-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tools-section h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, 
+        var(--primary-color) 0%, 
+        rgba(139, 92, 246, 0.8) 50%, 
+        rgba(236, 72, 153, 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.tools-section p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 3rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tools-filter {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr)) auto;
+  align-items: end;
+  gap: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-2xl);
+  background: var(--bg-secondary);
+  backdrop-filter: blur(25px);
+  border-radius: 32px;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tools-filter:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+}
+
+.tools-filter::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-gradient);
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.tools-filter:hover::before {
+  opacity: 0.08;
+}
+
+.tools-filter > * {
+  position: relative;
+  z-index: 1;
+}
+
+.compare-btn {
+  background: var(--bg-gradient);
+  color: white;
+  border: none;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  min-width: fit-content;
+  align-self: end;
+}
+
+.compare-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        transparent 100%);
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+.compare-btn:hover::before {
+  left: 100%;
+}
+
+.compare-btn:hover:not(:disabled) {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.compare-btn:disabled {
+  background: linear-gradient(135deg, 
+        rgba(148, 163, 184, 0.8) 0%, 
+        rgba(148, 163, 184, 0.6) 100%);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.compare-btn i {
+  font-size: 1rem;
+  z-index: 2;
+  position: relative;
+}
+
+.compare-btn span {
+  z-index: 2;
+  position: relative;
+}
+
+.tools-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: var(--bg-secondary);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.tools-count::before {
+  content: '🔍';
+  font-size: 1.2rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2rem;
+  align-items: start;
+  padding: 1rem 0;
+}
+
+.compare-section {
+  padding: var(--spacing-2xl) 0;
+  background: var(--bg-secondary);
+}
+
+.compare-table-container {
+  overflow-x: auto;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.compare-table th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.compare-table td {
+  color: var(--text-secondary);
+}
+
+.tools-section h2 {
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
+}
+
+.tools-section p {
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s both;
+}
+
+.tools-filter {
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both;
+}
+
+.tools-count {
+  animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 3.0s both;
+}
+
+:root.theme-dark .tools-section::before,
+body.theme-dark .tools-section::before {
+  background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.08) 0%, 
+        rgba(139, 92, 246, 0.1) 25%, 
+        rgba(236, 72, 153, 0.08) 50%, 
+        rgba(59, 130, 246, 0.1) 75%, 
+        rgba(16, 185, 129, 0.08) 100%);
+}
+
+:root.theme-dark .tools-filter,
+body.theme-dark .tools-filter {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+:root.theme-dark .tools-filter::before,
+body.theme-dark .tools-filter::before {
+  background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.15) 0%, 
+        rgba(139, 92, 246, 0.12) 50%, 
+        rgba(236, 72, 153, 0.15) 100%);
+}
+
+:root.theme-dark .compare-btn,
+body.theme-dark .compare-btn {
+  background: var(--bg-gradient);
+}
+
+:root.theme-dark .tools-count,
+body.theme-dark .tools-count {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+:root.theme-blue .tools-section::before,
+body.theme-blue .tools-section::before {
+  background: linear-gradient(135deg, 
+        rgba(14, 165, 233, 0.03) 0%, 
+        rgba(6, 182, 212, 0.04) 25%, 
+        rgba(16, 185, 129, 0.03) 50%, 
+        rgba(34, 197, 94, 0.04) 75%, 
+        rgba(14, 165, 233, 0.03) 100%);
+}
+
+:root.theme-blue .tools-filter,
+body.theme-blue .tools-filter {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+:root.theme-blue .tools-filter::before,
+body.theme-blue .tools-filter::before {
+  background: linear-gradient(135deg, 
+        rgba(14, 165, 233, 0.1) 0%, 
+        rgba(6, 182, 212, 0.08) 50%, 
+        rgba(16, 185, 129, 0.1) 100%);
+}
+
+:root.theme-blue .compare-btn,
+body.theme-blue .compare-btn {
+  background: var(--bg-gradient);
+}
+
+:root.theme-blue .tools-count,
+body.theme-blue .tools-count {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+:root.theme-green .tools-section::before,
+body.theme-green .tools-section::before {
+  background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.03) 0%, 
+        rgba(5, 150, 105, 0.04) 25%, 
+        rgba(34, 197, 94, 0.03) 50%, 
+        rgba(22, 163, 74, 0.04) 75%, 
+        rgba(16, 185, 129, 0.03) 100%);
+}
+
+:root.theme-green .tools-filter,
+body.theme-green .tools-filter {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+:root.theme-green .tools-filter::before,
+body.theme-green .tools-filter::before {
+  background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.1) 0%, 
+        rgba(5, 150, 105, 0.08) 50%, 
+        rgba(34, 197, 94, 0.1) 100%);
+}
+
+:root.theme-green .compare-btn,
+body.theme-green .compare-btn {
+  background: var(--bg-gradient);
+}
+
+:root.theme-green .tools-count,
+body.theme-green .tools-count {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+:root.theme-purple .tools-section::before,
+body.theme-purple .tools-section::before {
+  background: linear-gradient(135deg, 
+        rgba(139, 92, 246, 0.03) 0%, 
+        rgba(168, 85, 247, 0.04) 25%, 
+        rgba(236, 72, 153, 0.03) 50%, 
+        rgba(219, 39, 119, 0.04) 75%, 
+        rgba(139, 92, 246, 0.03) 100%);
+}
+
+:root.theme-purple .tools-filter,
+body.theme-purple .tools-filter {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+:root.theme-purple .tools-filter::before,
+body.theme-purple .tools-filter::before {
+  background: var(--bg-gradient);
+  opacity: 0.05;
+}
+
+:root.theme-purple .compare-btn,
+body.theme-purple .compare-btn {
+  background: var(--bg-gradient);
+}
+
+:root.theme-purple .tools-count,
+body.theme-purple .tools-count {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.tools-filter {
+  animation: filterSlideIn 0.6s ease-out;
+}
+
+.tools-count {
+  animation: toolsCountPulse 2s ease-in-out infinite;
+}

@@ -1,0 +1,28 @@
+/*
+ * 迁移自main.css 行号: 129,135,139
+ * 迁移时间: 2025-07-10
+ * 描述: 全局reset/normalize，基础样式清零等
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    position: relative;
+}
