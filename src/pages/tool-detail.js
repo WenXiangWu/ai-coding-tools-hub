@@ -69,46 +69,8 @@ function calculateReadingTime(text) {
     return { wordCount, readingTime };
 }
 
-// 创建阅读进度指示器
-function createReadingProgress() {
-    const progressBar = document.createElement('div');
-    progressBar.className = 'reading-progress';
-    progressBar.id = 'readingProgress';
-    document.body.appendChild(progressBar);
-    
-    // 监听滚动事件更新进度
-    window.addEventListener('scroll', updateReadingProgress);
-}
-
-// 更新阅读进度
-function updateReadingProgress() {
-    const progressBar = document.getElementById('readingProgress');
-    if (!progressBar) return;
-    
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = (scrollTop / scrollHeight) * 100;
-    
-    progressBar.style.width = Math.min(progress, 100) + '%';
-}
-
 // 创建浮动操作按钮
-function createFloatingActions() {
-    const floatingActions = document.createElement('div');
-    floatingActions.className = 'floating-actions';
-    floatingActions.innerHTML = `
-        <button class="floating-btn secondary" onclick="toggleBookmark()" title="收藏">
-            <i class="fas fa-bookmark"></i>
-        </button>
-        <button class="floating-btn secondary" onclick="shareContent()" title="分享">
-            <i class="fas fa-share-alt"></i>
-        </button>
-        <button class="floating-btn" onclick="scrollToTop()" title="返回顶部">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-    `;
-    document.body.appendChild(floatingActions);
-}
+// 删除 createFloatingActions 函数及其调用
 
 // 创建快速行动区域
 function createQuickActions(tool) {
@@ -281,12 +243,6 @@ async function renderToolDetail() {
         
         // 渲染工具内容
         await renderToolContent(tool, toolDetail);
-        
-        // 创建阅读进度指示器
-        createReadingProgress();
-        
-        // 创建浮动操作按钮
-        createFloatingActions();
         
         // 渲染头部操作区
         renderDetailHeaderActions();
