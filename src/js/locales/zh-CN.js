@@ -57,7 +57,8 @@ export default {
             tutorials: '学习中心',
             updates: '更新动态',
             devtools: '开发工具',
-            language: '语言'
+            language: '语言',
+            menu: '导航栏'
         },
         devtools: {
             json: 'JSON解析器',

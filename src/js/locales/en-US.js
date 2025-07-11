@@ -57,7 +57,8 @@ export default {
             tutorials: 'Learning Center',
             updates: 'Updates',
             devtools: 'Dev Tools',
-            language: 'Language'
+            language: 'Language',
+            menu: 'Navigation'
         },
         devtools: {
             json: 'JSON Parser',

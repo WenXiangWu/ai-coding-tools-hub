@@ -70,6 +70,9 @@ export class MobileNavigation extends Component {
             // 初始化切换器
             this.initSwitchers();
             
+            // 监听全局语言变化事件
+            this.setupGlobalLanguageListener();
+            
             console.log('✅ 移动端导航组件初始化完成');
         } catch (error) {
             console.error('❌ 移动端导航组件初始化失败:', error);
@@ -87,13 +90,7 @@ export class MobileNavigation extends Component {
             this.toggleMenu();
         });
         
-        // 关闭按钮点击
-        if (this.mobileNavClose) {
-            this.mobileNavClose.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.closeMenu();
-            });
-        }
+        // 关闭按钮已隐藏，关闭功能由汉堡菜单按钮处理
         
         // 覆盖层点击关闭
         this.mobileNavOverlay.addEventListener('click', () => {
@@ -150,6 +147,31 @@ export class MobileNavigation extends Component {
         });
         
         console.log('📱 移动端导航事件绑定完成');
+    }
+
+    /**
+     * 设置全局语言变化监听
+     */
+    setupGlobalLanguageListener() {
+        // 监听国际化管理器的语言变化事件
+        if (this.i18nManager && typeof this.i18nManager.onLanguageChange === 'function') {
+            this.i18nManager.onLanguageChange(() => {
+                console.log('📱 移动端检测到语言变化，更新显示');
+                this.updateCurrentLanguageDisplay();
+                this.renderLanguageOptions(); // 重新渲染以更新选中状态
+            });
+        }
+        
+        // 监听EventBus的语言变化事件
+        import('../core/EventBus.js').then(({ eventBus }) => {
+            eventBus.on('app:languageChanged', () => {
+                console.log('📱 移动端通过EventBus检测到语言变化');
+                this.updateCurrentLanguageDisplay();
+                this.renderLanguageOptions();
+            });
+        }).catch(error => {
+            console.warn('⚠️ 无法加载EventBus:', error);
+        });
     }
 
     /**
@@ -238,14 +260,26 @@ export class MobileNavigation extends Component {
      */
     updateCurrentLanguageDisplay() {
         const currentLangDisplay = document.getElementById('mobileLangCurrent');
-        if (!currentLangDisplay || !this.i18nManager) return;
+        if (!currentLangDisplay || !this.i18nManager) {
+            console.warn('⚠️ 无法更新语言显示：元素或i18nManager不存在');
+            return;
+        }
         
-        const currentLang = this.i18nManager.getCurrentLanguage();
-        const languages = this.i18nManager.getSupportedLanguages();
-        const langData = languages.find(lang => lang.code === currentLang);
-        
-        if (langData) {
-            currentLangDisplay.textContent = langData.name;
+        try {
+            const currentLang = this.i18nManager.getCurrentLanguage();
+            const languages = this.i18nManager.getSupportedLanguages();
+            const langData = languages.find(lang => lang.code === currentLang);
+            
+            if (langData) {
+                currentLangDisplay.textContent = langData.name;
+                console.log(`📱 移动端语言显示已更新: ${langData.name}`);
+            } else {
+                console.warn('⚠️ 未找到当前语言数据:', currentLang);
+                // 使用默认显示
+                currentLangDisplay.textContent = currentLang === 'zh-CN' ? '简体中文' : 'English';
+            }
+        } catch (error) {
+            console.error('❌ 更新语言显示失败:', error);
         }
     }
 
@@ -555,9 +589,7 @@ export class MobileNavigation extends Component {
             this.mobileMenuToggle.removeEventListener('click', this.toggleMenu);
         }
         
-        if (this.mobileNavClose) {
-            this.mobileNavClose.removeEventListener('click', this.closeMenu);
-        }
+        // 关闭按钮事件已移除
         
         if (this.mobileNavOverlay) {
             this.mobileNavOverlay.removeEventListener('click', this.closeMenu);
@@ -577,6 +609,9 @@ export class MobileNavigation extends Component {
         
         // 恢复body样式
         document.body.style.overflow = '';
+        
+        // 清理语言变化监听器
+        // 注意：EventBus的清理会在App.js的destroy中统一处理
         
         console.log('📱 移动端导航组件已销毁');
     }

@@ -599,7 +599,7 @@
 /* 移动端导航头部 */
 .mobile-nav-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
@@ -613,23 +613,8 @@
 }
 
 .mobile-nav-close {
-  width: 36px;
-  height: 36px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-secondary);
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.125rem;
-}
-
-.mobile-nav-close:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+  display: none;
+  /* 隐藏内部关闭按钮，使用汉堡菜单按钮的X状态作为关闭按钮 */
 }
 
 /* 移动端导航内容 */
@@ -646,13 +631,34 @@
   border-bottom: none;
 }
 
+/* 移动端导航项目统一样式基类 */
+.mobile-nav-item-base {
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  font-family: inherit;
+}
+
+.mobile-nav-item-base:hover {
+  background: var(--bg-secondary);
+  color: var(--primary-color);
+  border-left-color: var(--primary-color);
+}
+
 /* 移动端导航链接 */
 .mobile-nav-link {
   display: block;
+  text-decoration: none;
+  /* 继承基础样式 */
   padding: var(--spacing-md) var(--spacing-lg);
   color: var(--text-primary);
-  text-decoration: none;
+  font-size: 1rem;
   font-weight: 500;
+  line-height: 1.4;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
 }
@@ -677,11 +683,23 @@
   background: none;
   border: none;
   color: var(--text-primary);
+  font-size: 1rem;
   font-weight: 500;
+  line-height: 1.4;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
   border-left: 3px solid transparent;
+  font-family: inherit;
+}
+
+.mobile-dropdown-toggle > span {
+  flex: 1;
+  text-align: left;
+  margin-right: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  min-height: 1.4em; /* 确保与line-height一致 */
 }
 
 .mobile-dropdown-toggle:hover {
@@ -694,6 +712,13 @@
   transition: transform 0.3s ease;
   font-size: 0.875rem;
   color: var(--text-secondary);
+  flex-shrink: 0;
+  margin-left: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
 }
 
 .mobile-dropdown-toggle.active i {
@@ -766,6 +791,12 @@
 
 :root.theme-dark .mobile-nav-header {
   background: var(--bg-secondary);
+}
+
+:root.theme-dark .mobile-nav-item-base:hover,
+:root.theme-dark .mobile-nav-link:hover,
+:root.theme-dark .mobile-dropdown-toggle:hover {
+  background: var(--bg-tertiary);
 }
 
 :root.theme-dark .mobile-dropdown-menu {
