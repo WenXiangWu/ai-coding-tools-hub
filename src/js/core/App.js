@@ -8,6 +8,7 @@ import { ToolService } from '../services/ToolService.js';
 import { CompareService } from '../services/CompareService.js';
 import { ToolCard } from '../components/ToolCard.js';
 import { LanguageSwitcher } from '../components/LanguageSwitcher.js';
+import { MobileNavigation } from '../components/MobileNavigation.js';
 import { NavigationManager } from '../managers/navigation-manager.js';
 import { getI18nManager } from '../managers/i18n-manager.js';
 import { APP_CONFIG, UI_CONSTANTS, CSS_CLASSES } from '../constants/AppConstants.js';
@@ -24,6 +25,7 @@ class App {
         this.i18nManager = null;
         this.languageSwitcher = null;
         this.themeSwitcher = null;
+        this.mobileNavigation = null;
         this.components = {
             toolCards: new Map(),
             modals: new Map()
@@ -56,6 +58,9 @@ class App {
             
             // 初始化主题切换器
             this.initializeThemeSwitcher();
+            
+            // 初始化移动端导航
+            this.initializeMobileNavigation();
             
             // 初始化导航管理器
             await this.initializeNavigation();
@@ -200,6 +205,38 @@ class App {
             
         } catch (error) {
             console.error('❌ 重新初始化语言切换器失败:', error);
+        }
+    }
+
+    /**
+     * 初始化移动端导航
+     */
+    initializeMobileNavigation() {
+        try {
+            // 获取i18n管理器和主题管理器
+            const i18nManager = this.i18nManager || window.__i18nManager;
+            const themeManager = window.themeManager;
+            
+            if (i18nManager && themeManager) {
+                this.mobileNavigation = new MobileNavigation({
+                    i18nManager: i18nManager,
+                    themeManager: themeManager
+                });
+                
+                // 监听窗口大小变化，当从移动端切换到桌面端时自动关闭移动菜单
+                window.addEventListener('resize', () => {
+                    if (this.mobileNavigation) {
+                        this.mobileNavigation.handleResize();
+                    }
+                });
+                
+                console.log('✅ 移动端导航初始化完成');
+            } else {
+                console.warn('⚠️ i18n管理器或主题管理器不可用，跳过移动端导航初始化');
+            }
+        } catch (error) {
+            console.error('❌ 移动端导航初始化失败:', error);
+            // 移动端导航初始化失败不应该阻止应用启动
         }
     }
 
@@ -1387,6 +1424,7 @@ class App {
         this.i18nManager?.destroy();
         this.languageSwitcher?.destroy();
         this.themeSwitcher?.destroy();
+        this.mobileNavigation?.destroy();
         
         // 清理事件监听
         window.removeEventListener('resize', this.handleResize);

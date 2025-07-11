@@ -114,6 +114,15 @@
                     </div>
                     <span class="logo-text">AITOOLBOX</span>
                 </div>
+                
+                <!-- 汉堡菜单按钮 (移动端显示) -->
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="菜单">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                
+                <!-- 桌面端导航 -->
                 <nav class="main-nav">
                     <a href="#tools" class="nav-link" data-i18n="header.navigation.tools">工具总览</a>
                     <a href="#compare" class="nav-link" data-i18n="header.navigation.compare">工具对比</a>
@@ -137,6 +146,55 @@
                         </div>
                         <div class="theme-switcher-container" id="themeSwitcherContainer">
                             <!-- 主题切换器将在这里渲染 -->
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- 移动端导航菜单 -->
+                <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+                <nav class="mobile-nav" id="mobileNav">
+                    <div class="mobile-nav-header">
+                        <span class="mobile-nav-title" data-i18n="header.navigation.menu">菜单</span>
+                        <button class="mobile-nav-close" id="mobileNavClose" aria-label="关闭菜单">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="mobile-nav-content">
+                        <!-- 主导航链接 -->
+                        <div class="mobile-nav-section">
+                            <a href="#tools" class="mobile-nav-link" data-i18n="header.navigation.tools">工具总览</a>
+                            <a href="#compare" class="mobile-nav-link" data-i18n="header.navigation.compare">工具对比</a>
+                            <a href="#tutorials" class="mobile-nav-link" data-i18n="header.navigation.tutorials">学习中心</a>
+                        </div>
+                        
+                        <!-- 开发工具下拉 -->
+                        <div class="mobile-nav-section">
+                            <div class="mobile-dropdown">
+                                <button class="mobile-dropdown-toggle" id="mobileDevtoolsToggle">
+                                    <span data-i18n="header.navigation.devtools">开发工具</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="mobile-dropdown-menu" id="mobileDevtoolsMenu">
+                                    <a href="devtools/json.html" class="mobile-dropdown-item" data-i18n="header.devtools.json">JSON解析器</a>
+                                    <a href="devtools/diff.html" class="mobile-dropdown-item" data-i18n="header.devtools.diff">文本对比</a>
+                                    <a href="devtools/cron.html" class="mobile-dropdown-item" data-i18n="header.devtools.cron">Cron表达式</a>
+                                    <a href="devtools/timestamp.html" class="mobile-dropdown-item" data-i18n="header.devtools.timestamp">时间戳转换</a>
+                                    <a href="devtools/qrcode.html" class="mobile-dropdown-item" data-i18n="header.devtools.qrcode">二维码生成</a>
+                                    <a href="devtools/regex.html" class="mobile-dropdown-item" data-i18n="header.devtools.regex">正则表达式</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 语言和主题切换 -->
+                        <div class="mobile-nav-section">
+                            <div class="mobile-switchers">
+                                <div class="mobile-language-switcher" id="mobileLangSwitcher">
+                                    <!-- 语言切换器将在这里渲染 -->
+                                </div>
+                                <div class="mobile-theme-switcher" id="mobileThemeSwitcher">
+                                    <!-- 主题切换器将在这里渲染 -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </nav>
