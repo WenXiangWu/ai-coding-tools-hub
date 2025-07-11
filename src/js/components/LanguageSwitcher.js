@@ -65,9 +65,37 @@ export class LanguageSwitcher extends Component {
         const currentLang = this.i18nManager.getCurrentLanguage();
         const languages = this.i18nManager.getSupportedLanguages();
         
-        // 获取当前语言的显示名称
-        const currentLangData = languages.find(lang => lang.code === currentLang);
-        const currentLangName = currentLangData ? currentLangData.name : 'Language';
+        // 硬编码回退数据确保图标总是显示
+        const fallbackData = {
+            'zh-CN': { name: '简体中文', icon: '中' },
+            'en-US': { name: 'English', icon: 'EN' }
+        };
+        
+        // 获取当前语言的显示名称和图标
+        let currentLangData = languages.find(lang => lang.code === currentLang);
+        
+        // 如果没有找到有效的语言数据或图标是默认图标，使用回退数据
+        if (!currentLangData || !currentLangData.icon || currentLangData.icon === '🌐') {
+            const fallback = fallbackData[currentLang];
+            if (fallback) {
+                currentLangData = {
+                    code: currentLang,
+                    name: fallback.name,
+                    nativeName: fallback.name,
+                    icon: fallback.icon
+                };
+                console.log(`🔄 语言切换器使用回退数据: ${fallback.icon} ${fallback.name}`);
+            } else {
+                currentLangData = {
+                    code: currentLang,
+                    name: 'Language',
+                    nativeName: 'Language',
+                    icon: '🌐'
+                };
+            }
+        }
+        
+        const currentLangName = currentLangData.name;
         
         // 创建dropdown结构
         const dropdown = document.createElement('div');
@@ -78,7 +106,7 @@ export class LanguageSwitcher extends Component {
         toggleBtn.className = 'nav-link dropdown-toggle';
         toggleBtn.setAttribute('aria-label', '选择语言');
         toggleBtn.innerHTML = `
-            <span>${currentLangName}</span>
+            <span><span class="lang-flag">${currentLangData.icon}</span>${currentLangName}</span>
             <i class="fas fa-caret-down"></i>
         `;
         
@@ -91,7 +119,7 @@ export class LanguageSwitcher extends Component {
             const item = document.createElement('button');
             item.className = 'dropdown-item button-item';
             item.setAttribute('data-lang', lang.code);
-            item.textContent = lang.name;
+            item.innerHTML = `<span class="lang-flag">${lang.icon}</span>${lang.name}`;
             if (lang.code === currentLang) {
                 item.classList.add('active');
             }
@@ -156,10 +184,38 @@ export class LanguageSwitcher extends Component {
      */
     updateToggleButton(langCode) {
         const languages = this.i18nManager.getSupportedLanguages();
-        const langData = languages.find(lang => lang.code === langCode);
+        
+        // 硬编码回退数据确保图标总是显示
+        const fallbackData = {
+            'zh-CN': { name: '简体中文', icon: '中' },
+            'en-US': { name: 'English', icon: 'EN' }
+        };
+        
+        let langData = languages.find(lang => lang.code === langCode);
+        
+        // 如果没有找到有效的语言数据或图标是默认图标，使用回退数据
+        if (!langData || !langData.icon || langData.icon === '🌐') {
+            const fallback = fallbackData[langCode];
+            if (fallback) {
+                langData = {
+                    code: langCode,
+                    name: fallback.name,
+                    nativeName: fallback.name,
+                    icon: fallback.icon
+                };
+            } else {
+                langData = {
+                    code: langCode,
+                    name: langCode,
+                    nativeName: langCode,
+                    icon: '🌐'
+                };
+            }
+        }
+        
         if (langData && this.toggleBtn) {
             this.toggleBtn.innerHTML = `
-                <span>${langData.name}</span>
+                <span><span class="lang-flag">${langData.icon}</span>${langData.name}</span>
                 <i class="fas fa-caret-down"></i>
             `;
         }

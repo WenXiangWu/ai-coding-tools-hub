@@ -840,3 +840,40 @@
     display: none;
   }
 }
+
+/* 语言切换器图标美化 */
+.dropdown-toggle .lang-icon,
+.dropdown-item .lang-icon,
+.mobile-dropdown-item .lang-icon,
+.mobile-nav-item .lang-icon {
+    display: inline-block;
+    font-size: 1.1em;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    filter: brightness(1.1) contrast(1.1);
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 为国旗emoji添加特殊样式 */
+.lang-flag {
+    font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+    font-size: 1.2em;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: 1;
+}
+
+/* 深色主题下的图标调整 */
+[data-theme="dark"] .lang-icon,
+[data-theme="dark"] .lang-flag {
+    filter: brightness(1.2) contrast(1.2);
+}
+
+/* 移动端语言图标调整 */
+@media (max-width: 768px) {
+    .mobile-nav .lang-flag {
+        font-size: 1.1em;
+        margin-right: 0.4rem;
+    }
+}

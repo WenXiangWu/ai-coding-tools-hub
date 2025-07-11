@@ -7,7 +7,8 @@ export default {
         name: '简体中文',
         nativeName: '简体中文',
         code: 'zh-CN',
-        direction: 'ltr'
+        direction: 'ltr',
+        icon: '🇨🇳'
     },
     
     // 通用

@@ -7,7 +7,8 @@ export default {
         name: 'English',
         nativeName: 'English',
         code: 'en-US',
-        direction: 'ltr'
+        direction: 'ltr',
+        icon: '🇺🇸'
     },
     
     // Common

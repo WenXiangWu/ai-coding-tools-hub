@@ -159,6 +159,8 @@ export class MobileNavigation extends Component {
                 console.log('📱 移动端检测到语言变化，更新显示');
                 this.updateCurrentLanguageDisplay();
                 this.renderLanguageOptions(); // 重新渲染以更新选中状态
+                this.updateCurrentThemeDisplay(); // 更新主题显示
+                this.renderThemeOptions(); // 重新渲染主题选项
             });
         }
         
@@ -168,6 +170,8 @@ export class MobileNavigation extends Component {
                 console.log('📱 移动端通过EventBus检测到语言变化');
                 this.updateCurrentLanguageDisplay();
                 this.renderLanguageOptions();
+                this.updateCurrentThemeDisplay(); // 更新主题显示
+                this.renderThemeOptions(); // 重新渲染主题选项
             });
         }).catch(error => {
             console.warn('⚠️ 无法加载EventBus:', error);
@@ -210,7 +214,7 @@ export class MobileNavigation extends Component {
             const item = document.createElement('button');
             item.className = 'mobile-dropdown-item';
             item.setAttribute('data-lang', lang.code);
-            item.textContent = lang.name;
+            item.innerHTML = `<span class="lang-flag">${lang.icon}</span>${lang.name}`;
             
             if (lang.code === currentLang) {
                 item.classList.add('active');
@@ -270,13 +274,26 @@ export class MobileNavigation extends Component {
             const languages = this.i18nManager.getSupportedLanguages();
             const langData = languages.find(lang => lang.code === currentLang);
             
-            if (langData) {
-                currentLangDisplay.textContent = langData.name;
-                console.log(`📱 移动端语言显示已更新: ${langData.name}`);
+            // 使用硬编码回退数据确保图标总是显示
+            const fallbackData = {
+                'zh-CN': { name: '简体中文', icon: '🇨🇳' },
+                'en-US': { name: 'English', icon: '🇺🇸' }
+            };
+            
+            if (langData && langData.icon && langData.icon !== '🌐') {
+                // 如果从i18n获取到了有效的图标数据，使用它
+                currentLangDisplay.innerHTML = `<span class="lang-flag">${langData.icon}</span>${langData.name}`;
+                console.log(`📱 移动端语言显示已更新: ${langData.icon} ${langData.name}`);
             } else {
-                console.warn('⚠️ 未找到当前语言数据:', currentLang);
-                // 使用默认显示
-                currentLangDisplay.textContent = currentLang === 'zh-CN' ? '简体中文' : 'English';
+                // 否则使用回退数据
+                console.warn('⚠️ 使用回退语言数据:', currentLang);
+                const fallback = fallbackData[currentLang];
+                if (fallback) {
+                    currentLangDisplay.innerHTML = `<span class="lang-flag">${fallback.icon}</span>${fallback.name}`;
+                    console.log(`📱 移动端语言显示使用回退数据: ${fallback.icon} ${fallback.name}`);
+                } else {
+                    currentLangDisplay.innerHTML = `<span class="lang-flag">🌐</span>${currentLang}`;
+                }
             }
         } catch (error) {
             console.error('❌ 更新语言显示失败:', error);

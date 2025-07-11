@@ -122,6 +122,11 @@ class App {
                 this.handleLanguageChange(event);
             });
             
+            // 为主题管理器设置国际化管理器
+            if (window.themeManager && typeof window.themeManager.setI18nManager === 'function') {
+                window.themeManager.setI18nManager(this.i18nManager);
+            }
+            
             console.log('✅ 国际化系统初始化完成');
         } catch (error) {
             console.error('❌ 国际化系统初始化失败:', error);
@@ -1234,6 +1239,9 @@ class App {
             // 重新渲染工具卡片（如果需要）
             this.rerenderToolsForLanguage();
             
+            // 重新渲染主题切换器以更新主题名称
+            this.rerenderThemeSwitcher();
+            
             // 添加全局调试函数（临时）
             window.forceTranslate = () => {
                 console.log('🔧 强制翻译页面...');
@@ -1305,6 +1313,24 @@ class App {
             }
         } catch (error) {
             console.error('❌ 重新渲染工具失败:', error);
+        }
+    }
+
+    /**
+     * 为语言变化重新渲染主题切换器
+     */
+    rerenderThemeSwitcher() {
+        try {
+            // 重新渲染桌面端主题切换器
+            if (this.themeSwitcher && typeof this.themeSwitcher.render === 'function') {
+                this.themeSwitcher.render();
+                console.log('🎨 桌面端主题切换器已重新渲染');
+            }
+            
+            // 移动端主题切换器会通过事件监听自动更新，不需要手动重新渲染
+            
+        } catch (error) {
+            console.error('❌ 重新渲染主题切换器失败:', error);
         }
     }
 

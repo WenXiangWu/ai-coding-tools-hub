@@ -199,6 +199,30 @@ export class I18nManager {
         return this.supportedLanguages.map(lang => {
             let name = lang;
             let nativeName = lang;
+            let icon = '🌐'; // 默认图标
+            
+            // 硬编码的回退数据，确保总是有正确的图标
+            const fallbackData = {
+                'zh-CN': { name: '简体中文', icon: '🇨🇳' },
+                'en-US': { name: 'English', icon: '🇺🇸' }
+            };
+            
+            // 首先使用回退数据设置基础值
+            const fallback = fallbackData[lang];
+            if (fallback) {
+                nativeName = fallback.name;
+                icon = fallback.icon;
+            }
+            
+            // 尝试从语言文件的meta中获取更准确的信息（如果已加载）
+            if (this.translations[lang] && this.translations[lang].meta) {
+                if (this.translations[lang].meta.nativeName) {
+                    nativeName = this.translations[lang].meta.nativeName;
+                }
+                if (this.translations[lang].meta.icon) {
+                    icon = this.translations[lang].meta.icon;
+                }
+            }
             
             // 如果i18n系统已初始化，尝试获取翻译的名称
             if (this.isInitialized && this.translations[this.currentLanguage]) {
@@ -208,22 +232,11 @@ export class I18nManager {
                 }
             }
             
-            // 尝试从语言文件的meta中获取原生名称
-            if (this.translations[lang] && this.translations[lang].meta && this.translations[lang].meta.nativeName) {
-                nativeName = this.translations[lang].meta.nativeName;
-            } else {
-                // 回退到硬编码的语言名称
-                const fallbackNames = {
-                    'zh-CN': '简体中文',
-                    'en-US': 'English'
-                };
-                nativeName = fallbackNames[lang] || lang;
-            }
-            
             return {
                 code: lang,
                 name: name,
-                nativeName: nativeName
+                nativeName: nativeName,
+                icon: icon
             };
         });
     }

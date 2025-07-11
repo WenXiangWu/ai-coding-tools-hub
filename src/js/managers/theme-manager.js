@@ -3,14 +3,24 @@
  * 设计原则：高内聚低耦合，便于扩展
  */
 class ThemeManager {
-    constructor() {
+    constructor(i18nManager = null) {
         this.currentTheme = 'default';
         this.themes = new Map();
         this.themeLink = null;
         this.storageKey = 'ai-tools-theme';
         this.observers = new Set();
+        this.i18nManager = i18nManager;
         
         this.init();
+    }
+
+    /**
+     * 设置国际化管理器
+     * @param {Object} i18nManager - 国际化管理器实例
+     */
+    setI18nManager(i18nManager) {
+        this.i18nManager = i18nManager;
+        console.log('🌐 主题管理器已设置国际化管理器');
     }
 
     /**
@@ -54,8 +64,8 @@ class ThemeManager {
     loadAvailableThemes() {
         this.themes = new Map([
             ['default', {
-                name: '默认主题',
-                description: '清新简洁的默认主题',
+                nameKey: 'theme.themes.default.name',
+                descriptionKey: 'theme.themes.default.description',
                 icon: '🌟',
                 category: 'light',
                 file: 'default/theme.css',
@@ -70,8 +80,8 @@ class ThemeManager {
                 }
             }],
             ['dark', {
-                name: '深色主题',
-                description: '护眼的深色主题',
+                nameKey: 'theme.themes.dark.name',
+                descriptionKey: 'theme.themes.dark.description',
                 icon: '🌙',
                 category: 'dark',
                 file: 'dark/theme.css',
@@ -86,8 +96,8 @@ class ThemeManager {
                 }
             }],
             ['blue', {
-                name: '海洋蓝',
-                description: '清新的蓝色主题',
+                nameKey: 'theme.themes.blue.name',
+                descriptionKey: 'theme.themes.blue.description',
                 icon: '🌊',
                 category: 'light',
                 file: 'blue/theme.css',
@@ -102,8 +112,8 @@ class ThemeManager {
                 }
             }],
             ['green', {
-                name: '森林绿',
-                description: '自然的绿色主题',
+                nameKey: 'theme.themes.green.name',
+                descriptionKey: 'theme.themes.green.description',
                 icon: '🌿',
                 category: 'light',
                 file: 'green/theme.css',
@@ -118,8 +128,8 @@ class ThemeManager {
                 }
             }],
             ['purple', {
-                name: '紫罗兰',
-                description: '优雅的紫色主题',
+                nameKey: 'theme.themes.purple.name',
+                descriptionKey: 'theme.themes.purple.description',
                 icon: '💜',
                 category: 'light',
                 file: 'purple/theme.css',
@@ -134,13 +144,55 @@ class ThemeManager {
                 }
             }],
             ['auto', {
-                name: '跟随系统',
-                description: '自动跟随系统主题',
+                nameKey: 'theme.themes.auto.name',
+                descriptionKey: 'theme.themes.auto.description',
                 icon: '🔄',
                 category: 'auto',
                 file: null
             }]
         ]);
+    }
+
+    /**
+     * 获取翻译后的主题名称
+     * @param {string} themeId - 主题ID
+     * @returns {string} 翻译后的主题名称
+     */
+    getThemeName(themeId) {
+        const theme = this.themes.get(themeId);
+        if (!theme) return themeId;
+        
+        if (this.i18nManager && theme.nameKey) {
+            return this.i18nManager.t(theme.nameKey);
+        }
+        
+        // 兜底显示，如果没有国际化管理器
+        const fallbackNames = {
+            'default': '默认',
+            'dark': '深色',
+            'blue': '海洋蓝',
+            'green': '森林绿',
+            'purple': '紫罗兰',
+            'auto': '跟随系统'
+        };
+        
+        return fallbackNames[themeId] || themeId;
+    }
+
+    /**
+     * 获取翻译后的主题描述
+     * @param {string} themeId - 主题ID
+     * @returns {string} 翻译后的主题描述
+     */
+    getThemeDescription(themeId) {
+        const theme = this.themes.get(themeId);
+        if (!theme) return '';
+        
+        if (this.i18nManager && theme.descriptionKey) {
+            return this.i18nManager.t(theme.descriptionKey);
+        }
+        
+        return '';
     }
 
     /**
@@ -659,9 +711,12 @@ class ThemeManager {
      * 获取当前主题
      */
     getCurrentTheme() {
+        const theme = this.themes.get(this.currentTheme);
         return {
             id: this.currentTheme,
-            ...this.themes.get(this.currentTheme)
+            name: this.getThemeName(this.currentTheme),
+            description: this.getThemeDescription(this.currentTheme),
+            ...theme
         };
     }
 
@@ -671,6 +726,8 @@ class ThemeManager {
     getAvailableThemes() {
         return Array.from(this.themes.entries()).map(([id, theme]) => ({
             id,
+            name: this.getThemeName(id),
+            description: this.getThemeDescription(id),
             ...theme
         }));
     }
