@@ -677,6 +677,27 @@ body.theme-blue .tool-card {
     border: 1px solid rgba(14, 165, 233, 0.2);
 }
 
+/* 蓝色主题工具卡片文字对比度优化 */
+:root.theme-blue .tool-card .tool-name,
+body.theme-blue .tool-card .tool-name {
+    color: #0f172a !important;
+}
+
+:root.theme-blue .tool-card .tool-description,
+body.theme-blue .tool-card .tool-description {
+    color: #334155 !important;
+}
+
+:root.theme-blue .tool-card .tool-category,
+body.theme-blue .tool-card .tool-category {
+    color: #475569 !important;
+}
+
+:root.theme-blue .tool-card .feature-tag,
+body.theme-blue .tool-card .feature-tag {
+    color: #1e293b !important;
+}
+
 :root.theme-blue .tool-card:hover,
 body.theme-blue .tool-card:hover {
     box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
@@ -756,6 +777,27 @@ body.theme-green .tool-card {
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
+/* 绿色主题工具卡片文字对比度优化 */
+:root.theme-green .tool-card .tool-name,
+body.theme-green .tool-card .tool-name {
+    color: #0f172a !important;
+}
+
+:root.theme-green .tool-card .tool-description,
+body.theme-green .tool-card .tool-description {
+    color: #334155 !important;
+}
+
+:root.theme-green .tool-card .tool-category,
+body.theme-green .tool-card .tool-category {
+    color: #475569 !important;
+}
+
+:root.theme-green .tool-card .feature-tag,
+body.theme-green .tool-card .feature-tag {
+    color: #1e293b !important;
+}
+
 :root.theme-green .tool-card:hover,
 body.theme-green .tool-card:hover {
     box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
@@ -833,6 +875,27 @@ body.theme-purple .filter-group select:focus {
 body.theme-purple .tool-card {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* 紫色主题工具卡片文字对比度优化 */
+:root.theme-purple .tool-card .tool-name,
+body.theme-purple .tool-card .tool-name {
+    color: #0f172a !important;
+}
+
+:root.theme-purple .tool-card .tool-description,
+body.theme-purple .tool-card .tool-description {
+    color: #334155 !important;
+}
+
+:root.theme-purple .tool-card .tool-category,
+body.theme-purple .tool-card .tool-category {
+    color: #475569 !important;
+}
+
+:root.theme-purple .tool-card .feature-tag,
+body.theme-purple .tool-card .feature-tag {
+    color: #1e293b !important;
 }
 
 :root.theme-purple .tool-card:hover,

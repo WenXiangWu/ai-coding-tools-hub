@@ -1,0 +1,32 @@
+网站: https://docs.cursor.com/welcome
+发现时间: 2025-07-11T22:01:22.500172
+总计: 28 个页面
+
+  1. https://docs.cursor.com/context/ignore-files
+  2. https://docs.cursor.com/context/mcp
+  3. https://docs.cursor.com/configuration/shell
+  4. https://docs.cursor.com/get-started/installation
+  5. https://docs.cursor.com/tab/overview
+  6. https://docs.cursor.com/get-started/concepts
+  7. https://docs.cursor.com
+  8. https://docs.cursor.com/models
+  9. https://docs.cursor.com/welcome
+ 10. https://docs.cursor.com/context/rules
+ 11. https://docs.cursor.com/configuration/kbd
+ 12. https://docs.cursor.com/troubleshooting/troubleshooting-guide
+ 13. https://docs.cursor.com/slack
+ 14. https://docs.cursor.com/context/memories
+ 15. https://docs.cursor.com/tools/mcp
+ 16. https://docs.cursor.com/account/update-access
+ 17. https://docs.cursor.com/get-started/quickstart
+ 18. https://docs.cursor.com/account/pricing
+ 19. https://docs.cursor.com/settings/api-keys
+ 20. https://docs.cursor.com/
+ 21. https://docs.cursor.com/background-agent
+ 22. https://docs.cursor.com/guides/working-with-context
+ 23. https://docs.cursor.com/troubleshooting/request-reporting
+ 24. https://docs.cursor.com/configuration/themes
+ 25. https://docs.cursor.com/context/codebase-indexing
+ 26. https://docs.cursor.com/account/billing
+ 27. https://docs.cursor.com/background-agent/web-and-mobile
+ 28. https://docs.cursor.com/troubleshooting/common-issues

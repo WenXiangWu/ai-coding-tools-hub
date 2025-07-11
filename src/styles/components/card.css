@@ -225,6 +225,54 @@ body.theme-dark .tool-card {
     margin-bottom: 1rem;
 }
 
+/* 主题适配：蓝色主题工具卡片文字对比度优化 */
+:root.theme-blue .tool-card .rating-text,
+body.theme-blue .tool-card .rating-text {
+    color: #475569 !important;
+}
+
+:root.theme-blue .tool-card .badge,
+body.theme-blue .tool-card .badge {
+    color: #ffffff !important;
+}
+
+:root.theme-blue .tool-card .tool-price,
+body.theme-blue .tool-card .tool-price {
+    color: #1e293b !important;
+}
+
+/* 主题适配：绿色主题工具卡片文字对比度优化 */
+:root.theme-green .tool-card .rating-text,
+body.theme-green .tool-card .rating-text {
+    color: #475569 !important;
+}
+
+:root.theme-green .tool-card .badge,
+body.theme-green .tool-card .badge {
+    color: #ffffff !important;
+}
+
+:root.theme-green .tool-card .tool-price,
+body.theme-green .tool-card .tool-price {
+    color: #1e293b !important;
+}
+
+/* 主题适配：紫色主题工具卡片文字对比度优化 */
+:root.theme-purple .tool-card .rating-text,
+body.theme-purple .tool-card .rating-text {
+    color: #475569 !important;
+}
+
+:root.theme-purple .tool-card .badge,
+body.theme-purple .tool-card .badge {
+    color: #ffffff !important;
+}
+
+:root.theme-purple .tool-card .tool-price,
+body.theme-purple .tool-card .tool-price {
+    color: #1e293b !important;
+}
+
 .tool-features {
     display: flex;
     flex-wrap: wrap;
@@ -235,28 +283,70 @@ body.theme-dark .tool-card {
 .feature-tag {
     background: var(--bg-tertiary);
     color: var(--text-secondary);
-    padding: 0.4rem 0.8rem;
-    border-radius: 16px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 500;
     border: 1px solid var(--border-color);
     transition: all 0.2s ease;
     white-space: nowrap;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: inline-block;
+    line-height: 1.2;
 }
 
 .feature-tag:hover {
     background: var(--primary-color);
     color: white;
     transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .feature-tag.more {
     background: var(--primary-color);
     color: white;
     font-weight: 600;
+}
+
+/* 主题适配：蓝色主题功能标签优化 */
+:root.theme-blue .tool-card .feature-tag,
+body.theme-blue .tool-card .feature-tag {
+    background: rgba(14, 165, 233, 0.1) !important;
+    color: #0c4a6e !important;
+    border-color: rgba(14, 165, 233, 0.2);
+}
+
+:root.theme-blue .tool-card .feature-tag:hover,
+body.theme-blue .tool-card .feature-tag:hover {
+    background: #0ea5e9 !important;
+    color: white !important;
+}
+
+/* 主题适配：绿色主题功能标签优化 */
+:root.theme-green .tool-card .feature-tag,
+body.theme-green .tool-card .feature-tag {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: #064e3b !important;
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+:root.theme-green .tool-card .feature-tag:hover,
+body.theme-green .tool-card .feature-tag:hover {
+    background: #10b981 !important;
+    color: white !important;
+}
+
+/* 主题适配：紫色主题功能标签优化 */
+:root.theme-purple .tool-card .feature-tag,
+body.theme-purple .tool-card .feature-tag {
+    background: rgba(139, 92, 246, 0.1) !important;
+    color: #581c87 !important;
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+:root.theme-purple .tool-card .feature-tag:hover,
+body.theme-purple .tool-card .feature-tag:hover {
+    background: #8b5cf6 !important;
+    color: white !important;
 }
 
 /* 移动端响应式样式 */
