@@ -48,26 +48,11 @@
   width: 80%;
 }
 
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
 
-.language-dropdown.dropdown-up {
-  top: auto;
-  bottom: 100%;
-  margin-top: 0;
-  margin-bottom: 0.25rem;
-  transform: translateY(10px);
-}
 
-.language-dropdown.dropdown-up.active {
-  transform: translateY(0);
-}
+
+
+
 
 .dropdown {
   position: relative;
@@ -144,6 +129,23 @@
 
 .dropdown-item:hover {
   background: var(--bg-secondary);
+  color: var(--primary-color);
+}
+
+/* 深色主题的dropdown样式 */
+:root.theme-dark .dropdown-menu {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+:root.theme-dark .dropdown-item {
+  color: var(--text-primary);
+  background: transparent;
+}
+
+:root.theme-dark .dropdown-item:hover {
+  background: var(--bg-tertiary);
   color: var(--primary-color);
 }
 
@@ -375,60 +377,80 @@
 
 .nav-switchers .language-switcher-container,
 .nav-switchers .theme-switcher-container {
-  position: relative !important;
-  margin: 0 !important;
-  margin-left: 0 !important;
-  margin-top: 0 !important;
-  order: unset !important;
-  display: inline-block !important;
+  position: relative;
+  margin: 0;
+  display: inline-block;
 }
 
-.nav-switchers .language-select,
-.nav-switchers .theme-select {
-  appearance: none;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 6px 20px 6px 8px;
-  font-size: 14px;
-  color: var(--text-primary);
+/* 通用dropdown样式扩展 - 支持button类型的dropdown-item */
+.dropdown-item[type="button"],
+.dropdown-item.button-item {
   cursor: pointer;
-  min-width: 80px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 4px center;
-  background-size: 12px;
-}
-
-.nav-switchers .language-select:hover,
-.nav-switchers .theme-select:hover {
-  border-color: var(--primary-color);
-}
-
-.nav-switchers .language-select:focus,
-.nav-switchers .theme-select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
-}
-
-:root.theme-dark .nav-switchers .language-select,
-:root.theme-dark .nav-switchers .theme-select {
-  background: var(--bg-secondary);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-.nav-switchers .language-select option,
-.nav-switchers .theme-select option {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  padding: 0.5rem;
   border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
 }
 
-:root.theme-dark .nav-switchers .language-select option,
-:root.theme-dark .nav-switchers .theme-select option {
-  background: var(--bg-dark);
-  color: var(--text-white);
+/* 导航栏下拉框响应式样式 */
+@media (max-width: 768px) {
+  .nav-switchers {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-left: 0;
+    margin-top: var(--spacing-md);
+    width: 100%;
+    order: 99;
+  }
+
+  .nav-switchers .language-switcher-container,
+  .nav-switchers .theme-switcher-container {
+    margin-left: 0;
+    margin-top: 0;
+    width: 100%;
+    order: unset;
+  }
+
+  .nav-switchers .dropdown {
+    width: 100%;
+  }
+
+  .nav-switchers .dropdown-toggle {
+    width: 100%;
+    padding: var(--spacing-md);
+    justify-content: space-between;
+    color: var(--text-primary);
+    font-size: 1rem;
+  }
+
+  .nav-switchers .dropdown-menu {
+    position: static;
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: auto;
+    margin-top: var(--spacing-xs);
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-switchers .dropdown-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .nav-switchers .dropdown-item:hover {
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+  }
+
+  /* 深色主题移动端切换器样式 */
+  :root.theme-dark .nav-switchers .dropdown-menu {
+    background: var(--bg-tertiary);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
 }

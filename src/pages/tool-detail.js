@@ -647,7 +647,40 @@ function renderDetailHeaderActions() {
 document.addEventListener('DOMContentLoaded', () => {
     renderDetailHeaderActions();
     renderToolDetail();
+    initializeBackToTop();
 });
+
+/**
+ * 初始化返回顶部按钮
+ */
+function initializeBackToTop() {
+    const backToTopBtn = document.getElementById('backToTop');
+    if (!backToTopBtn) return;
+
+    // 滚动监听，控制按钮显示/隐藏
+    function handleScroll() {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    }
+
+    // 点击回到顶部
+    function scrollToTopSmooth() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // 添加事件监听
+    window.addEventListener('scroll', handleScroll);
+    backToTopBtn.addEventListener('click', scrollToTopSmooth);
+
+    // 初始检查
+    handleScroll();
+}
 
 /**
  * 更新语言显示

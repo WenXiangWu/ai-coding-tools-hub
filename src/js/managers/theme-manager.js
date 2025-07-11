@@ -476,6 +476,9 @@ class ThemeManager {
         // 强制刷新Hero区域动画
         this.refreshHeroAnimation(themeId);
         
+        // 强制刷新tools-filter样式
+        this.refreshToolsFilterStyles(themeId);
+        
         console.log(`🎨 主题类已更新到: theme-${themeId}, 类别: ${category}`);
     }
 
@@ -551,6 +554,48 @@ class ThemeManager {
             
         } catch (error) {
             console.warn('⚠️ 刷新Hero样式失败:', error);
+        }
+    }
+
+    /**
+     * 强制刷新tools-filter样式
+     * @param {string} themeId - 主题ID
+     */
+    refreshToolsFilterStyles(themeId) {
+        const toolsFilterElements = document.querySelectorAll('.tools-filter');
+        if (!toolsFilterElements || toolsFilterElements.length === 0) {
+            return;
+        }
+
+        try {
+            toolsFilterElements.forEach(element => {
+                // 临时禁用过渡效果
+                const originalTransition = element.style.transition;
+                element.style.transition = 'none';
+                
+                // 强制重绘
+                element.offsetHeight;
+                
+                // 重新启用过渡效果
+                setTimeout(() => {
+                    element.style.transition = originalTransition || '';
+                    
+                    // 强制重新应用CSS类
+                    const html = document.documentElement;
+                    const currentClass = `theme-${themeId}`;
+                    
+                    if (html.classList.contains(currentClass)) {
+                        html.classList.remove(currentClass);
+                        element.offsetHeight; // 强制重绘
+                        html.classList.add(currentClass);
+                    }
+                }, 10);
+            });
+            
+            console.log(`🔄 tools-filter样式已强制刷新: theme-${themeId}`);
+            
+        } catch (error) {
+            console.warn('⚠️ 刷新tools-filter样式失败:', error);
         }
     }
 

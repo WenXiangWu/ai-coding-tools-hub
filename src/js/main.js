@@ -29,6 +29,51 @@ async function initializeApp() {
 }
 
 /**
+ * 初始化返回顶部按钮
+ */
+function initializeBackToTop() {
+    console.log('🔄 正在初始化返回顶部按钮...');
+    
+    const backToTopBtn = document.getElementById('backToTop');
+    if (!backToTopBtn) {
+        console.warn('⚠️ 未找到 back-to-top 按钮元素 (id: backToTop)');
+        return;
+    }
+
+    console.log('✅ 找到 back-to-top 按钮元素');
+
+    // 滚动监听，控制按钮显示/隐藏
+    function handleScroll() {
+        const scrollY = window.scrollY;
+        if (scrollY > 300) {
+            backToTopBtn.classList.add('visible');
+            console.log('📜 显示 back-to-top 按钮 (scrollY:', scrollY, ')');
+        } else {
+            backToTopBtn.classList.remove('visible');
+            console.log('📜 隐藏 back-to-top 按钮 (scrollY:', scrollY, ')');
+        }
+    }
+
+    // 点击回到顶部
+    function scrollToTop() {
+        console.log('🔝 点击返回顶部按钮');
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // 添加事件监听
+    window.addEventListener('scroll', handleScroll);
+    backToTopBtn.addEventListener('click', scrollToTop);
+
+    // 初始检查
+    handleScroll();
+    
+    console.log('✅ 返回顶部按钮初始化完成');
+}
+
+/**
  * 显示错误消息
  * @param {string} message - 错误消息
  */
@@ -69,8 +114,16 @@ function showErrorMessage(message) {
  */
 function onDOMReady() {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            // 优先初始化 back-to-top 按钮，确保它能独立工作
+            initializeBackToTop();
+            // 然后初始化应用
+            initializeApp();
+        });
     } else {
+        // 优先初始化 back-to-top 按钮，确保它能独立工作
+        initializeBackToTop();
+        // 然后初始化应用
         initializeApp();
     }
 }

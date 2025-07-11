@@ -65,51 +65,129 @@ export class LanguageSwitcher extends Component {
         const currentLang = this.i18nManager.getCurrentLanguage();
         const languages = this.i18nManager.getSupportedLanguages();
         
-        const select = document.createElement('select');
-        select.className = 'language-select';
-        select.setAttribute('aria-label', '选择语言');
+        // 获取当前语言的显示名称
+        const currentLangData = languages.find(lang => lang.code === currentLang);
+        const currentLangName = currentLangData ? currentLangData.name : 'Language';
         
+        // 创建dropdown结构
+        const dropdown = document.createElement('div');
+        dropdown.className = 'dropdown';
+        
+        // 创建toggle按钮
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'nav-link dropdown-toggle';
+        toggleBtn.setAttribute('aria-label', '选择语言');
+        toggleBtn.innerHTML = `
+            <span>${currentLangName}</span>
+            <i class="fas fa-caret-down"></i>
+        `;
+        
+        // 创建dropdown menu
+        const dropdownMenu = document.createElement('div');
+        dropdownMenu.className = 'dropdown-menu';
+        
+        // 创建语言选项
         languages.forEach(lang => {
-            const option = document.createElement('option');
-            option.value = lang.code;
-            option.textContent = lang.name;
-            option.selected = lang.code === currentLang;
-            select.appendChild(option);
+            const item = document.createElement('button');
+            item.className = 'dropdown-item button-item';
+            item.setAttribute('data-lang', lang.code);
+            item.textContent = lang.name;
+            if (lang.code === currentLang) {
+                item.classList.add('active');
+            }
+            dropdownMenu.appendChild(item);
         });
         
-        this.container.appendChild(select);
-        this.select = select;
+        dropdown.appendChild(toggleBtn);
+        dropdown.appendChild(dropdownMenu);
+        
+        this.container.appendChild(dropdown);
+        this.dropdown = dropdown;
+        this.toggleBtn = toggleBtn;
+        this.dropdownMenu = dropdownMenu;
     }
 
     /**
      * 绑定事件
      */
     bindEvents() {
-        if (!this.select) return;
+        if (!this.dropdown) return;
         
-        this.select.addEventListener('change', (e) => {
-            const newLang = e.target.value;
-            console.log('🔄 切换语言:', newLang);
-            
-            try {
-                this.i18nManager.switchLanguage(newLang);
-                // 刷新页面内容
-                this.i18nManager.translatePage();
-                console.log('✅ 语言切换成功');
-            } catch (error) {
-                console.error('❌ 语言切换失败:', error);
-                // 恢复选择
-                this.select.value = this.i18nManager.getCurrentLanguage();
+        // 处理语言选项点击
+        this.dropdownMenu.addEventListener('click', (e) => {
+            if (e.target.classList.contains('dropdown-item')) {
+                const newLang = e.target.getAttribute('data-lang');
+                console.log('🔄 切换语言:', newLang);
+                
+                try {
+                    this.i18nManager.switchLanguage(newLang);
+                    // 刷新页面内容
+                    this.i18nManager.translatePage();
+                    
+                    // 更新按钮显示
+                    this.updateToggleButton(newLang);
+                    
+                    // 更新选中状态
+                    this.updateActiveState(newLang);
+                    
+                    console.log('✅ 语言切换成功');
+                } catch (error) {
+                    console.error('❌ 语言切换失败:', error);
+                }
             }
         });
+        
+        // 处理dropdown外部点击关闭
+        document.addEventListener('click', (e) => {
+            if (!this.dropdown.contains(e.target)) {
+                this.dropdown.classList.remove('open');
+            }
+        });
+        
+        // 处理toggle按钮点击
+        this.toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.dropdown.classList.toggle('open');
+        });
+    }
+    
+    /**
+     * 更新toggle按钮显示
+     */
+    updateToggleButton(langCode) {
+        const languages = this.i18nManager.getSupportedLanguages();
+        const langData = languages.find(lang => lang.code === langCode);
+        if (langData && this.toggleBtn) {
+            this.toggleBtn.innerHTML = `
+                <span>${langData.name}</span>
+                <i class="fas fa-caret-down"></i>
+            `;
+        }
+    }
+    
+    /**
+     * 更新选中状态
+     */
+    updateActiveState(langCode) {
+        if (!this.dropdownMenu) return;
+        
+        // 移除所有active状态
+        const items = this.dropdownMenu.querySelectorAll('.dropdown-item');
+        items.forEach(item => item.classList.remove('active'));
+        
+        // 添加新的active状态
+        const activeItem = this.dropdownMenu.querySelector(`[data-lang="${langCode}"]`);
+        if (activeItem) {
+            activeItem.classList.add('active');
+        }
     }
 
     /**
      * 销毁组件
      */
     destroy() {
-        if (this.select) {
-            this.select.removeEventListener('change', this.handleLanguageChange);
+        if (this.dropdown) {
+            this.dropdown.removeEventListener('click', this.handleLanguageChange);
         }
         if (this.container) {
             this.container.innerHTML = '';
@@ -117,202 +195,4 @@ export class LanguageSwitcher extends Component {
     }
 }
 
-// 样式
-const style = document.createElement('style');
-style.textContent = `
-    .language-switcher {
-        position: relative;
-        display: inline-block;
-    }
-    
-    .language-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        border: none;
-        background: transparent;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: var(--text-color);
-        font-size: 14px;
-        min-width: 120px;
-    }
-    
-    .language-button:hover {
-        background: var(--hover-bg);
-    }
-    
-    .language-button.active {
-        background: var(--primary-color);
-        color: white;
-    }
-    
-    .language-icon {
-        font-size: 16px;
-    }
-    
-    .language-text {
-        flex: 1;
-        text-align: left;
-    }
-    
-    .language-arrow {
-        font-size: 12px;
-        transition: transform 0.2s ease;
-    }
-    
-    .language-button.active .language-arrow {
-        transform: rotate(180deg);
-    }
-    
-    .language-dropdown {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        min-width: 180px;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.2s ease;
-        z-index: 1000;
-    }
-    
-    .language-dropdown.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-    
-    .language-dropdown.dropdown-up {
-        top: auto;
-        bottom: 100%;
-        transform: translateY(10px);
-    }
-    
-    .language-dropdown.dropdown-up.active {
-        transform: translateY(0);
-    }
-    
-    .language-dropdown-content {
-        padding: 8px;
-    }
-    
-    .language-option {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
-        padding: 10px 12px;
-        border: none;
-        background: transparent;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: var(--text-color);
-        font-size: 14px;
-    }
-    
-    .language-option:hover {
-        background: var(--hover-bg);
-    }
-    
-    .language-option.active {
-        background: var(--primary-color);
-        color: white;
-    }
-    
-    .language-flag {
-        font-size: 16px;
-        width: 20px;
-        text-align: center;
-    }
-    
-    .language-name {
-        flex: 1;
-        text-align: left;
-    }
-    
-    .language-option .fas.fa-check {
-        font-size: 12px;
-        color: currentColor;
-    }
-    
-    /* 通知样式 */
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        z-index: 10000;
-        opacity: 0;
-        transform: translateX(100%);
-        transition: all 0.3s ease;
-        max-width: 300px;
-    }
-    
-    .notification.notification-show {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    
-    .notification-content {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--text-color);
-    }
-    
-    .notification-success {
-        border-left: 4px solid #10b981;
-    }
-    
-    .notification-error {
-        border-left: 4px solid #ef4444;
-    }
-    
-    .notification-success .fas {
-        color: #10b981;
-    }
-    
-    .notification-error .fas {
-        color: #ef4444;
-    }
-    
-    /* 响应式设计 */
-    @media (max-width: 768px) {
-        .language-button {
-            min-width: auto;
-            padding: 8px 10px;
-        }
-        
-        .language-text {
-            display: none;
-        }
-        
-        .language-dropdown {
-            right: -20px;
-            min-width: 160px;
-        }
-        
-        .notification {
-            left: 20px;
-            right: 20px;
-            max-width: none;
-        }
-    }
-`;
-
-if (!document.head.querySelector('style[data-component="language-switcher"]')) {
-    style.setAttribute('data-component', 'language-switcher');
-    document.head.appendChild(style);
-} 
+// 样式现在由nav.css提供，不再需要内联样式 

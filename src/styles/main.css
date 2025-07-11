@@ -127,160 +127,6 @@ body.theme-dark::before {
   box-shadow: var(--shadow-lg);
 }
 
-/* 语言切换器样式 */
-
-.language-switcher-container {
-  position: relative;
-  display: inline-block;
-  margin-left: var(--spacing-md);
-}
-
-.language-switcher {
-  position: relative;
-}
-
-.language-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-  min-width: 120px;
-}
-
-.language-button:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-}
-
-.language-button.active {
-  border-color: var(--primary-color);
-  background: var(--bg-secondary);
-  color: var(--primary-color);
-}
-
-.language-icon {
-  display: flex;
-  align-items: center;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
-.language-button.active .language-icon {
-  color: var(--primary-color);
-}
-
-.language-text {
-  flex: 1;
-  font-weight: 500;
-}
-
-.language-arrow {
-  display: flex;
-  align-items: center;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  transition: transform 0.2s ease;
-}
-
-.language-button.active .language-arrow {
-  transform: rotate(180deg);
-  color: var(--primary-color);
-}
-
-.language-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  margin-top: 0.25rem;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s ease;
-  pointer-events: none;
-}
-
-.language-dropdown.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.language-dropdown-content {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-}
-
-.language-option {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  width: 100%;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.language-option:last-child {
-  border-bottom: none;
-}
-
-.language-option:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-}
-
-.language-option.active {
-  background: var(--bg-gradient-light);
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-.language-option.active:hover {
-  background: var(--bg-gradient-light);
-}
-
-.language-flag {
-  font-size: 1.25rem;
-  min-width: 1.5rem;
-  text-align: center;
-}
-
-.language-name {
-  flex: 1;
-  text-align: left;
-}
-
-.language-option i.fas.fa-check {
-  color: var(--success-color);
-  font-size: 0.875rem;
-}
-
-/* Hero 区域 */
-
-/* 快速访问区域 */
-
-/* 已收录工具区域 */
 
 /* 一行布局容器 */
 
@@ -860,29 +706,7 @@ body.theme-dark::before {
     display: block;
   }
 
-  /* 语言切换器响应式 */
-
-  .language-switcher-container {
-    margin-left: auto;
-    margin-top: var(--spacing-sm);
-    order: 1;
-  }
-
-  .language-button {
-    width: 100%;
-    min-width: auto;
-    justify-content: space-between;
-  }
-
-  .language-dropdown {
-    left: 0;
-    right: 0;
-    width: 100%;
-  }
-
-  .language-option {
-    padding: 1rem;
-  }
+  /* 语言切换器响应式 - 现在使用dropdown结构 */
 
   .hero-title {
     font-size: 3.5rem;
@@ -940,6 +764,61 @@ body.theme-dark::before {
   .footer-content {
     grid-template-columns: 1fr;
     gap: var(--spacing-xl);
+  }
+}
+
+/* 返回顶部按钮 */
+.back-to-top {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  width: 48px;
+  height: 48px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* 返回顶部按钮响应式 */
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-to-top {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
   }
 }
 

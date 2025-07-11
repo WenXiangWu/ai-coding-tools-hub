@@ -5,10 +5,8 @@
 
 import { 
     getEnabledNavigation, 
-    getEnabledDevtools, 
-    getMobileNavigationItems,
+    getEnabledDevtools,
     SEARCH_CONFIG,
-    MOBILE_CONFIG,
     THEME_CONFIG
 } from '../config/navigation-config.js';
 import { navigationConfigManager } from '../utils/navigation-config-manager.js';
@@ -18,19 +16,12 @@ import ThemeManager from './theme-manager.js';
 export class NavigationManager {
     constructor() {
         this.isInitialized = false;
-        this.isMobileMenuOpen = false;
-        this.currentBreakpoint = 'desktop';
-        this.resizeObserver = null;
         
         // DOM 元素
         this.headerElement = null;
         this.mainNavElement = null;
-        this.mobileMenuBtn = null;
-        this.mobileOverlay = null;
         
         // 绑定方法
-        this.handleResize = this.handleResize.bind(this);
-        this.handleMobileMenuToggle = this.handleMobileMenuToggle.bind(this);
         this.handleDocumentClick = this.handleDocumentClick.bind(this);
         this.handleEscKey = this.handleEscKey.bind(this);
     }
@@ -63,9 +54,6 @@ export class NavigationManager {
             // 设置事件监听
             this.setupEventListeners();
             
-            // 检查初始状态
-            this.checkBreakpoint();
-            
             this.isInitialized = true;
             console.log('✅ 导航管理器初始化完成');
             
@@ -81,10 +69,21 @@ export class NavigationManager {
     getDOMElements() {
         this.headerElement = document.querySelector('.header');
         this.mainNavElement = document.querySelector('.main-nav');
-        this.mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         
-        if (!this.headerElement || !this.mainNavElement || !this.mobileMenuBtn) {
-            throw new Error('导航DOM元素未找到');
+        console.log('📱 获取DOM元素状态:', {
+            hasHeader: !!this.headerElement,
+            hasMainNav: !!this.mainNavElement,
+            headerElement: this.headerElement,
+            mainNavElement: this.mainNavElement
+        });
+        
+        if (!this.headerElement || !this.mainNavElement) {
+            const missing = [];
+            if (!this.headerElement) missing.push('.header');
+            if (!this.mainNavElement) missing.push('.main-nav');
+            
+            console.error('❌ 缺少DOM元素:', missing);
+            throw new Error(`导航DOM元素未找到: ${missing.join(', ')}`);
         }
     }
 
@@ -151,9 +150,16 @@ export class NavigationManager {
      * 渲染导航
      */
     async renderNavigation() {
-        // 使用配置管理器获取导航项和开发工具
-        const navigation = navigationConfigManager.getAllNavigationItems();
-        const devtools = navigationConfigManager.getAllDevtools();
+        // 直接使用配置文件的函数获取导航项和开发工具
+        const navigation = getEnabledNavigation();
+        const devtools = getEnabledDevtools();
+        
+        console.log('📋 获取到的导航数据:', {
+            navigation: navigation.length,
+            devtools: devtools.length,
+            navigationItems: navigation.map(item => item.name),
+            devtoolItems: devtools.map(tool => tool.name)
+        });
         
         // 保存静态容器和主题切换器
         const languageSwitcherContainer = this.mainNavElement.querySelector('#languageSwitcherContainer');
@@ -168,10 +174,15 @@ export class NavigationManager {
         this.mainNavElement.innerHTML = '';
         
         // 渲染导航项
+        console.log('📋 开始渲染导航项目...');
         for (const item of navigation) {
+            console.log(`  - 创建导航项: ${item.name} (${item.type})`);
             const navElement = this.createNavigationElement(item, devtools);
             this.mainNavElement.appendChild(navElement);
+            console.log(`  ✅ 导航项已添加到DOM: ${item.name}`);
         }
+        
+        console.log('📋 导航项目渲染完成，主导航HTML:', this.mainNavElement.innerHTML.substring(0, 200) + '...');
         
         // 搜索功能已移除
         
@@ -197,8 +208,7 @@ export class NavigationManager {
         await this.addThemeSwitcher();
         }
         
-        // 创建移动端覆盖层
-        this.createMobileOverlay();
+
         
         // 通知语言切换器容器已恢复，需要重新初始化
         this.notifyLanguageSwitcherContainerRestored();
@@ -602,20 +612,7 @@ export class NavigationManager {
         console.log('🧹 主题切换器清理完成');
     }
 
-    /**
-     * 创建移动端覆盖层
-     */
-    createMobileOverlay() {
-        if (this.mobileOverlay) {
-            this.mobileOverlay.remove();
-        }
-        
-        this.mobileOverlay = document.createElement('div');
-        this.mobileOverlay.className = 'mobile-overlay';
-        this.mobileOverlay.addEventListener('click', this.handleMobileMenuToggle);
-        
-        document.body.appendChild(this.mobileOverlay);
-    }
+
 
     /**
      * 通知语言切换器容器已恢复
@@ -632,20 +629,18 @@ export class NavigationManager {
      * 设置事件监听器
      */
     setupEventListeners() {
-        // 移动端菜单按钮
-        this.mobileMenuBtn.addEventListener('click', this.handleMobileMenuToggle);
-        
-        // 窗口大小变化
-        window.addEventListener('resize', this.handleResize);
+        console.log('📱 开始设置事件监听器...');
         
         // 文档点击（关闭下拉菜单）
         document.addEventListener('click', this.handleDocumentClick);
         
-        // ESC键（关闭移动端菜单）
+        // ESC键（关闭下拉菜单）
         document.addEventListener('keydown', this.handleEscKey);
         
         // 下拉菜单处理
         this.setupDropdownHandlers();
+        
+        console.log('📱 事件监听器设置完成');
     }
 
     /**
@@ -659,35 +654,29 @@ export class NavigationManager {
             const menu = dropdown.querySelector('.dropdown-menu');
             
             if (toggle && menu) {
-                // 鼠标悬停（桌面端）
+                // 鼠标悬停
                 dropdown.addEventListener('mouseenter', () => {
-                    if (this.currentBreakpoint === 'desktop') {
-                        this.closeAllDropdowns();
-                        menu.classList.add('active');
-                    }
+                    this.closeAllDropdowns();
+                    menu.classList.add('active');
                 });
                 
                 dropdown.addEventListener('mouseleave', () => {
-                    if (this.currentBreakpoint === 'desktop') {
-                        menu.classList.remove('active');
-                    }
+                    menu.classList.remove('active');
                 });
                 
-                // 点击切换（移动端）
+                // 点击切换
                 toggle.addEventListener('click', (e) => {
-                    if (this.currentBreakpoint === 'mobile') {
-                        e.preventDefault();
-                        
-                        const isActive = menu.classList.contains('active');
-                        
-                        // 关闭所有下拉菜单（包括主题切换器）
-                        this.closeAllDropdowns();
-                        
-                        // 如果之前是关闭的，则打开当前下拉菜单
-                        if (!isActive) {
-                            dropdown.classList.add('active');
-                            menu.classList.add('active');
-                        }
+                    e.preventDefault();
+                    
+                    const isActive = menu.classList.contains('active');
+                    
+                    // 关闭所有下拉菜单（包括主题切换器）
+                    this.closeAllDropdowns();
+                    
+                    // 如果之前是关闭的，则打开当前下拉菜单
+                    if (!isActive) {
+                        dropdown.classList.add('active');
+                        menu.classList.add('active');
                     }
                 });
             }
@@ -703,17 +692,15 @@ export class NavigationManager {
     setupGlobalDropdownManager() {
         // 监听主题切换器的下拉菜单事件
         document.addEventListener('theme-switcher-open', () => {
-            if (this.currentBreakpoint === 'mobile') {
-                // 关闭其他下拉菜单
-                const dropdowns = this.mainNavElement.querySelectorAll('.dropdown');
-                dropdowns.forEach(dropdown => {
-                    dropdown.classList.remove('active');
-                    const menu = dropdown.querySelector('.dropdown-menu');
-                    if (menu) {
-                        menu.classList.remove('active');
-                    }
-                });
-            }
+            // 关闭其他下拉菜单
+            const dropdowns = this.mainNavElement.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('active');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) {
+                    menu.classList.remove('active');
+                }
+            });
         });
     }
 
@@ -735,108 +722,9 @@ export class NavigationManager {
         document.dispatchEvent(new CustomEvent('close-all-dropdowns'));
     }
 
-    /**
-     * 处理移动端菜单切换
-     */
-    handleMobileMenuToggle(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        this.isMobileMenuOpen = !this.isMobileMenuOpen;
-        
-        // 更新菜单状态
-        this.mainNavElement.classList.toggle('active', this.isMobileMenuOpen);
-        this.mobileOverlay.classList.toggle('active', this.isMobileMenuOpen);
-        
-        // 更新按钮图标
-        const icon = this.mobileMenuBtn.querySelector('i');
-        if (icon) {
-            icon.className = this.isMobileMenuOpen ? MOBILE_CONFIG.closeIcon : MOBILE_CONFIG.menuIcon;
-        }
-        
-        // 禁用/启用页面滚动
-        document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
-        
-        console.log(`📱 移动端菜单 ${this.isMobileMenuOpen ? '打开' : '关闭'}`);
-    }
 
-    /**
-     * 处理窗口大小变化
-     */
-    handleResize() {
-        this.checkBreakpoint();
-        
-        // 如果切换到桌面端，关闭移动端菜单
-        if (this.currentBreakpoint === 'desktop' && this.isMobileMenuOpen) {
-            this.closeMobileMenu();
-        }
-    }
 
-    /**
-     * 检查断点
-     */
-    checkBreakpoint() {
-        const width = window.innerWidth;
-        const newBreakpoint = width <= MOBILE_CONFIG.breakpoint ? 'mobile' : 'desktop';
-        
-        if (newBreakpoint !== this.currentBreakpoint) {
-            this.currentBreakpoint = newBreakpoint;
-            this.updateNavigationForBreakpoint();
-            console.log(`📱 断点切换: ${this.currentBreakpoint}`);
-        }
-    }
 
-    /**
-     * 根据断点更新导航
-     */
-    updateNavigationForBreakpoint() {
-        if (this.currentBreakpoint === 'mobile') {
-            this.setupMobileNavigation();
-        } else {
-            this.setupDesktopNavigation();
-        }
-    }
-
-    /**
-     * 设置移动端导航
-     */
-    setupMobileNavigation() {
-        // 获取移动端优先显示的项目
-        const mobileItems = getMobileNavigationItems(MOBILE_CONFIG.collapseThreshold);
-        
-        // 重新排列导航项目
-        this.rearrangeNavigationForMobile(mobileItems);
-    }
-
-    /**
-     * 设置桌面端导航
-     */
-    setupDesktopNavigation() {
-        // 恢复原始导航顺序，但不重新渲染整个导航
-        // 只需要重置移动端的样式修改
-        const navItems = Array.from(this.mainNavElement.children);
-        navItems.forEach(item => {
-            if (item.style.order) {
-                item.style.order = '';
-            }
-        });
-    }
-
-    /**
-     * 为移动端重新排列导航
-     */
-    rearrangeNavigationForMobile(priorityItems) {
-        // 这里可以根据需要调整移动端的导航布局
-        // 例如：优先级高的项目显示在顶部
-        const navItems = Array.from(this.mainNavElement.children);
-        
-        priorityItems.forEach((item, index) => {
-            const element = navItems.find(el => el.getAttribute('data-nav-id') === item.id);
-            if (element) {
-                element.style.order = index;
-            }
-        });
-    }
 
     /**
      * 处理文档点击（关闭下拉菜单）
@@ -853,35 +741,12 @@ export class NavigationManager {
      */
     handleEscKey(e) {
         if (e.key === 'Escape') {
-            if (this.isMobileMenuOpen) {
-                this.closeMobileMenu();
-            }
-            
             // 关闭所有下拉菜单
             this.closeAllDropdowns();
         }
     }
 
-    /**
-     * 关闭移动端菜单
-     */
-    closeMobileMenu() {
-        if (this.isMobileMenuOpen) {
-            this.isMobileMenuOpen = false;
-            this.mainNavElement.classList.remove('active');
-            this.mobileOverlay.classList.remove('active');
-            
-            // 关闭所有下拉菜单
-            this.closeAllDropdowns();
-            
-            const icon = this.mobileMenuBtn.querySelector('i');
-            if (icon) {
-                icon.className = MOBILE_CONFIG.menuIcon;
-            }
-            
-            document.body.style.overflow = '';
-        }
-    }
+
 
     /**
      * 添加导航项
@@ -973,8 +838,6 @@ export class NavigationManager {
      */
     destroy() {
         // 移除事件监听器
-        this.mobileMenuBtn?.removeEventListener('click', this.handleMobileMenuToggle);
-        window.removeEventListener('resize', this.handleResize);
         document.removeEventListener('click', this.handleDocumentClick);
         document.removeEventListener('keydown', this.handleEscKey);
         
@@ -983,15 +846,8 @@ export class NavigationManager {
             navigationConfigManager.removeListener(this.configListener);
         }
         
-        // 移除移动端覆盖层
-        this.mobileOverlay?.remove();
-        
-        // 恢复页面滚动
-        document.body.style.overflow = '';
-        
         // 重置状态
         this.isInitialized = false;
-        this.isMobileMenuOpen = false;
         
         console.log('🗑️ 导航管理器已销毁');
     }
@@ -1003,8 +859,6 @@ export class NavigationManager {
         const configStats = navigationConfigManager.getStats();
         return {
             initialized: this.isInitialized,
-            mobileMenuOpen: this.isMobileMenuOpen,
-            currentBreakpoint: this.currentBreakpoint,
             navigationItems: configStats.totalNavigationItems,
             devtoolItems: configStats.totalDevtools,
             customItems: configStats.customItems,

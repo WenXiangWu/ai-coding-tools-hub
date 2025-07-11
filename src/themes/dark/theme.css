@@ -7,6 +7,29 @@
     color-scheme: light;
 }
 
+/* tools-filter 样式确保主题跟随 */
+:root.theme-dark .tools-filter,
+body.theme-dark .tools-filter {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    backdrop-filter: blur(25px);
+    box-shadow: var(--shadow-lg);
+}
+
+:root.theme-dark .tools-filter::before,
+body.theme-dark .tools-filter::before {
+    background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.15) 0%, 
+        rgba(139, 92, 246, 0.12) 50%, 
+        rgba(236, 72, 153, 0.15) 100%) !important;
+    opacity: 0.1;
+}
+
+:root.theme-dark .tools-filter:hover {
+    box-shadow: var(--shadow-xl) !important;
+    transform: translateY(-2px);
+}
+
 /* 工具卡片特殊样式 */
 .theme-default .tool-card {
     background: var(--gradient-card);

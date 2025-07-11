@@ -1,10 +1,33 @@
-/* 默认主题入口文件 */
+/* 蓝色主题入口文件 */
 @import 'colors.css';
 
-/* 默认主题特定的组件覆盖 */
-.theme-default {
+/* 蓝色主题特定的组件覆盖 */
+.theme-blue {
     /* 确保主题正确应用 */
     color-scheme: light;
+}
+
+/* tools-filter 样式确保主题跟随 */
+:root.theme-blue .tools-filter,
+body.theme-blue .tools-filter {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    backdrop-filter: blur(25px);
+    box-shadow: var(--shadow-lg);
+}
+
+:root.theme-blue .tools-filter::before,
+body.theme-blue .tools-filter::before {
+    background: linear-gradient(135deg, 
+        rgba(14, 165, 233, 0.1) 0%, 
+        rgba(6, 182, 212, 0.08) 50%, 
+        rgba(16, 185, 129, 0.1) 100%) !important;
+    opacity: 0.1;
+}
+
+:root.theme-blue .tools-filter:hover {
+    box-shadow: var(--shadow-xl) !important;
+    transform: translateY(-2px);
 }
 
 /* 工具卡片特殊样式 */
