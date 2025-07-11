@@ -719,8 +719,15 @@
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.95rem;
+  font-weight: 400;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
 }
 
 .mobile-dropdown-item:hover {
@@ -729,72 +736,25 @@
   border-left-color: var(--primary-color);
 }
 
-/* 移动端切换器容器 */
-.mobile-switchers {
-  padding: var(--spacing-sm) var(--spacing-lg);
-}
-
-.mobile-language-switcher,
-.mobile-theme-switcher {
-  margin-bottom: var(--spacing-md);
-}
-
-.mobile-language-switcher:last-child,
-.mobile-theme-switcher:last-child {
-  margin-bottom: 0;
-}
-
-/* 移动端切换器的统一dropdown样式 */
-.mobile-switchers .dropdown {
-  width: 100%;
-}
-
-.mobile-switchers .dropdown-toggle {
-  width: 100%;
-  padding: var(--spacing-md);
-  justify-content: space-between;
-  color: var(--text-primary);
-  font-size: 1rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
-}
-
-.mobile-switchers .dropdown-toggle:hover {
+.mobile-dropdown-item:focus {
+  outline: none;
   background: var(--bg-tertiary);
-  border-color: var(--primary-color);
   color: var(--primary-color);
+  border-left-color: var(--primary-color);
 }
 
-.mobile-switchers .dropdown-menu {
-  position: static;
-  width: 100%;
-  min-width: auto;
-  margin-top: var(--spacing-xs);
+/* 移动端下拉菜单项的active状态样式 - 统一所有类型 */
+.mobile-dropdown-item.active {
   background: var(--bg-tertiary);
-  border: none;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-height: 200px;
-  overflow-y: auto;
+  color: var(--primary-color);
+  border-left-color: var(--primary-color);
+  font-weight: 600;
 }
 
-.mobile-switchers .dropdown-item {
-  padding: var(--spacing-sm) var(--spacing-md);
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-}
-
-.mobile-switchers .dropdown-item:hover {
+.mobile-dropdown-item.active:hover {
   background: var(--bg-quaternary);
   color: var(--primary-color);
-}
-
-.mobile-switchers .dropdown-item.active {
-  background: var(--primary-color);
-  color: white;
+  border-left-color: var(--primary-color);
 }
 
 /* 深色主题移动端样式 */
@@ -812,9 +772,20 @@
   background: var(--bg-tertiary);
 }
 
-:root.theme-dark .mobile-switchers .dropdown-menu {
+:root.theme-dark .mobile-dropdown-item:hover {
   background: var(--bg-quaternary);
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:root.theme-dark .mobile-dropdown-item:focus {
+  background: var(--bg-quaternary);
+}
+
+:root.theme-dark .mobile-dropdown-item.active {
+  background: var(--bg-quaternary);
+}
+
+:root.theme-dark .mobile-dropdown-item.active:hover {
+  background: var(--bg-primary);
 }
 
 /* 导航栏下拉框响应式样式 */

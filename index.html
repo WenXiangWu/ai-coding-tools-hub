@@ -187,12 +187,25 @@
                         
                         <!-- 语言和主题切换 -->
                         <div class="mobile-nav-section">
-                            <div class="mobile-switchers">
-                                <div class="mobile-language-switcher" id="mobileLangSwitcher">
-                                    <!-- 语言切换器将在这里渲染 -->
+                            <!-- 语言切换下拉 -->
+                            <div class="mobile-dropdown">
+                                <button class="mobile-dropdown-toggle" id="mobileLangToggle">
+                                    <span id="mobileLangCurrent" data-i18n="language.current">简体中文</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="mobile-dropdown-menu" id="mobileLangMenu">
+                                    <!-- 语言选项将在这里动态渲染 -->
                                 </div>
-                                <div class="mobile-theme-switcher" id="mobileThemeSwitcher">
-                                    <!-- 主题切换器将在这里渲染 -->
+                            </div>
+                            
+                            <!-- 主题切换下拉 -->
+                            <div class="mobile-dropdown">
+                                <button class="mobile-dropdown-toggle" id="mobileThemeToggle">
+                                    <span id="mobileThemeCurrent">🌙 深色主题</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="mobile-dropdown-menu" id="mobileThemeMenu">
+                                    <!-- 主题选项将在这里动态渲染 -->
                                 </div>
                             </div>
                         </div>
