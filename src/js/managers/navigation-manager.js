@@ -140,6 +140,13 @@ export class NavigationManager {
             if (window.themeSwitcher && typeof window.themeSwitcher.refresh === 'function') {
                 window.themeSwitcher.refresh();
                 console.log('✅ 主题切换器已刷新');
+            } else if (window.themeSwitcher && typeof window.themeSwitcher.render === 'function') {
+                // 兼容旧版本
+                window.themeSwitcher.render();
+                if (typeof window.themeSwitcher.bindEvents === 'function') {
+                    window.themeSwitcher.bindEvents();
+                }
+                console.log('✅ 主题切换器已刷新（兼容模式）');
             }
         } catch (error) {
             console.warn('⚠️ 刷新主题切换器失败:', error);

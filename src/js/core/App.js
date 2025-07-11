@@ -1322,9 +1322,16 @@ class App {
     rerenderThemeSwitcher() {
         try {
             // 重新渲染桌面端主题切换器
-            if (this.themeSwitcher && typeof this.themeSwitcher.render === 'function') {
-                this.themeSwitcher.render();
+            if (this.themeSwitcher && typeof this.themeSwitcher.refresh === 'function') {
+                this.themeSwitcher.refresh();
                 console.log('🎨 桌面端主题切换器已重新渲染');
+            } else if (this.themeSwitcher && typeof this.themeSwitcher.render === 'function') {
+                // 兼容旧版本，如果没有refresh方法就使用render + bindEvents
+                this.themeSwitcher.render();
+                if (typeof this.themeSwitcher.bindEvents === 'function') {
+                    this.themeSwitcher.bindEvents();
+                }
+                console.log('🎨 桌面端主题切换器已重新渲染（兼容模式）');
             }
             
             // 移动端主题切换器会通过事件监听自动更新，不需要手动重新渲染

@@ -55,8 +55,14 @@ export default class ThemeSwitcher {
      * 渲染切换器
      */
     render() {
+        // 清理现有的事件监听器
+        this.cleanup();
+        
         const currentTheme = this.themeManager.getCurrentTheme();
         const themes = this.themeManager.getAvailableThemes();
+        
+        // 清空容器
+        this.container.innerHTML = '';
         
         // 创建dropdown结构
         const dropdown = document.createElement('div');
@@ -97,6 +103,26 @@ export default class ThemeSwitcher {
     }
 
     /**
+     * 刷新组件（重新渲染并重新绑定事件）
+     */
+    refresh() {
+        try {
+            console.log('🔄 刷新主题切换器...');
+            
+            // 重新渲染
+            this.render();
+            
+            // 重新绑定事件
+            this.bindEvents();
+            
+            console.log('✅ 主题切换器刷新完成');
+        } catch (error) {
+            console.error('❌ 主题切换器刷新失败:', error);
+            throw error;
+        }
+    }
+
+    /**
      * 绑定事件
      */
     bindEvents() {
@@ -125,17 +151,34 @@ export default class ThemeSwitcher {
         });
         
         // 处理dropdown外部点击关闭
-        document.addEventListener('click', (e) => {
+        this.handleOutsideClick = (e) => {
             if (!this.dropdown.contains(e.target)) {
                 this.dropdown.classList.remove('open');
             }
-        });
+        };
+        document.addEventListener('click', this.handleOutsideClick);
         
         // 处理toggle按钮点击
-        this.toggleBtn.addEventListener('click', (e) => {
+        this.handleToggleClick = (e) => {
             e.stopPropagation();
             this.dropdown.classList.toggle('open');
-        });
+        };
+        this.toggleBtn.addEventListener('click', this.handleToggleClick);
+    }
+    
+    /**
+     * 清理事件监听器
+     */
+    cleanup() {
+        if (this.handleOutsideClick) {
+            document.removeEventListener('click', this.handleOutsideClick);
+            this.handleOutsideClick = null;
+        }
+        
+        if (this.handleToggleClick && this.toggleBtn) {
+            this.toggleBtn.removeEventListener('click', this.handleToggleClick);
+            this.handleToggleClick = null;
+        }
     }
     
     /**
@@ -173,9 +216,7 @@ export default class ThemeSwitcher {
      * 销毁组件
      */
     destroy() {
-        if (this.dropdown) {
-            this.dropdown.removeEventListener('click', this.handleThemeChange);
-        }
+        this.cleanup();
         if (this.container) {
             this.container.innerHTML = '';
         }
