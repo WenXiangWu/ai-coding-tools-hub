@@ -319,19 +319,42 @@ class CrawlerTask:
         """生成导航结构"""
         self.add_log('生成导航结构...')
         
-        # 根据URL路径和页面标题构建导航结构
+        # 提取真实的导航栏内容
         navigation = []
+        navigation_items = set()  # 用于去重
+        
         for result in self.results:
+            # 从提取的内容中获取导航栏信息
+            extracted_content = result.get('extracted_content', {})
+            
+            # 处理导航栏内容
+            nav_content = None
+            if isinstance(extracted_content, list) and len(extracted_content) > 0:
+                nav_content = extracted_content[0].get('navigation', '')
+            elif isinstance(extracted_content, dict):
+                nav_content = extracted_content.get('navigation', '')
+            
+            # 如果有导航栏内容，解析其中的链接
+            if nav_content:
+                nav_links = self._extract_navigation_links(nav_content, result['url'])
+                for link in nav_links:
+                    link_key = f"{link['title']}|{link['url']}"
+                    if link_key not in navigation_items:
+                        navigation_items.add(link_key)
+                        navigation.append(link)
+            
+            # 同时保留基于URL路径的导航项
             nav_item = {
                 'url': result['url'],
                 'title': result['title'] or '无标题',
                 'path': result['url'].replace(self.config['target_url'], ''),
-                'level': result['url'].count('/') - 2  # 估算层级
+                'level': result['url'].count('/') - 2,  # 估算层级
+                'type': 'page'  # 标记为页面类型
             }
             navigation.append(nav_item)
         
-        # 按照路径排序，实现导航顺序
-        navigation.sort(key=lambda x: (x['level'], x['path']))
+        # 按照层级和路径排序
+        navigation.sort(key=lambda x: (x.get('level', 0), x.get('path', x['url'])))
         self.navigation = navigation
 
     def _create_browser_config(self) -> BrowserConfig:
@@ -401,6 +424,49 @@ class CrawlerTask:
             content_data['title'] = result.url.split('/')[-1] or 'Home'
         
         return content_data
+
+    def _extract_navigation_links(self, nav_content: str, base_url: str) -> List[Dict]:
+        """从导航栏内容中提取链接"""
+        import re
+        from urllib.parse import urljoin, urlparse
+        
+        nav_links = []
+        
+        # 使用正则表达式提取链接
+        # 匹配 markdown 链接格式 [text](url)
+        markdown_links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', nav_content)
+        for text, url in markdown_links:
+            full_url = urljoin(base_url, url)
+            if self._is_valid_url(full_url, self.config['target_url']):
+                nav_links.append({
+                    'title': text.strip(),
+                    'url': full_url,
+                    'type': 'navigation',
+                    'level': 0
+                })
+        
+        # 匹配 HTML 链接格式 <a href="url">text</a>
+        html_links = re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>([^<]+)</a>', nav_content, re.IGNORECASE)
+        for url, text in html_links:
+            full_url = urljoin(base_url, url)
+            if self._is_valid_url(full_url, self.config['target_url']):
+                nav_links.append({
+                    'title': text.strip(),
+                    'url': full_url,
+                    'type': 'navigation',
+                    'level': 0
+                })
+        
+        # 去重
+        unique_links = []
+        seen = set()
+        for link in nav_links:
+            key = f"{link['title']}|{link['url']}"
+            if key not in seen:
+                seen.add(key)
+                unique_links.append(link)
+        
+        return unique_links
 
     def _is_valid_url(self, url: str, base_url: str) -> bool:
         """检查URL是否有效"""

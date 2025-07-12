@@ -66,7 +66,7 @@ class CrawlerApp {
                 {"name": "description", "selector": "meta[name='description']", "type": "attribute", "attribute": "content"},
                 {"name": "headings", "selector": "h1, h2, h3", "type": "text"},
                 {"name": "main_content", "selector": "main, article, .content, .main-content", "type": "text"},
-                {"name": "navigation", "selector": "nav, .nav, .navigation", "type": "text"}
+                {"name": "navigation", "selector": "nav, .nav, .navigation, .navbar, .menu, .sidebar, [role='navigation'], .nav-menu, .main-nav, .site-nav, .primary-nav, .header-nav, .top-nav, .side-nav, .navigation-menu", "type": "html"}
             ]
         };
         
